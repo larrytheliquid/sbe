@@ -1,0 +1,211 @@
+\documentclass[preprint,nonatbib]{sigplanconf}
+\usepackage[authoryear,square]{natbib}
+\usepackage{proof}
+
+\usepackage{todonotes}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{comment}
+\usepackage{url}
+\usepackage{bbm}
+\usepackage[greek,english]{babel}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{autofe}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\DeclareUnicodeCharacter{8988}{\ensuremath{\ulcorner}}
+\DeclareUnicodeCharacter{8989}{\ensuremath{\urcorner}}
+\DeclareUnicodeCharacter{8803}{\ensuremath{\overline{\equiv}}}
+\DeclareUnicodeCharacter{8759}{\ensuremath{\colon\colon}}
+\DeclareUnicodeCharacter{12314}{\ensuremath{\llbracket}}
+\DeclareUnicodeCharacter{12315}{\ensuremath{\rrbracket}}
+\DeclareUnicodeCharacter{10214}{\ensuremath{\llbracket}}
+\DeclareUnicodeCharacter{10215}{\ensuremath{\rrbracket}}
+\DeclareUnicodeCharacter{8614}{\ensuremath{\mapsto}}
+\DeclareUnicodeCharacter{8799}{\ensuremath{\stackrel{?}{=}}}
+\DeclareUnicodeCharacter{8669}{\ensuremath{\leadsto}}
+
+\DeclareUnicodeCharacter{7496}{\ensuremath{^{d}}}
+
+\usepackage{fancyvrb}
+
+\usepackage[labelfont=bf]{caption}
+
+\newtheorem*{mythm}{Theorem}
+\newtheorem*{mylem}{Lemma}
+
+\newcommand{\refthm}[1]{Theorem \ref{thm:#1}}
+\newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
+
+\newtheorem{mydef}{Definition}
+\newtheorem{myparte}{Part$_E$}
+\newtheorem{myparti}{Part$_I$}
+
+\newcommand{\reffig}[1]{Figure \ref{fig:#1}}
+\newcommand{\refsec}[1]{Section \ref{sec:#1}}
+\newcommand{\refparte}[1]{Part$_E$ \ref{parte:#1}}
+\newcommand{\refparti}[1]{Part$_I$ \ref{parti:#1}}
+
+\def\imp{\to}
+\def\app{\cdot}
+\def\lam{\lambda}
+\def\nat{\mathbb{N}}
+
+\newcommand{\con}[1]{\textrm{#1}}
+\newcommand{\fun}[1]{\textrm{#1}}
+
+\newcommand{\type}[1]{\Gamma \vdash^E #1}
+\newcommand{\ctype}[2]{\Gamma , #1 \vdash^E #2}
+
+\newcommand{\typv}[1]{\Gamma \vdash^V #1}
+\newcommand{\ctypv}[2]{\Gamma , #1 \vdash^V #2}
+
+\newcommand{\typn}[1]{\Gamma \vdash^N #1}
+\newcommand{\ctypn}[2]{\Gamma , #1 \vdash^N #2}
+
+\newcommand{\typr}[1]{\Gamma \vdash^R #1}
+\newcommand{\ctypr}[2]{\Gamma , #1 \vdash^R #2}
+
+\begin{document}
+
+\special{papersize=8.5in,11in}
+\setlength{\pdfpageheight}{\paperheight}
+\setlength{\pdfpagewidth}{\paperwidth}
+
+\titlebanner{DRAFT}        % These are ignored unless
+%% \preprintfooter{short description of paper}   % 'preprint' option specified.
+
+\title{Proof Pearl: Hereditary Substitution by Canonical Evaluation}
+\subtitle{Termination Proofs as Intrinsic Semantics}
+
+\authorinfo{Larry Diehl\and Tim Sheard}
+           {Portland State University}
+           {\{ldiehl,sheard\}@cs.pdx.edu}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\category{D.3}{Software}{Programming Languages}.
+
+\keywords
+Type theory; dependent types; termination.
+
+\section{Introduction}
+\label{sec:intro}
+
+It is standard practice to write generic functions in a dependently
+typed language by using a \citet{martin1975intuitionistic} universe.
+A universe consists of codes representing types, and an interpretation
+function that translates a code into an actual type. It is possible to
+write a function that is generic for all encoded types by taking a
+universe code argument, followed by an argument whose dependent type
+is the interpretation of said code. For example, below is a function
+({\tt decimal}) that computes the decimal value of a binary number, which
+is generic in the length of the binary number.
+
+\appendix
+
+\section{Types and Contexts}
+
+\todo[inline]{
+Notational conventions: 
+De Bruijn variables
+}
+
+\todo[inline]{BNF grammar for types}
+
+\todo[inline]{BNF grammar for contexts}
+
+\section{Intrinsic Typing of De Bruijn Variables as Context Membership}
+
+$$
+\infer
+  [\con{here}]
+  {\ctypr{A}{A}}
+{
+}
+\qquad
+\infer
+  [\con{there} ~ i]
+  {\ctypr{B}{A}}
+{
+  (i : \typr{A})
+}
+$$
+
+
+\section{Intrinsic Typing of Expressions for G{\"o}del's System T}
+
+$$
+\infer
+  [\lam b]
+  {\type{A \to B}}
+{
+  (b : \ctype{A}{B})
+}
+\qquad
+\infer
+  [\con{zero}]
+  {\type{\nat}}
+{}
+\qquad
+\infer
+  [\con{suc} ~ n]
+  {\type{\nat}}
+{
+  (n : \type{\nat})
+}
+$$
+
+$$
+\infer
+  [\fun{rec} ~ n ~ c_z ~ c_s]
+  {\type{C}}
+{
+  (n : \type{\nat})
+  &
+  (c_z : \type{C})
+  &
+  (c_s : \type{C \to C})
+}
+$$
+
+$$
+\infer
+  [\fun{var} ~ i]
+  {\type{A}}
+{
+  (i : \typr{A})
+}
+\qquad
+\infer
+  [f \app a]
+  {\type{B}}
+{
+  (f : \type{A \to B})
+  &
+  (a : \type{A \to B})
+}
+$$
+
+\acks
+
+We would like to thank Andrew Cave for helping us understand subtle
+issues encountered when formalizing termination proofs.
+This work was supported by NSF/CISE/CCF grant \#1320934.
+
+\bibliographystyle{abbrvnat}
+\bibliography{sbe}
+
+\end{document}
