@@ -16,6 +16,7 @@
 \usepackage{autofe}
 \usepackage{stmaryrd}
 \usepackage{enumitem}
+\usepackage[all]{xy}
 
 \usepackage{float}
 \floatstyle{boxed}
@@ -59,20 +60,32 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
+\newcommand{\el}[1]{\llbracket #1 \rrbracket}
+
 \newcommand{\con}[1]{\textmd{#1}}
 \newcommand{\fun}[1]{\textmd{#1}}
 
+\newcommand{\typm}[1]{\el{\Gamma \vdash #1 \rrbracket}}
+\newcommand{\dtypm}[1]{\el{\Delta \vdash #1 \rrbracket}}
+\newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2 \rrbracket}}
+
 \newcommand{\type}[1]{\Gamma \vdash^E #1}
+\newcommand{\dtype}[1]{\Delta \vdash^E #1}
 \newcommand{\ctype}[2]{\Gamma , #1 \vdash^E #2}
 
 \newcommand{\typv}[1]{\Gamma \vdash^V #1}
+\newcommand{\dtypv}[1]{\Delta \vdash^V #1}
 \newcommand{\ctypv}[2]{\Gamma , #1 \vdash^V #2}
 
 \newcommand{\typn}[1]{\Gamma \vdash^N #1}
+\newcommand{\dtypn}[1]{\Delta \vdash^N #1}
 \newcommand{\ctypn}[2]{\Gamma , #1 \vdash^N #2}
 
 \newcommand{\typr}[1]{\Gamma \vdash^R #1}
+\newcommand{\dtypr}[1]{\Delta \vdash^R #1}
 \newcommand{\ctypr}[2]{\Gamma , #1 \vdash^R #2}
+
+\newcommand{\env}[1]{\fun{Env} ~ \Gamma ~ #1}
 
 \begin{document}
 
@@ -93,13 +106,21 @@
 \maketitle
 
 \begin{abstract}
-
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
+adipiscing ligula ac metus tempus, ut fermentum nunc commodo. In
+egestas dui vitae enim rhoncus volutpat. Nulla id ullamcorper est.
+Nulla congue vitae eros vitae consectetur. Vivamus nunc orci,
+tincidunt eget sem non, facilisis rhoncus lectus. Pellentesque
+pharetra sapien eu lacus vulputate, eget ultricies sapien feugiat.
+Fusce dapibus, augue non commodo vulputate, enim nibh ultrices massa,
+at pharetra urna mi et ante. Aenean et fermentum erat. Fusce a magna
+arcu.
 \end{abstract}
 
 \category{D.3}{Software}{Programming Languages}.
 
 \keywords
-Type theory; dependent types; termination.
+Type theory; hereditary substitution; termination; formalization; dependent types.
 
 \section{Introduction}
 \label{sec:intro}
@@ -114,9 +135,61 @@ is the interpretation of said code. For example, below is a function
 ({\tt decimal}) that computes the decimal value of a binary number, which
 is generic in the length of the binary number.
 
+\begin{displaymath}
+    \xymatrix{
+          {\forall (e : A)} 
+          \ar[dr]_{\fun{norm}}
+          \ar[r]^{\fun{eval}}
+        & {\el{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & {\exists (e' : A). ~ e \Downarrow e' \wedge \fun{IsNormal} ~ e'} }
+\end{displaymath}
+
+\begin{displaymath}
+    \xymatrix{
+          {A} 
+          \ar[dr]_{\fun{norm}}
+          \ar[r]^{\fun{eval}}
+        & {\el{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & {A} }
+\end{displaymath}
+
+
+\begin{displaymath}
+    \xymatrix{
+          {\forall (v : A), \sigma} 
+          \ar[dr]_{\fun{hsub}}
+          \ar[r]^{\fun{ceval}}
+        & {\el{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & {\exists (v' : A). ~ [ \sigma ] v = v'} }
+\end{displaymath}
+
+\begin{displaymath}
+    \xymatrix{
+          {A, \sigma} 
+          \ar[dr]_{\fun{hsub}}
+          \ar[r]^{\fun{ceval}}
+        & {\el{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & {A} }
+\end{displaymath}
+
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\forall (v : \typv{A}) (\sigma : \env{\Delta})} \ar[dr] 
+%%             \ar[r]
+%%         & {\dtypm{A}} \ar[d]
+%% \\      & {\exists (v' : \dtypv{A}). ~ [ \sigma ] v = v'} }
+%% \end{displaymath}
+
+\todo[inline]{Notational conventions}
+
 \begin{figure}
 \caption{
-BNF grammar for types and contexts. 
+BNF grammar for {\it types} and {\it contexts}. 
 Expressions, values, and neutrals
 are not represented by a BNF grammar. Instead, they are defined by
 an intrinsically typed representation, rather than a BNF grammar and
@@ -280,13 +353,7 @@ $$
 \label{fig:typv}
 \end{figure}
 
-\appendix
-
-\section{todos}
-
-\todo[inline]{
-Notational conventions
-}
+%% \appendix
 
 \acks
 
