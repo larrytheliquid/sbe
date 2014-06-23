@@ -40,9 +40,14 @@
 
 \usepackage[labelfont=bf]{caption}
 
-\newtheorem*{mythm}{Theorem}
-\newtheorem*{mylem}{Lemma}
+\newtheorem{mydfn}{Definition}
+\newtheorem{mysubdfn}{Case}
+\numberwithin{mysubdfn}{mydfn}
 
+\newtheorem{mythm}{Theorem}
+\newtheorem{mylem}{Lemma}
+
+\newcommand{\refdef}[1]{Definition \ref{dfn:#1}}
 \newcommand{\refthm}[1]{Theorem \ref{thm:#1}}
 \newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
 
@@ -181,6 +186,36 @@ is generic in the length of the binary number.
           \ar[d]^{\large{\fun{reify}}}
 \\      & {A} }
 \end{displaymath}
+
+\begin{mydfn}[Realizability Predicate for Expressions with an 
+Extrinsic Big-Step Operational Semantics]
+$ $\\
+For any context $\Gamma$ and type $A$, the predicate on the expression
+$(e : \type{A})$ is $\typm{A}(e)$.
+
+\begin{mysubdfn}[Natural numbers]
+$\typm{\nat}(f)$
+$$
+\typm{A}(a) \dfn \exists a'. a \bigstep a' \wedge \fun{IsNormal} ~ a'
+$$
+For natural numbers we require a proof that $e$ evalutes to
+some normal term $e'$ .
+\end{mysubdfn}
+
+\begin{mysubdfn}[Functions]
+$\typm{A \arr B}(f)$
+$$
+\forall \Delta.~ \dren \marr (a : \dtype{A})
+\marr \dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
+$$
+For functions we require that for any weakened proof that $a$
+is realized, a proof that a weakened version of $f$ applied to
+$a$ is also realized.
+\end{mysubdfn}
+
+\end{mydfn}
+
+
 
 $$
 \typm{A \arr B}(f) \dfn \forall \Delta.~ \dren \marr (a : \dtype{A})
