@@ -187,19 +187,18 @@ is generic in the length of the binary number.
 \\      & {A} }
 \end{displaymath}
 
-\begin{mydfn}[Realizability Predicate for Expressions with an 
-Extrinsic Big-Step Operational Semantics]
+\begin{mydfn}[Big-Step Realizability Predicate]
 $ $\\
 For any context $\Gamma$ and type $A$, the predicate on the expression
 $(a : \type{A})$ is $\typm{A}(a)$.
 
 \begin{mysubdfn}[Natural numbers]
-$\typm{\nat}(f)$
+$\typm{\nat}(n)$
 $$
-\exists a'. a \bigstep a' \wedge \fun{IsNormal} ~ a'
+\exists n'. n \bigstep n' \wedge \fun{IsNormal} ~ n'
 $$
-For natural numbers we require a proof that $a$ evalutes to
-some normal term $a'$ .
+For natural numbers we require a proof that $n$ evalutes to
+some normal term $n'$ .
 \end{mysubdfn}
 
 \begin{mysubdfn}[Functions]
