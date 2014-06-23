@@ -191,15 +191,15 @@ is generic in the length of the binary number.
 Extrinsic Big-Step Operational Semantics]
 $ $\\
 For any context $\Gamma$ and type $A$, the predicate on the expression
-$(e : \type{A})$ is $\typm{A}(e)$.
+$(a : \type{A})$ is $\typm{A}(a)$.
 
 \begin{mysubdfn}[Natural numbers]
 $\typm{\nat}(f)$
 $$
-\typm{A}(a) \dfn \exists a'. a \bigstep a' \wedge \fun{IsNormal} ~ a'
+\exists a'. a \bigstep a' \wedge \fun{IsNormal} ~ a'
 $$
-For natural numbers we require a proof that $e$ evalutes to
-some normal term $e'$ .
+For natural numbers we require a proof that $a$ evalutes to
+some normal term $a'$ .
 \end{mysubdfn}
 
 \begin{mysubdfn}[Functions]
@@ -216,17 +216,6 @@ $a$ is also realized.
 \end{mydfn}
 
 
-
-$$
-\typm{A \arr B}(f) \dfn \forall \Delta.~ \dren \marr (a : \dtype{A})
-$$
-$$
-\marr \dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
-$$
-
-$$
-\typm{A}(a) \dfn \exists a'. a \bigstep a' \wedge \fun{IsNormal} ~ a'
-$$
 
 
 \begin{align*}
@@ -350,12 +339,10 @@ $$
 
 \begin{figure}
 \caption{
-Intrinsic typing of canonical terms for G{\"o}del's System T. The
-grammar of canonical terms is split between mutually defined
-{\it values} (introduction forms),
-and {\it neutrals} (variables and elimination forms).
-These intrinsically typed canonical terms act as proofs that the
-canonical represented by the proof term is well typed.
+Intrinsic typing of {\it values} (canonical terms) for G{\"o}del's System T.
+The intrinsically typed values act as proofs that the value
+represented by the proof term is well typed. The grammar of values
+also includes all neutral terms.
 }
 $$
 \infer
@@ -379,6 +366,25 @@ $$
   (b : \ctypv{A}{B})
 }
 \qquad
+\infer
+  [\fun{neut} ~ a]
+  {\typn{A}}
+{
+  (a : \typn{A})
+}
+$$
+\label{fig:typv}
+\end{figure}
+
+\begin{figure}
+\caption{
+Intrinsic typing of {\it neutrals} (variables and elimination rules) 
+for G{\"o}del's System T.
+The intrinsically typed neutrals act as proofs that the neutral
+represented by the proof term is well typed.
+}
+
+$$
 \infer
   [\fun{var} ~ i]
   {\typn{A}}
@@ -410,7 +416,7 @@ $$
   (c_s : \typv{C \arr C})
 }
 $$
-\label{fig:typv}
+\label{fig:typn}
 \end{figure}
 
 %% \appendix
