@@ -59,8 +59,8 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
-\newcommand{\con}[1]{\textrm{#1}}
-\newcommand{\fun}[1]{\textrm{#1}}
+\newcommand{\con}[1]{\textmd{#1}}
+\newcommand{\fun}[1]{\textmd{#1}}
 
 \newcommand{\type}[1]{\Gamma \vdash^E #1}
 \newcommand{\ctype}[2]{\Gamma , #1 \vdash^E #2}
@@ -114,21 +114,13 @@ is the interpretation of said code. For example, below is a function
 ({\tt decimal}) that computes the decimal value of a binary number, which
 is generic in the length of the binary number.
 
-\appendix
-
-\section{Types and Contexts}
-
-\todo[inline]{
-Notational conventions: 
-De Bruijn variables
+\begin{figure}
+\caption{
+Intrinsic typing of De Bruijn {\it variables}.
+The intrinsically typed variables act as proofs that the type
+parameter of the judgment appears in the context parameter of the
+judgement.
 }
-
-\todo[inline]{BNF grammar for types}
-
-\todo[inline]{BNF grammar for contexts}
-
-\section{Intrinsic Typing of De Bruijn Variables as Context Membership}
-
 $$
 \infer
   [\con{here}]
@@ -143,18 +135,16 @@ $$
   (i : \typr{A})
 }
 $$
+\label{fig:typr}
+\end{figure}
 
-
-\section{Intrinsic Typing of Expressions for G{\"o}del's System T}
-
-$$
-\infer
-  [\lam b]
-  {\type{A \to B}}
-{
-  (b : \ctype{A}{B})
+\begin{figure}
+\caption{
+Intrinsic typing of {\it expressions} for G{\"o}del's System T. The
+intrinsically typed expressions act as proofs that the expression
+represented by the proof term is well typed.
 }
-\qquad
+$$
 \infer
   [\con{zero}]
   {\type{\nat}}
@@ -170,6 +160,33 @@ $$
 
 $$
 \infer
+  [\lam b]
+  {\type{A \to B}}
+{
+  (b : \ctype{A}{B})
+}
+\qquad
+\infer
+  [\fun{var} ~ i]
+  {\type{A}}
+{
+  (i : \typr{A})
+}
+$$
+
+$$
+\infer
+  [f \app a]
+  {\type{B}}
+{
+  (f : \type{A \to B})
+  &
+  (a : \type{A \to B})
+}
+$$
+
+$$
+\infer
   [\fun{rec} ~ n ~ c_z ~ c_s]
   {\type{C}}
 {
@@ -180,24 +197,86 @@ $$
   (c_s : \type{C \to C})
 }
 $$
+\label{fig:type}
+\end{figure}
+
+\begin{figure}
+\caption{
+Intrinsic typing of canonical terms for G{\"o}del's System T. The
+grammar of canonical terms is split between mutually defined
+{\it values} (introduction forms),
+and {\it neutrals} (variables and elimination forms).
+These intrinsically typed canonical terms act as proofs that the
+canonical represented by the proof term is well typed.
+}
+$$
+\infer
+  [\con{zero}]
+  {\typv{\nat}}
+{}
+\qquad
+\infer
+  [\con{suc} ~ n]
+  {\typv{\nat}}
+{
+  (n : \typv{\nat})
+}
+$$
 
 $$
 \infer
-  [\fun{var} ~ i]
-  {\type{A}}
+  [\lam b]
+  {\typv{A \to B}}
 {
-  (i : \typr{A})
+  (b : \ctypv{A}{B})
 }
 \qquad
 \infer
-  [f \app a]
-  {\type{B}}
+  [\fun{var} ~ i]
+  {\typn{A}}
 {
-  (f : \type{A \to B})
-  &
-  (a : \type{A \to B})
+  (i : \typr{A})
 }
 $$
+
+$$
+\infer
+  [f \app a]
+  {\typn{B}}
+{
+  (f : \typn{A \to B})
+  &
+  (a : \typv{A \to B})
+}
+$$
+
+$$
+\infer
+  [\fun{rec} ~ n ~ c_z ~ c_s]
+  {\typn{C}}
+{
+  (n : \typn{\nat})
+  &
+  (c_z : \typv{C})
+  &
+  (c_s : \typv{C \to C})
+}
+$$
+\label{fig:typv}
+\end{figure}
+
+\appendix
+
+\section{Types and Contexts}
+
+\todo[inline]{
+Notational conventions: 
+De Bruijn variables
+}
+
+\todo[inline]{BNF grammar for types}
+
+\todo[inline]{BNF grammar for contexts}
 
 \acks
 
