@@ -204,10 +204,17 @@ some normal term $a'$ .
 
 \begin{mysubdfn}[Functions]
 $\typm{A \arr B}(f)$
-$$
-\forall \Delta.~ \dren \marr (a : \dtype{A})
-\marr \dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
-$$
+\begin{align*}
+\forall \Delta.&~ \dren \marr (a : \dtype{A}) \marr \\
+&\dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
+\end{align*}
+
+
+%% $$
+%% \forall \Delta.~ \dren \marr (a : \dtype{A})
+%% \marr \dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
+%% $$
+
 For functions we require that for any weakened proof that $a$
 is realized, a proof that a weakened version of $f$ applied to
 $a$ is also realized.
