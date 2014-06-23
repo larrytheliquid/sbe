@@ -54,7 +54,7 @@
 \newcommand{\refparte}[1]{Part$_E$ \ref{parte:#1}}
 \newcommand{\refparti}[1]{Part$_I$ \ref{parti:#1}}
 
-\def\imp{\to}
+\def\arr{\to}
 \def\app{\cdot}
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
@@ -116,6 +116,21 @@ is generic in the length of the binary number.
 
 \begin{figure}
 \caption{
+BNF grammar for types and contexts. 
+Expressions, values, and neutrals
+are not represented by a BNF grammar. Instead, they are defined by
+an intrinsically typed representation, rather than a BNF grammar and
+an extrinsic typing relation over said grammar.
+}
+\begin{align*}
+A, B, C &::= \nat ~ | ~ A \arr B \\
+\Gamma, \Delta, \Xi &::= \epsilon ~ | ~ \Gamma , A
+\end{align*}
+\label{fig:gram}
+\end{figure}
+
+\begin{figure}
+\caption{
 Intrinsic typing of De Bruijn {\it variables}.
 The intrinsically typed variables act as proofs that the type
 parameter of the judgment appears in the context parameter of the
@@ -161,7 +176,7 @@ $$
 $$
 \infer
   [\lam b]
-  {\type{A \to B}}
+  {\type{A \arr B}}
 {
   (b : \ctype{A}{B})
 }
@@ -179,9 +194,9 @@ $$
   [f \app a]
   {\type{B}}
 {
-  (f : \type{A \to B})
+  (f : \type{A \arr B})
   &
-  (a : \type{A \to B})
+  (a : \type{A \arr B})
 }
 $$
 
@@ -194,7 +209,7 @@ $$
   &
   (c_z : \type{C})
   &
-  (c_s : \type{C \to C})
+  (c_s : \type{C \arr C})
 }
 $$
 \label{fig:type}
@@ -226,7 +241,7 @@ $$
 $$
 \infer
   [\lam b]
-  {\typv{A \to B}}
+  {\typv{A \arr B}}
 {
   (b : \ctypv{A}{B})
 }
@@ -244,9 +259,9 @@ $$
   [f \app a]
   {\typn{B}}
 {
-  (f : \typn{A \to B})
+  (f : \typn{A \arr B})
   &
-  (a : \typv{A \to B})
+  (a : \typv{A \arr B})
 }
 $$
 
@@ -259,7 +274,7 @@ $$
   &
   (c_z : \typv{C})
   &
-  (c_s : \typv{C \to C})
+  (c_s : \typv{C \arr C})
 }
 $$
 \label{fig:typv}
@@ -267,16 +282,11 @@ $$
 
 \appendix
 
-\section{Types and Contexts}
+\section{todos}
 
 \todo[inline]{
-Notational conventions: 
-De Bruijn variables
+Notational conventions
 }
-
-\todo[inline]{BNF grammar for types}
-
-\todo[inline]{BNF grammar for contexts}
 
 \acks
 
