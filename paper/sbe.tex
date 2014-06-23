@@ -55,19 +55,22 @@
 \newcommand{\refparte}[1]{Part$_E$ \ref{parte:#1}}
 \newcommand{\refparti}[1]{Part$_I$ \ref{parti:#1}}
 
-\def\arr{\to}
+\def\dfn{\mapsto}
+\def\bigstep{\Downarrow}
+\def\arr{\supset}
+\def\marr{\rightarrow}
 \def\app{\cdot}
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
-\newcommand{\el}[1]{\llbracket #1 \rrbracket}
+\newcommand{\el}[1]{\llbracket ~ #1 ~ \rrbracket}
 
 \newcommand{\con}[1]{\textmd{#1}}
 \newcommand{\fun}[1]{\textmd{#1}}
 
-\newcommand{\typm}[1]{\el{\Gamma \vdash #1 \rrbracket}}
-\newcommand{\dtypm}[1]{\el{\Delta \vdash #1 \rrbracket}}
-\newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2 \rrbracket}}
+\newcommand{\typm}[1]{\el{\Gamma \vdash #1}}
+\newcommand{\dtypm}[1]{\el{\Delta \vdash #1}}
+\newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2}}
 
 \newcommand{\type}[1]{\Gamma \vdash^E #1}
 \newcommand{\dtype}[1]{\Delta \vdash^E #1}
@@ -85,7 +88,10 @@
 \newcommand{\dtypr}[1]{\Delta \vdash^R #1}
 \newcommand{\ctypr}[2]{\Gamma , #1 \vdash^R #2}
 
-\newcommand{\env}[1]{\fun{Env} ~ \Gamma ~ #1}
+\newcommand{\ren}[1]{\Gamma \le #1}
+\def\dren{\ren{\Delta}}
+\newcommand{\env}[1]{\Gamma \sqsubseteq #1}
+\def\denv{\env{\Delta}}
 
 \begin{document}
 
@@ -142,7 +148,7 @@ is generic in the length of the binary number.
           \ar[r]^{\fun{eval}}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
-\\      & {\exists (e' : A). ~ e \Downarrow e' \wedge \fun{IsNormal} ~ e'} }
+\\      & {\exists (e' : A). ~ e \bigstep e' \wedge \fun{IsNormal} ~ e'} }
 \end{displaymath}
 
 \begin{displaymath}
@@ -176,10 +182,29 @@ is generic in the length of the binary number.
 \\      & {A} }
 \end{displaymath}
 
+$$
+\typm{A \arr B}(f) \dfn \forall \Delta.~ \dren \marr (a : \dtype{A})
+$$
+$$
+\marr \dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
+$$
+
+$$
+\typm{A}(a) \dfn \exists a'. a \bigstep a' \wedge \fun{IsNormal} ~ a'
+$$
+
+
+\begin{align*}
+&\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
+&\typm{A}& &\dfn \typv{A}
+\end{align*}
+
+
+
 
 %% \begin{displaymath}
 %%     \xymatrix{
-%%           {\forall (v : \typv{A}) (\sigma : \env{\Delta})} \ar[dr] 
+%%           {\forall (v : \typv{A}) (\sigma : \denv)} \ar[dr] 
 %%             \ar[r]
 %%         & {\dtypm{A}} \ar[d]
 %% \\      & {\exists (v' : \dtypv{A}). ~ [ \sigma ] v = v'} }
