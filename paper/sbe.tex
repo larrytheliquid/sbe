@@ -265,6 +265,35 @@ $$
 %% \\      & {\exists (v' : \dtypv{A}). ~ [ \sigma ] v = v'} }
 %% \end{displaymath}
 
+\todo[inline]{big picture:}
+\todo[inline]{
+This paper is about 2 things:
+1. Reducing the complexity of metatheory statements, and the number of
+proofs necessary in the metatheory. This is done by analogy with
+intrinsic typing, where we consider intrinsic semantics. Here we do
+not introduce any new techniques, we just offer a change of
+perspective and clarify what savings we get. In the scenario in
+question this amounts to shifting from an extrinsic relational semantics and a
+realizability predicate (here a unary logical relation) used to prove
+termination, to an intrinsic functional semantics using a Kripke model
+(which can be seen as a nullary logical relation).
+
+2. Adopting the perspective of intrinsic semantics in order to simply prove
+termination of hereditary substitution for G{\"o}del's System T. This
+amounts to shifting our attention from defining a semantics for
+expressions, to defining a semantics for canonicals, where we
+fortuitously get to reuse the same Kripke model.
+
+
+Our termination proof is a novel model-theoretic result, but it
+does not solve the proof-theoretic version of the same problem.
+Nevertheless, we view our solution as somewhere in between a largely
+model theoretic, and proof theoretic semantics, as it is a syntactic
+model (rather than HA or CCC).
+
+}
+
+
 \todo[inline]{Notational conventions}
 
 \todo[inline]{intro:}
@@ -287,6 +316,7 @@ $$
 \todo[inline]{motivate model defn with how termination fails in application}
 
 \todo[inline]{last part is sub with env of values and returning a value}
+\todo[inline]{final part of expr norm via hsub, NbHSbCE}
 
 \begin{figure}
 \caption{
