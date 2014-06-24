@@ -195,11 +195,12 @@ $(a : \type{A})$ is $\typm{A}(a)$.
 \begin{mysubdfn}[Natural numbers]
 $\typm{\nat}(n)$
 $$
-\exists n'. n \bigstep n' \wedge \fun{IsNormal} ~ n'
+\exists (n' : \type{\nat}).~ n \bigstep n' \wedge \fun{IsNormal} ~ n'
 $$
 For natural numbers we require a proof that $n$ evalutes to
 some normal term $n'$ .
 \end{mysubdfn}
+
 
 \begin{mysubdfn}[Functions]
 $\typm{A \arr B}(f)$
@@ -220,6 +221,30 @@ $a$ is also realized.
 \end{mysubdfn}
 
 \end{mydfn}
+
+\begin{mythm}[Predicate Reflection]
+$$\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)$$
+\end{mythm}
+
+\begin{mythm}[Predicate Preservation]
+$$
+\forall (a ~ a' : \type{A}).~ \typm{A}(a) \marr 
+a \bigstep a' \marr \typm{A}(a')
+$$
+\end{mythm}
+
+\begin{mythm}[Predicate Reification]
+$$
+\forall (a : \type{A}).~ \typm{A}(a) \marr
+\exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsNormal} ~ a'
+$$
+\end{mythm}
+
+\begin{mythm}[Predicate Evaluation]
+$$
+\forall (a : \type{A}) (\sigma : \denv).~ \dtypm{A}(\sigma ~ a)
+$$
+\end{mythm}
 
 
 
