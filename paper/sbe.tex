@@ -276,6 +276,13 @@ terminating, so we embark on the more difficult journey of proving
 termination by coming up with the correct logical relation and proving
 all the associated lemmas.
 
+This paper is first about a change in perspective: thinking about
+termination proofs as definig an intrinsic semantics that simplifies
+definitions in the metatheory, and provides you free theorems, in
+analogy to intrinsic types. The paper is second about showing how
+adopting this change in perspective helped us prove a novel result:
+that hereditary substitution for G{\"o}del's System T terminates.
+
 This paper is about 2 things:
 1. Reducing the complexity of metatheory statements, and the number of
 proofs necessary in the metatheory. This is done by analogy with
@@ -459,7 +466,7 @@ $$
 \qquad
 \infer
   [\fun{neut} ~ a]
-  {\typn{A}}
+  {\typv{A}}
 {
   (a : \typn{A})
 }
@@ -509,6 +516,11 @@ $$
 $$
 \label{fig:typn}
 \end{figure}
+
+\todo[inline]{In pictures put (e) around predicates, and superscript A
+for E and V}
+
+\todo[inline]{Future work: state (via worlds), exceptions (via monad)}
 
 %% \appendix
 
