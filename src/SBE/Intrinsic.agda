@@ -38,7 +38,7 @@ mutual
 
   data Neut (Γ : Ctx) : Type → Set where
     `var : ∀{A} → Var Γ A → Neut Γ A
-    `fold : ∀{C} → Val Γ C → Val Γ (C `→ C) → Neut Γ `ℕ → Neut Γ C
+    `rec : ∀{C} → Val Γ C → Val Γ (C `→ C) → Neut Γ `ℕ → Neut Γ C
     _`∙_ : ∀{A B} → Neut Γ (A `→ B) → Val Γ A → Neut Γ B
 
 ----------------------------------------------------------------------
@@ -61,7 +61,7 @@ ren σ (`λ f) = `λ (ren (lift1Ren σ) f)
 ren σ (`neut n) = `neut (renᴺ σ n)
 
 renᴺ σ (`var j) = `var (σ j)
-renᴺ σ (`fold cz cs n) = `fold (ren σ cz) (ren σ cs) (renᴺ σ n)
+renᴺ σ (`rec cz cs n) = `rec (ren σ cz) (ren σ cs) (renᴺ σ n)
 renᴺ σ (n `∙ a) = renᴺ σ n `∙ ren σ a
 
 ----------------------------------------------------------------------
@@ -80,7 +80,7 @@ wknᴺ Δ x = renᴺ (wknRen Δ) x
 
 ⟦_⊢_⟧ : Ctx → Type → Set
 ⟦ Γ ⊢ A `→ B ⟧ = ∀ Δ → ⟦ Γ ++ Δ ⊢ A ⟧ → ⟦ Γ ++ Δ ⊢ B ⟧
-⟦ Γ ⊢ A ⟧ = Val Γ A
+⟦ Γ ⊢ `ℕ ⟧ = Val Γ `ℕ
 
 ----------------------------------------------------------------------
 
@@ -123,10 +123,10 @@ lookup (xs , x) (there i) = lookup xs i
 _⟦∙⟧_ : ∀{Γ A B} → ⟦ Γ ⊢ A `→ B ⟧ → ⟦ Γ ⊢ A ⟧ → ⟦ Γ ⊢ B ⟧
 f ⟦∙⟧ a = f ε a
 
-⟦fold⟧ : ∀{Γ C} → ⟦ Γ ⊢ C ⟧ → ⟦ Γ ⊢ (C `→ C) ⟧ → ⟦ Γ ⊢ `ℕ ⟧ → ⟦ Γ ⊢ C ⟧
-⟦fold⟧ cz cs `zero = cz
-⟦fold⟧ cz cs (`suc n) = cs ε (⟦fold⟧ cz cs n)
-⟦fold⟧ cz cs (`neut n) = reflectᴺ _ (`fold (reify _ cz) {!!} n)
+⟦rec⟧ : ∀{Γ C} → ⟦ Γ ⊢ C ⟧ → ⟦ Γ ⊢ (C `→ C) ⟧ → ⟦ Γ ⊢ `ℕ ⟧ → ⟦ Γ ⊢ C ⟧
+⟦rec⟧ cz cs `zero = cz
+⟦rec⟧ cz cs (`suc n) = cs ε (⟦rec⟧ cz cs n)
+⟦rec⟧ cz cs (`neut n) = reflectᴺ _ (`rec (reify _ cz) (`λ (`neut (`var here))) n)
 
 ----------------------------------------------------------------------
 
@@ -140,7 +140,7 @@ f ⟦∙⟧ a = f ε a
 
 ⟦subᴺ⟧ (`var i) σ = lookup σ i
 ⟦subᴺ⟧ (f `∙ a) σ = ⟦subᴺ⟧ f σ ⟦∙⟧ ⟦sub⟧ a σ
-⟦subᴺ⟧ (`fold cz cs n) σ = ⟦fold⟧ (⟦sub⟧ cz σ) (⟦sub⟧ cs σ) (⟦subᴺ⟧ n σ)
+⟦subᴺ⟧ (`rec cz cs n) σ = ⟦rec⟧ (⟦sub⟧ cz σ) (⟦sub⟧ cs σ) (⟦subᴺ⟧ n σ)
 
 ----------------------------------------------------------------------
 
@@ -179,10 +179,10 @@ _∙_ : ∀{Γ A B} → Val Γ (A `→ B) → Val Γ A → Val Γ B
 
 ----------------------------------------------------------------------
 
-fold : ∀{Γ C} → Val Γ C → Val Γ (C `→ C) → Val Γ `ℕ → Val Γ C
-fold cz cs `zero = cz
-fold cz cs (`suc n) = cs ∙ fold cz cs n
-fold cz cs (`neut n) = `neut (`fold cz cs n)
+rec : ∀{Γ C} → Val Γ C → Val Γ (C `→ C) → Val Γ `ℕ → Val Γ C
+rec cz cs `zero = cz
+rec cz cs (`suc n) = cs ∙ rec cz cs n
+rec cz cs (`neut n) = `neut (`rec cz cs n)
 
 ----------------------------------------------------------------------
 
@@ -192,7 +192,7 @@ data Expr : Ctx → Type → Set where
   `λ : ∀{Γ A B} → Expr (Γ , A) B → Expr Γ (A `→ B)
 
   `var : ∀{Γ A} → Var Γ A → Expr Γ A
-  `fold : ∀{Γ C} → Expr Γ C → Expr Γ (C `→ C) → Expr Γ `ℕ → Expr Γ C
+  `rec : ∀{Γ C} → Expr Γ C → Expr Γ (C `→ C) → Expr Γ `ℕ → Expr Γ C
   _`∙_ : ∀{Γ A B} → Expr Γ (A `→ B) → Expr Γ A → Expr Γ B
 
 ----------------------------------------------------------------------
@@ -202,7 +202,7 @@ norm `zero = `zero
 norm (`suc n) = `suc (norm n)
 norm (`λ f) = `λ (norm f)
 norm (`var i) = `neut (`var i)
-norm (`fold cz cs n) = fold (norm cz) (norm cs) (norm n)
+norm (`rec cz cs n) = rec (norm cz) (norm cs) (norm n)
 norm (f `∙ a) = norm f ∙ norm a
 
 ----------------------------------------------------------------------
@@ -212,7 +212,7 @@ norm (f `∙ a) = norm f ∙ norm a
 ⟦eval⟧ (`suc n) σ = `suc (⟦eval⟧ n σ)
 ⟦eval⟧ {Γ = Γ} {Δ = Ξ} (`λ f) σ = λ Δ a → ⟦eval⟧ f (⟦wknᴱ⟧ Δ Γ σ , a)
 ⟦eval⟧ (`var i) σ = lookup σ i
-⟦eval⟧ (`fold cz cs n) σ = ⟦fold⟧ (⟦eval⟧ cz σ) (⟦eval⟧ cs σ) (⟦eval⟧ n σ)
+⟦eval⟧ (`rec cz cs n) σ = ⟦rec⟧ (⟦eval⟧ cz σ) (⟦eval⟧ cs σ) (⟦eval⟧ n σ)
 ⟦eval⟧ (f `∙ a) σ = ⟦eval⟧ f σ ⟦∙⟧ ⟦eval⟧ a σ
 
 eval : ∀{Γ Δ A} → Expr Γ A → Env Γ Δ → Val Δ A
