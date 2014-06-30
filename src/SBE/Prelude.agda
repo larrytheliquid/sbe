@@ -14,6 +14,15 @@ record _×_ (A B : Set) : Set where
     proj₂ : B
 open _×_ public
 
+data ℕ : Set where
+  zero : ℕ
+  suc : ℕ → ℕ
+{-# BUILTIN NATURAL ℕ #-}
+
+data Fin : ℕ → Set where
+  zero : ∀ {n} → Fin (suc n)
+  suc  : ∀ {n} (i : Fin n) → Fin (suc n)
+
 ----------------------------------------------------------------------
 
 infix 4 _≡_
