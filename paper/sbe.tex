@@ -68,6 +68,10 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
+\newcommand{\ascribe}[2]{(#1 : #2)}
+\newcommand{\all}[1]{\forall#1.~}
+\newcommand{\ex}[1]{\exists#1.~}
+
 \newcommand{\el}[1]{\llbracket ~ #1 ~ \rrbracket}
 
 \newcommand{\con}[1]{\textmd{#1}}
@@ -117,62 +121,205 @@
 \maketitle
 
 \begin{abstract}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis
-adipiscing ligula ac metus tempus, ut fermentum nunc commodo. In
-egestas dui vitae enim rhoncus volutpat. Nulla id ullamcorper est.
-Nulla congue vitae eros vitae consectetur. Vivamus nunc orci,
-tincidunt eget sem non, facilisis rhoncus lectus. Pellentesque
-pharetra sapien eu lacus vulputate, eget ultricies sapien feugiat.
-Fusce dapibus, augue non commodo vulputate, enim nibh ultrices massa,
-at pharetra urna mi et ante. Aenean et fermentum erat. Fusce a magna
-arcu.
+This paper is first about a change in perspective: thinking about
+termination proofs as defining an {\it intrinsic semantics}, resulting
+in simpler metatheoretical definitions and providing free theorems.
+This is analogous to the benefits obtained from taking advantage of
+{\it intrinsic typing}.
+The paper is second about showing how
+adopting this change in perspective helped us prove a novel result:
+that hereditary substitution for G{\"o}del's System T terminates.
 \end{abstract}
 
 \category{D.3}{Software}{Programming Languages}.
 
 \keywords
-Type theory; hereditary substitution; termination; formalization; dependent types.
+Type theory; hereditary substitution; termination; formalization.
 
 \section{Introduction}
 \label{sec:intro}
 
-It is standard practice to write generic functions in a dependently
-typed language by using a \citet{martin1975intuitionistic} universe.
-A universe consists of codes representing types, and an interpretation
-function that translates a code into an actual type. It is possible to
-write a function that is generic for all encoded types by taking a
-universe code argument, followed by an argument whose dependent type
-is the interpretation of said code. For example, below is a function
-({\tt decimal}) that computes the decimal value of a binary number, which
-is generic in the length of the binary number.
+As type theorists we often find ourselves in the following situation.
+We write down the typing rules and semantics for some total lambda
+calculus as relations. 
+We then proceed to prove easy metatheorems like type safety (which is merely
+preservation for a big-step semantics).
+
+\paragraph{Big-Step Type Preservation}
+
+$$
+\all{\ascribe{e}{A}} e \bigstep e' \marr \ascribe{e'}{A}
+$$
+
+
+
+Unfortunately, our relationally specified semantics is not obviously
+terminating, so we begin the more difficult task of proving its
+termination.
+
+\paragraph{Big-Step Termination}
+
+$$
+\all{\ascribe{e}{A}} \ex{\ascribe{e'}{A}} e \bigstep e' \land \fun{IsValue}(e')
+$$
+
+To prove termination, we come up with the appropriate logical
+relation~\cite{TODO} for our semantics, relating expressions to evidence
+that they terminate as some value.
+In this case we have a unary
+logical relation on expressions, or a realizability
+predicate~\cite{TODO}. You can prove termination as the composition of
+evaluation of expressions into the logical relation, and reification
+of termination evidence back out of of it.
 
 \begin{displaymath}
     \xymatrix{
           {\forall (e : A)} 
-          \ar[dr]_{\fun{norm}}
-          \ar[r]^{\fun{eval}}
-        & {\el{A}}
+          \ar[dr]_{\fun{termination}}
+          \ar[r]^{\fun{evaluate}}
+        & {\el{A}(e)}
           \ar[d]^{\large{\fun{reify}}}
-\\      & {\exists (e' : A). ~ e \bigstep e' \wedge \fun{IsNormal} ~ e'} }
+\\      & {\exists (e' : A). ~ e \bigstep e' \wedge \fun{IsValue} ~ e'} }
 \end{displaymath}
+
+Many operational semantics have been proven to terminate using this
+method. For example, the realizability predicate and associated lemmas
+needed to prove that a big-step semantics terminates for G{\"o}del's
+System T are well known. It is easy to understand and verify such
+completed definitions and proofs, but coming up with the correct
+realizability predicate and associated lemmas for a novel proof takes
+ingenuity. 
+
+As we got stuck in various places trying to prove a novel termination result
+(that {\it hereditary substitution}~\cite{TODO} terminates for
+G{\"o}del's System T), we were inspired by
+{\it intrinsic typing}~\cite{TODO} as a means of simplifying our
+metatheory and getting free theorems. With {\it extrinsic} typing you
+define expressions, a separate extrinsic typing relation, and prove
+theorems of the form:
+$$
+\all{\ascribe{e}{Exp}} \ascribe{e}{A} \marr ...
+$$
+
+Rather than having this pair of argument everywhere, you can define
+terms as an {\it intrinsic} typing relation, simplifying theorems to
+have the form:
+$$
+\all{\ascribe{e}{A}} \marr ...
+$$
+
+Furthermore, as our big-step semantics is now defined on intrinsically
+typed expressions, the result is already type-correct so we get the
+theorem of {\bf Type Preservation} for {\it free}!
+
+{\bf Now to the point:} 
+Recall the ``termination'' arrow in the commutative diagram for our
+logical relations proof above. By analogy to intrinsic typing, you
+can think of the big-step relation on expressions as an
+{\it extrinsic semantics}, and the termination proof as a function
+that produces a witness that the extrinsic semantics terminates. Yet,
+the termination proof can itself act as an {\it intrinsic semantics}! 
+Just like with intrinsic typing, when we use an intrinsic semantics
+statements of theorems become simplified. For example, we can rename
+and restate our previous {\bf Termination} theorem, to more
+appropriately reflect that it {\it defines} normalization (our
+semantics) as a function from expressions of some type to values of
+the same type:
+
+\paragraph{Big-Step Normalization}
+$$
+\all{\ascribe{e}{A}} \ex{\ascribe{v}{A}}
+$$
+
+By the same token, our diagram is also simplified.
 
 \begin{displaymath}
     \xymatrix{
           {A} 
-          \ar[dr]_{\fun{norm}}
-          \ar[r]^{\fun{eval}}
+          \ar[dr]_{\fun{normalize}}
+          \ar[r]^{\fun{evaluate}}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
 \\      & {A} }
 \end{displaymath}
 
+Notice the codomain of evaluation has become simpler. Formerely, it
+was a realizability predicate ($\el{A}(e)$) that related the input
+expression to the underlying extrinsic big-step semantics. Now, it has
+become a Kripke model~\cite{TODO} ($\el{A}$) representing the
+collection of {\it values} of the appropriate type!
+
+\paragraph{}
+Our {\bf contributions} are as follows:
+
+\subsection{The Perspective of Termination Proofs as Intrinsic Semantics}
+
+The relationship between realizability predicates and Kripke models is
+readily apparent. Neither of these concepts are new, we merely wish
+to point out that NbE falls out of thinking of the
+realizability predicate-based termination proof of an {\it extrinsic}
+operational semantics as already defining an {\it intrinsic}
+semantics.
+
+Just like intrinsic typing, intrinsic semantics simplifies statements
+of theorems. Moreover, intrinsic semantics also provides us with
+{\it free} theorems, as shown in \refsec{TODO} and \refsec{TODO}!
+
+\paragraph{Big-Step Determinacy}
+
+$$
+e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
+$$
+
+Because our termination proof-based semantics is already a function,
+we do not need to prove that it produces unique outputs.
+
+\paragraph{Big-Step Predicate Preservation}
+
+$$
+\el{A}(e) \marr e \bigstep e' \marr \el{A}(e')
+$$
+
+One of the theorems of a realizability predicate-based proof of
+big-step semantics shows that the semantics preserves satisfiability
+of the predicate. This is analogous to type-preservation, but at the
+level of the realizability predicate. Because an intrinsic semantics
+does not need to thread through evidence of an extrinsic semantics, we
+also get this theorem for free.
+
+\subsection{Termination of Hereditary Substitution for G{\"o}del's System T}
+
+
+
+For example, instead of giving a big-step semantics to
+{\it expressions}, we might want to give a semantics to
+{\it values} of a canonical type theory. The semantics for values is
+known as {\it hereditary substitution}~\cite{TODO}, which substitutes
+values for variables in a value, but performs evaluation if substitution would
+result in a $\beta$-redex (which would break the invariant that values
+do not contain $\beta$-redexes). 
+
+Termination of operational semantics has been proven using these
+methods for 
+Many lambda calculi, such as 
+If someone has already proven termination 
+If someone shows you the definition of a realizability predicate, and the
+theorems and proofs for 
+
+It is easy to understand the definition of the logical relation
+
+\section{Background}
+\label{sec:background}
+
+\todo[inline]{To set the scene for this paper, we begin with a brief overview of...}
+\todo[inline]{Show big step termination problem case}
 
 \begin{displaymath}
     \xymatrix{
           {\forall (v : A), \sigma} 
           \ar[dr]_{\fun{hsub}}
           \ar[r]^{\fun{ceval}}
-        & {\el{A}}
+        & {\el{A}(v)}
           \ar[d]^{\large{\fun{reify}}}
 \\      & {\exists (v' : A). ~ [ \sigma ] v = v'} }
 \end{displaymath}
@@ -195,7 +342,7 @@ $(a : \type{A})$ is $\typm{A}(a)$.
 \begin{mysubdfn}[Natural numbers]
 $\typm{\nat}(n)$
 $$
-\exists (n' : \type{\nat}).~ n \bigstep n' \wedge \fun{IsNormal} ~ n'
+\exists (n' : \type{\nat}).~ n \bigstep n' \wedge \fun{IsValue} ~ n'
 $$
 For natural numbers we require a proof that $n$ evalutes to
 some normal term $n'$ .
@@ -236,7 +383,7 @@ $$
 \begin{mythm}[Predicate Reification]
 $$
 \forall (a : \type{A}).~ \typm{A}(a) \marr
-\exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsNormal} ~ a'
+\exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsValue} ~ a'
 $$
 \end{mythm}
 
@@ -267,21 +414,6 @@ $$
 
 \todo[inline]{big picture:}
 \todo[inline]{
-As type theorists we often find ourselves in the following situation.
-We write down the typing rules and semantics for some total lambda
-calculus. We then proceed to prove easy metatheorems like progress and
-preservation.
-Unfortunately, our relationally specified semantics is not obviously
-terminating, so we embark on the more difficult journey of proving
-termination by coming up with the correct logical relation and proving
-all the associated lemmas.
-
-This paper is first about a change in perspective: thinking about
-termination proofs as definig an intrinsic semantics that simplifies
-definitions in the metatheory, and provides you free theorems, in
-analogy to intrinsic types. The paper is second about showing how
-adopting this change in perspective helped us prove a novel result:
-that hereditary substitution for G{\"o}del's System T terminates.
 
 This paper is about 2 things:
 1. Reducing the complexity of metatheory statements, and the number of
@@ -299,13 +431,6 @@ termination of hereditary substitution for G{\"o}del's System T. This
 amounts to shifting our attention from defining a semantics for
 expressions, to defining a semantics for canonicals, where we
 fortuitously get to reuse the same Kripke model.
-
-
-Our termination proof is a novel model-theoretic result, but it
-does not solve the proof-theoretic version of the same problem.
-Nevertheless, we view our solution as somewhere in between a largely
-model theoretic, and proof theoretic semantics, as it is a syntactic
-model (rather than HA or CCC).
 
 }
 
@@ -521,6 +646,14 @@ $$
 for E and V}
 
 \todo[inline]{Future work: state (via worlds), exceptions (via monad)}
+
+\section{Related Work}
+
+Our termination proof is a novel model-theoretic result, but it
+does not solve the proof-theoretic version of the same problem.
+Nevertheless, we view our solution as somewhere in between a largely
+model theoretic, and proof theoretic semantics, as it is a syntactic
+model (rather than HA or CCC).
 
 %% \appendix
 
