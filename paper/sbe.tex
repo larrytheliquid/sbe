@@ -83,18 +83,22 @@
 
 \newcommand{\typm}[1]{\el{\Gamma \vdash #1}}
 \newcommand{\dtypm}[1]{\el{\Delta \vdash #1}}
+\newcommand{\gdtypm}[1]{\el{\Gamma, \Delta \vdash #1}}
 \newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2}}
 
 \newcommand{\type}[1]{\Gamma \turn{E} #1}
 \newcommand{\dtype}[1]{\Delta \turn{E} #1}
+\newcommand{\gdtype}[1]{\Gamma, \Delta \turn{E} #1}
 \newcommand{\ctype}[2]{\Gamma , #1 \turn{E} #2}
 
 \newcommand{\typv}[1]{\Gamma \turn{V} #1}
 \newcommand{\dtypv}[1]{\Delta \turn{V} #1}
+\newcommand{\gdtypv}[1]{\Gamma, \Delta \turn{V} #1}
 \newcommand{\ctypv}[2]{\Gamma , #1 \turn{V} #2}
 
 \newcommand{\typn}[1]{\Gamma \turn{N} #1}
 \newcommand{\dtypn}[1]{\Delta \turn{N} #1}
+\newcommand{\gdtypn}[1]{\Gamma, \Delta \turn{N} #1}
 \newcommand{\ctypn}[2]{\Gamma , #1 \turn{N} #2}
 
 \newcommand{\typr}[1]{\Gamma \turn{R} #1}
@@ -460,7 +464,8 @@ $$
 
 We label each premise with a variable to
 the left of a colon, and the name of the typing rule shows how to use
-it as a proof term by applying it to the premise labels.
+it as a proof term by applying it to the premise labels. In other
+words, the labels represent the derivations of the premises.
 
 The letter appearing as the superscript to the turnstyle is part of
 the name of each intrinsic typing judgment. For example, $\turn{E}$
@@ -495,11 +500,57 @@ $$
 }
 $$
 
-\section{Background}
-\label{sec:background}
+\section{Extrinsic Big-Step Semantics}
+\label{sec:epred}
 
-\todo[inline]{To set the scene for this paper, we begin with a brief overview of...}
-\todo[inline]{Show big step termination problem case}
+In order to compare standard practice with other parts of the paper,
+we review an extrinsic big-step semantics for expressions of
+G{\"o}del's T. Furthermore, we state the definition of the
+realizability predicate and the theorems necessary to prove
+that the big-step semantics terminates. We do not prove these standard
+theorems here, but their formal proofs can be found in the
+accompanying Agda source code. 
+
+\subsection{Non-Obvious Termination}
+
+The function application rule is the major hindrance when trying
+to prove that an extrinsic big-step semantics for expressions
+terminates. 
+
+$$
+\infer
+  []{f \app a \bigstep {b'}}
+{
+  f \bigstep \lam b
+  &
+  a \bigstep a'
+  &
+  [a'/\con{here}]f' \bigstep b'
+}
+$$
+
+After evaluating the function to a lambda, we need to
+substitute the argument into the lambda body. This may have introduced
+new $\beta$-redexes, so we must evaluate again but
+there is no obvious termination measure to justify this.
+
+\subsection{Termination of Big-Step}
+
+The idea of the realizability predicate is to relate a term to the
+theorem we are trying to prove (big-step termination) at non-arrow
+base types (i.e. $\nat$), and use the function space of the
+metalanguage (implication) at the arrow type. This way, when proving
+that the application of a function to an argument satisfies the
+realizability predicate, the inductive hypothesis for the function
+gives us a metalanguage function to apply to the inductive hypothesis
+of the argument. But before we can prove that all expressions satisfy
+the realizability predicate, we must prove that satisfaction of the
+realizability predicate for some expression implies that evaluating
+the expression using the big-step semantics terminates at some value.
+
+\subsubsection{Definition of Realizability Predicate}
+
+First, we give the definiton of the realizability predicate below.
 
 \begin{mydfn}[Big-Step Realizability Predicate]
 $ $\\
@@ -512,15 +563,15 @@ $$
 \exists (n' : \type{\nat}).~ n \bigstep n' \wedge \fun{IsValue} ~ n'
 $$
 For natural numbers we require a proof that $n$ evalutes to
-some normal term $n'$ .
+some value $n'$ .
 \end{mysubdfn}
 
 
 \begin{mysubdfn}[Functions]
 $\typm{A \arr B}(f)$
 \begin{align*}
-\forall \Delta.&~ \dren \marr (a : \dtype{A}) \marr \\
-&\dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
+\all{\Delta} &(a : \gdtype{A}) \marr \\
+&\gdtypm{A}(a) \marr \gdtypm{B}(\fun{wkn}^\con{E} ~ \Delta ~ f \app a)
 \end{align*}
 
 
@@ -536,6 +587,15 @@ $a$ is also realized.
 
 \end{mydfn}
 
+\subsubsection{Realizability Predicate Reification}
+
+\begin{mythm}[Predicate Reification]
+$$
+\forall (a : \type{A}).~ \typm{A}(a) \marr
+\exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsValue} ~ a'
+$$
+\end{mythm}
+
 \begin{mythm}[Predicate Reflection]
 $$\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)$$
 \end{mythm}
@@ -547,12 +607,7 @@ a \bigstep a' \marr \typm{A}(a')
 $$
 \end{mythm}
 
-\begin{mythm}[Predicate Reification]
-$$
-\forall (a : \type{A}).~ \typm{A}(a) \marr
-\exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsValue} ~ a'
-$$
-\end{mythm}
+\subsubsection{Evaluation into Realizability Predicate}
 
 \begin{mythm}[Predicate Evaluation]
 $$
