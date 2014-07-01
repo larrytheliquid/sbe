@@ -385,6 +385,113 @@ model allows hereditary substitution to be defined by canonical
 evaluation (SbE). Hence, our slogan:
 {\it Hereditary Substitution by Canonical Evaluation (SbE)}.
 
+\subsection{Outline}
+
+After a brief discussion about our notation, the rest of the paper is
+structured as follows:
+
+\begin{itemize}
+\item{\bf{\refsec{epred}}}
+We review the definitions and state the theorems needed to prove termination of
+an extrinsic big-step semantics for G{\"o}del's System T using a
+realizability predicate.
+
+\item{\bf{\refsec{emodel}}}
+We review the definitions and prove the theorems needed to define an
+intrinsic semantics for G{\"o}del's System T via NbE and a Kripke
+model. We point out which theorems from \refsec{epred} that we get for
+free.
+
+\item{\bf{\refsec{vmodel}}}
+We review why the extrinsic relational semantics for hereditary
+substitution does not obviously terminate, and show what choices you
+need to make when defining its realizability predicate. Instead of
+proving termination in the more complex setting of extrinsic
+semantics, we define hereditary substitution as an intrinsic
+semantics.
+
+\item{\bf{\refsec{list}}}
+We show how to extend the intrinsic semantics to a language including
+parametric inductive types (e.g. lists).
+
+\item{\bf{\refsec{correctness}}}
+We prove that normalization of expressions, defined in terms of
+hereditary substitution, is sound and complete with respect to a
+contextual equivalence relation for expressions.
+
+\item{\bf{\refsec{related}}}
+We discuss related work.
+\end{itemize}
+
+\subsection{Notation}
+
+We define types and contexts for G{\"o}del's System T using a standard
+BNF grammar in \reffig{gram}. However, we use intrinsically typed
+terms instead of defining a grammar for expressions and an extrinsic
+typing relation. Below is an example of the standard extrinsic typing
+of expressions.
+
+$$
+e ::= ... ~ | ~ \con{zero} ~ | ~ \con{suc} ~ n ~ | ~ ...
+$$
+
+$$
+\infer
+  [successor]
+  {\Gamma \vdash^E n : \nat}
+{
+  \Gamma \vdash^E \con{suc} ~ n : \nat)
+}
+$$
+
+Instead, we use the proof terms of our typing relation as
+intrinsically typed terms.
+
+$$
+\infer
+  [\con{suc} ~ n]
+  {\type{\nat}}
+{
+  (n : \type{\nat})
+}
+$$
+
+We label each premise with a variable to
+the left of a colon, and the name of the typing rule shows how to use
+it as a proof term by applying it to the premise labels.
+
+The letter appearing as the superscript to the turnstyle is part of
+the name of each intrinsic typing judgment. For example, $\vdash^E$
+types expressions in \reffig{type}, $\vdash^V$ types values in
+\reffig{typv}, and $\vdash^N$ types neutrals in \reffig{typn}.
+
+Finally, we have taken care to ensure that all of our constructions
+are easily formalizable. For this reason, we
+use use De Bruijn~\cite{TODO} variables. For example, our typing rule
+for functions does not explicitly bind its variable.
+
+$$
+\infer
+  [\lam b]
+  {\type{A \arr B}}
+{
+  (b : \ctype{A}{B})
+}
+$$
+
+Additionally, proof that a De Bruijn variable of a particular type
+exists in the context is given by the $\vdash^R$ judgment in
+\reffig{typr}. Mentioning a variable in a term thus requires evidence
+that the variable judgment is satisfied.
+
+$$
+\infer
+  [\fun{var} ~ i]
+  {\type{A}}
+{
+  (i : \typr{A})
+}
+$$
 
 \section{Background}
 \label{sec:background}
