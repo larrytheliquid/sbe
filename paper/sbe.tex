@@ -68,6 +68,8 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
+\newcommand{\hsub}[2]{[\sigma]#1=#2}
+
 \newcommand{\ascribe}[2]{(#1 : #2)}
 \newcommand{\all}[1]{\forall#1.~}
 \newcommand{\ex}[1]{\exists#1.~}
@@ -111,7 +113,7 @@
 \titlebanner{DRAFT}        % These are ignored unless
 %% \preprintfooter{short description of paper}   % 'preprint' option specified.
 
-\title{Proof Pearl: Hereditary Substitution by Canonical Evaluation}
+\title{Proof Pearl: Hereditary Substitution by Canonical Evaluation (SbE)}
 \subtitle{Termination Proofs as Intrinsic Semantics}
 
 \authorinfo{Larry Diehl\and Tim Sheard}
@@ -157,7 +159,7 @@ Unfortunately, our relationally specified semantics is not obviously
 terminating, so we begin the more difficult task of proving its
 termination.
 
-\paragraph{Big-Step Termination}
+\paragraph{Termination of Big-Step}
 
 $$
 \all{\ascribe{e}{A}} \ex{\ascribe{e'}{A}} e \bigstep e' \land \fun{IsValue}(e')
@@ -198,14 +200,14 @@ metatheory and getting free theorems. With {\it extrinsic} typing you
 define expressions, a separate extrinsic typing relation, and prove
 theorems of the form:
 $$
-\all{\ascribe{e}{Exp}} \ascribe{e}{A} \marr ...
+\all{\ascribe{e}{\con{Exp}}} \ascribe{e}{A} \marr ...
 $$
 
 Rather than having this pair of argument everywhere, you can define
 terms as an {\it intrinsic} typing relation, simplifying theorems to
 have the form:
 $$
-\all{\ascribe{e}{A}} \marr ...
+\all{\ascribe{e}{A}} ...
 $$
 
 Furthermore, as our big-step semantics is now defined on intrinsically
@@ -226,7 +228,7 @@ appropriately reflect that it {\it defines} normalization (our
 semantics) as a function from expressions of some type to values of
 the same type:
 
-\paragraph{Big-Step Normalization}
+\paragraph{Normalization}
 $$
 \all{\ascribe{e}{A}} \ex{\ascribe{v}{A}}
 $$
@@ -251,16 +253,15 @@ collection of {\it values} of the appropriate type! Thus, the normalization
 theorem is the well-known technique of defining your (intrinsic)
 semantics as Normalization by Evaluation (NbE)~\cite{TODO}.
 
-\paragraph{}
-Our {\bf contributions} are as follows:
-
 \subsection{The Perspective of Termination Proofs as Intrinsic Semantics}
 
-The relationship between realizability predicates and Kripke models is
+Our {\bf first major contribution} is the {\it perspective} of
+termination proofs as defining an intrinsic semantics.
+The similarities between realizability predicates and Kripke models are
 readily apparent. Neither of these concepts are new, we merely wish
 to point out that NbE falls out of thinking of the
 realizability predicate-based termination proof of an {\it extrinsic}
-operational semantics as already defining an {\it intrinsic}
+operational semantics as defining an {\it intrinsic}
 semantics.
 
 Just like intrinsic typing, intrinsic semantics simplifies statements
@@ -282,8 +283,8 @@ $$
 \el{A}(e) \marr e \bigstep e' \marr \el{A}(e')
 $$
 
-One of the theorems of a realizability predicate-based proof of
-big-step semantics shows that the semantics preserves satisfiability
+One of the lemmas of a realizability predicate-based proof is showing that
+the big-step semantics preserves satisfiability
 of the predicate. This is analogous to type-preservation, but at the
 level of the realizability predicate. Because an intrinsic semantics
 does not need to thread through evidence of an extrinsic semantics, we
@@ -291,30 +292,34 @@ also get this theorem for free.
 
 \subsection{Termination of Hereditary Substitution for G{\"o}del's System T}
 
+Our {\bf second major contribution} is an example of how adopting the
+perspective of intrinsic semantics helped us prove a conjecture:
+that hereditary substitution for G{\"o}del's System T terminates.
 
+Normally, you give a (e.g. big-step or small-step) semantics to
+{\it expressions}. Instead, you can give a semantics to {\it values}
+($\beta$-redex-free canonical terms) of a 
+of a canonical type theory~\cite{TODO}. The semantics for values is
+known as {\it hereditary substitution}~\cite{TODO}. Because values are
+not closed under ordinary substitution (which would break the invariant that values
+do not contain $\beta$-redexes), hereditary substitution
+performs evaluation if the substitution would
+result in a $\beta$-redex.
 
-For example, instead of giving a big-step semantics to
-{\it expressions}, we might want to give a semantics to
-{\it values} of a canonical type theory. The semantics for values is
-known as {\it hereditary substitution}~\cite{TODO}, which substitutes
-values for variables in a value, but performs evaluation if substitution would
-result in a $\beta$-redex (which would break the invariant that values
-do not contain $\beta$-redexes). 
+The standard purely syntactic approaches~\cite{TODO} of proving termination of
+hereditary substitution have not been able to scale to recursive inductive types
+(e.g. $\nat$). We were originally tempted to define an extrinsic
+hereditary substitution relation and prove that it terminates directly.
 
-Termination of operational semantics has been proven using these
-methods for 
-Many lambda calculi, such as 
-If someone has already proven termination 
-If someone shows you the definition of a realizability predicate, and the
-theorems and proofs for 
+\paragraph{Termination of Hereditary Substitution}
 
-It is easy to understand the definition of the logical relation
+$$
+\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}} \hsub{v}{v'}
+$$
 
-\section{Background}
-\label{sec:background}
-
-\todo[inline]{To set the scene for this paper, we begin with a brief overview of...}
-\todo[inline]{Show big step termination problem case}
+Just like proving termination of big-step semantics, we would need to
+come up with the correct definition of the realizability predicate,
+and the associated lemmas that make the following diagram commute.
 
 \begin{displaymath}
     \xymatrix{
@@ -326,15 +331,52 @@ It is easy to understand the definition of the logical relation
 \\      & {\exists (v' : A). ~ [ \sigma ] v = v'} }
 \end{displaymath}
 
+Originally, we tried to prove this directly but got stuck at various
+points in our attempts. Eventually, we adopted the perspective of the
+would-be termination proof as an intrinsic semantics. Thus, our goal
+becomes instead to define hereditary substitution directly as a
+function.
+
+\paragraph{Hereditary Substitution}
+$$
+\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}}
+$$
+
+Note that the type of this high-level presentation of the function does
+not seem to guarantee any kind of correctness. In \refsec{TODO}, the
+correctness becomes apparent once contexts are mentioned explicitly.
+
+Adopting an intrinsic semantics for expressions lead us to a Kripke
+model and NbE. Fortuitously, adopting an intrinsic semantics for
+values also leads us to the very same Kripke model, and we get to
+reuse associated lemmas (e.g. reification). This leads us to making
+the following diagram commute.
+
 \begin{displaymath}
     \xymatrix{
-          {A, \sigma} 
+          \all{\ascribe{v}{A}, \sigma}
           \ar[dr]_{\fun{hsub}}
           \ar[r]^{\fun{ceval}}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
-\\      & {A} }
+\\      & \ex{\ascribe{v'}{A}} }
 \end{displaymath}
+
+We get to reuse the arrow on the right. Our contribution is the arrow
+on the top, performing ``canonical evaluation'' of values by injecting
+them into the model and evaluating under an environment whenever a
+variable is encountered. For expressions, a Kripke model allows
+normalization to be defined by evaluation (NbE). For values, a Kripke
+model allows hereditary substitution to be defined by canonical
+evaluation (SbE). Hence, our slogan:
+{\it Hereditary Substitution by Canonical Evaluation (SbE)}.
+
+
+\section{Background}
+\label{sec:background}
+
+\todo[inline]{To set the scene for this paper, we begin with a brief overview of...}
+\todo[inline]{Show big step termination problem case}
 
 \begin{mydfn}[Big-Step Realizability Predicate]
 $ $\\
@@ -643,9 +685,6 @@ $$
 $$
 \label{fig:typn}
 \end{figure}
-
-\todo[inline]{In pictures put (e) around predicates, and superscript A
-for E and V}
 
 \todo[inline]{Future work: state (via worlds), exceptions (via monad)}
 
