@@ -68,6 +68,8 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
+\newcommand{\turn}[1]{\vdash^\con{#1}}
+
 \newcommand{\hsub}[2]{[\sigma]#1=#2}
 
 \newcommand{\ascribe}[2]{(#1 : #2)}
@@ -83,21 +85,21 @@
 \newcommand{\dtypm}[1]{\el{\Delta \vdash #1}}
 \newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2}}
 
-\newcommand{\type}[1]{\Gamma \vdash^E #1}
-\newcommand{\dtype}[1]{\Delta \vdash^E #1}
-\newcommand{\ctype}[2]{\Gamma , #1 \vdash^E #2}
+\newcommand{\type}[1]{\Gamma \turn{E} #1}
+\newcommand{\dtype}[1]{\Delta \turn{E} #1}
+\newcommand{\ctype}[2]{\Gamma , #1 \turn{E} #2}
 
-\newcommand{\typv}[1]{\Gamma \vdash^V #1}
-\newcommand{\dtypv}[1]{\Delta \vdash^V #1}
-\newcommand{\ctypv}[2]{\Gamma , #1 \vdash^V #2}
+\newcommand{\typv}[1]{\Gamma \turn{V} #1}
+\newcommand{\dtypv}[1]{\Delta \turn{V} #1}
+\newcommand{\ctypv}[2]{\Gamma , #1 \turn{V} #2}
 
-\newcommand{\typn}[1]{\Gamma \vdash^N #1}
-\newcommand{\dtypn}[1]{\Delta \vdash^N #1}
-\newcommand{\ctypn}[2]{\Gamma , #1 \vdash^N #2}
+\newcommand{\typn}[1]{\Gamma \turn{N} #1}
+\newcommand{\dtypn}[1]{\Delta \turn{N} #1}
+\newcommand{\ctypn}[2]{\Gamma , #1 \turn{N} #2}
 
-\newcommand{\typr}[1]{\Gamma \vdash^R #1}
-\newcommand{\dtypr}[1]{\Delta \vdash^R #1}
-\newcommand{\ctypr}[2]{\Gamma , #1 \vdash^R #2}
+\newcommand{\typr}[1]{\Gamma \turn{R} #1}
+\newcommand{\dtypr}[1]{\Delta \turn{R} #1}
+\newcommand{\ctypr}[2]{\Gamma , #1 \turn{R} #2}
 
 \newcommand{\ren}[1]{\Gamma \le #1}
 \def\dren{\ren{\Delta}}
@@ -438,9 +440,9 @@ $$
 $$
 \infer
   [\nat\con{-I}_2]
-  {\Gamma \vdash^E \con{suc} ~ n : \nat}
+  {\Gamma \turn{E} \con{suc} ~ n : \nat}
 {
-  \Gamma \vdash^E n : \nat
+  \Gamma \turn{E} n : \nat
 }
 $$
 
@@ -461,9 +463,9 @@ the left of a colon, and the name of the typing rule shows how to use
 it as a proof term by applying it to the premise labels.
 
 The letter appearing as the superscript to the turnstyle is part of
-the name of each intrinsic typing judgment. For example, $\vdash^E$
-types expressions in \reffig{type}, $\vdash^V$ types values in
-\reffig{typv}, and $\vdash^N$ types neutrals in \reffig{typn}.
+the name of each intrinsic typing judgment. For example, $\turn{E}$
+types expressions in \reffig{type}, $\turn{V}$ types values in
+\reffig{typv}, and $\turn{N}$ types neutrals in \reffig{typn}.
 
 Finally, we have taken care to ensure that all of our constructions
 are easily formalizable. For this reason, we
@@ -480,7 +482,7 @@ $$
 $$
 
 Additionally, proof that a De Bruijn variable of a particular type
-exists in the context is given by the $\vdash^R$ judgment in
+exists in the context is given by the $\turn{R}$ judgment in
 \reffig{typr}. Mentioning a variable in a term thus requires evidence
 that the variable judgment is satisfied.
 
