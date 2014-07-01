@@ -235,19 +235,21 @@ By the same token, our diagram is also simplified.
 
 \begin{displaymath}
     \xymatrix{
-          {A} 
+          {\forall (e : A)} 
           \ar[dr]_{\fun{normalize}}
           \ar[r]^{\fun{evaluate}}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
-\\      & {A} }
+\\      & \exists (v : A) }
 \end{displaymath}
 
 Notice the codomain of evaluation has become simpler. Formerely, it
 was a realizability predicate ($\el{A}(e)$) that related the input
 expression to the underlying extrinsic big-step semantics. Now, it has
 become a Kripke model~\cite{TODO} ($\el{A}$) representing the
-collection of {\it values} of the appropriate type!
+collection of {\it values} of the appropriate type! Thus, the normalization
+theorem is the well-known technique of defining your (intrinsic)
+semantics as Normalization by Evaluation (NbE)~\cite{TODO}.
 
 \paragraph{}
 Our {\bf contributions} are as follows:
