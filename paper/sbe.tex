@@ -540,7 +540,7 @@ $$\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)$$
 
 \begin{mythm}[Predicate Preservation]
 $$
-\forall (a ~ a' : \type{A}).~ \typm{A}(a) \marr 
+\forall (a, a' : \type{A}).~ \typm{A}(a) \marr 
 a \bigstep a' \marr \typm{A}(a')
 $$
 \end{mythm}
@@ -706,7 +706,7 @@ $$
 {
   (f : \type{A \arr B})
   &
-  (a : \type{A \arr B})
+  (a : \type{A})
 }
 $$
 
@@ -788,7 +788,7 @@ $$
 {
   (f : \typn{A \arr B})
   &
-  (a : \typv{A \arr B})
+  (a : \typv{A})
 }
 $$
 
