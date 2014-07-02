@@ -554,7 +554,7 @@ the realizability predicate, we must prove that satisfaction of the
 realizability predicate for some expression implies that evaluating
 the expression using the big-step semantics terminates at some value.
 
-\subsubsection{Definition of Realizability Predicate}
+\subsection{Definition of Realizability Predicate}
 
 First, we give the definiton of the realizability predicate below.
 
@@ -581,12 +581,6 @@ $\typm{A \arr B}(f)$
 &\gdtypm{A}(a) \marr \gdtypm{B}(\wkne{f} \app a)
 \end{align*}
 
-
-%% $$
-%% \forall \Delta.~ \dren \marr (a : \dtype{A})
-%% \marr \dtypm{A}(a) \marr \dtypm{B}(\fun{ren}^E ~ \Delta ~ f \app a)
-%% $$
-
 For functions we require that for any weakened proof that $a$
 is realized, a proof that a weakened version of $f$ applied to
 $a$ is also realized.
@@ -594,10 +588,10 @@ $a$ is also realized.
 
 \end{defin}
 
-\subsubsection{Realizability Predicate Reification}
+\subsection{Realizability Predicate Reification}
 
 \begin{theorem}[Predicate Reification]
-\label{thm:ep:reify}
+\label{thm:pred:reify}
 $$
 \forall (a : \type{A}).~ \typm{A}(a) \marr
 \exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsValue} ~ a'
@@ -605,40 +599,111 @@ $$
 \end{theorem}
 
 \begin{subtheorem}[Predicate Reflection]
-\label{lem:ep:refl}
-$$\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)$$
+\label{lem:pred:refl}
+$$
+\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)
+$$
 \end{subtheorem}
 
 \begin{subtheorem}[Predicate Preservation]
-\label{lem:ep:pres}
+\label{lem:pred:pres}
 $$
 \forall (a, a' : \type{A}).~ \typm{A}(a) \marr 
 a \bigstep a' \marr \typm{A}(a')
 $$
 \end{subtheorem}
 
-\subsubsection{Evaluation into Realizability Predicate}
+\subsection{Evaluation into Realizability Predicate}
 
-\begin{theorem}[Predicate Evaluation]
-\label{thm:ep:eval}
+\begin{theorem}[Evaluation into Predicate]
+\label{thm:pred:eval}
 $$
-\forall (a : \type{A}) (\sigma : \menv).~ \dtypm{A}(\sigma ~ a)
+\forall (a : \type{A}), ~ \sigma.~ \dtypm{A}(\sigma ~ a)
 $$
 \end{theorem}
 
-\subsubsection{Other Lemmas}
+\subsection{Other Lemmas}
+
+\begin{lemma}[Predicate Monotonicity]
+\label{lem:pred:mono}
+$$
+\forall (a : \type{A}) \marr \typm{A}(a) \marr \gdtypm{A}(\wkne{a})
+$$
+\end{lemma}
 
 \begin{lemma}[Big-Step Determinacy]
-\label{lem:ep:determ}
+\label{lem:pred:determ}
 $$
 e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
 $$
 \end{lemma}
 
-\begin{lemma}[Predicate Monotonicity]
-\label{lem:ep:mono}
+\section{Intrinsic Big-Step Semantics}
+\label{sec:mod}
+
+\todo[inline]{commutative diagram mentioning contexts}
+
+\subsection{Definition of Model}
+
+\begin{defin}[Model of Values]
+\label{def:mod}
+$ $\\
+For any context $\Gamma$ and type $A$, the model of values is
+$\typm{A}$.
+
+\begin{subdefin}[Natural numbers]
+$\typm{\nat}$
 $$
-\forall (a : \type{A}) \marr \typm{A}(a) \marr \gdtypm{A}(\wkne{a})
+\typv{\nat}
+$$
+For natural numbers we require an intrinsically typed natural number
+value.
+\end{subdefin}
+
+\begin{subdefin}[Functions]
+$\typm{A \arr B}$
+$$
+\all{\Delta} \gdtypm{A} \marr \gdtypm{B}
+$$
+
+For functions you get a weakened element of the model whose type is
+the domain of the function, and must provide a weakened element of the
+model whose type is the codomain of the function.
+\end{subdefin}
+
+\end{defin}
+
+\subsection{Model Reification}
+
+\begin{theorem}[Model Reification]
+\label{thm:mod:reify}
+$$
+\typm{A} \marr \typv{A}
+$$
+\end{theorem}
+
+\begin{subtheorem}[Model Reflection]
+\label{lem:mod:refl}
+$$
+\typn{A} \marr \typm{A}
+$$
+\end{subtheorem}
+
+\subsection{Evaluation into Model}
+
+\begin{theorem}[Evaluation into Model]
+\label{thm:mod:eval}
+$$
+\type{A} \marr \menv \marr \dtypm{A}
+$$
+\end{theorem}
+
+\subsection{Other Lemmas}
+
+\begin{lemma}[Model Monotonicity]
+\label{lem:mod:mono}
+$$
+\all{\Delta} \typm{A} \marr \gdtypm{A}
 $$
 \end{lemma}
 
@@ -646,7 +711,6 @@ $$
 %% &\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
 %% &\typm{A}& &\dfn \typv{A}
 %% \end{align*}
-
 
 
 
@@ -660,6 +724,27 @@ $$
 
 \todo[inline]{last part is sub with env of values and returning a value}
 \todo[inline]{final part of expr norm via hsub, NbHSbCE}
+\todo[inline]{Future work: state (via worlds), exceptions (via monad)}
+
+\section{Related Work}
+
+Our termination proof is a novel model-theoretic result, but it
+does not solve the proof-theoretic version of the same problem.
+Nevertheless, we view our solution as somewhere in between a largely
+model theoretic, and proof theoretic semantics, as it is a syntactic
+model (rather than HA or CCC).
+
+\acks
+
+We would like to thank Andrew Cave for helping us understand subtle
+issues encountered when formalizing termination proofs.
+This work was supported by NSF/CISE/CCF grant \#1320934.
+
+\bibliographystyle{abbrvnat}
+\bibliography{sbe}
+
+\appendix
+\clearpage
 
 \begin{figure}
 \caption{
@@ -843,26 +928,5 @@ $$
 $$
 \label{fig:typn}
 \end{figure}
-
-\todo[inline]{Future work: state (via worlds), exceptions (via monad)}
-
-\section{Related Work}
-
-Our termination proof is a novel model-theoretic result, but it
-does not solve the proof-theoretic version of the same problem.
-Nevertheless, we view our solution as somewhere in between a largely
-model theoretic, and proof theoretic semantics, as it is a syntactic
-model (rather than HA or CCC).
-
-%% \appendix
-
-\acks
-
-We would like to thank Andrew Cave for helping us understand subtle
-issues encountered when formalizing termination proofs.
-This work was supported by NSF/CISE/CCF grant \#1320934.
-
-\bibliographystyle{abbrvnat}
-\bibliography{sbe}
 
 \end{document}
