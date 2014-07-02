@@ -709,6 +709,8 @@ $$
 $$
 \end{theorem}
 
+\subsection{Normalization}
+
 \begin{theorem}[Normalization by Evaluation]
 \label{thm:mod:enorm}
 $$
@@ -739,6 +741,38 @@ $$
 \label{sec:vmod}
 
 \subsection{Model Canonical Evaluation}
+
+\begin{theorem}[Canonical Evaluation (of values) into Model]
+\label{thm:mod:veval}
+$$
+\typv{A} \marr \menv \marr \dtypm{A}
+$$
+\end{theorem}
+
+\begin{subtheorem}[Canonical Evaluation (of neutrals) into Model]
+\label{thm:mod:neval}
+$$
+\typn{A} \marr \menv \marr \dtypm{A}
+$$
+\end{subtheorem}
+
+\subsection{Hereditary Substitution}
+
+\begin{theorem}[Hereditary Substitution (into values) by Canonical Evaluation]
+\label{thm:mod:vhsub}
+$$
+\typv{A} \marr \env \marr \dtypv{A}
+$$
+\end{theorem}
+
+\begin{subtheorem}[Hereditary Substitution (into neutrals) by Canonical Evaluation]
+\label{thm:mod:nhsub}
+$$
+\typn{A} \marr \env \marr \dtypv{A}
+$$
+\end{subtheorem}
+
+\subsection{Normalization}
 
 \begin{theorem}[Normalization by Hereditary Substitution]
 \label{thm:mod:vnorm}
