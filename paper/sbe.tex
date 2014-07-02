@@ -69,6 +69,7 @@
 
 \newcommand{\turn}[1]{\vdash^\con{#1}}
 
+\newcommand{\hsubn}[2]{[\sigma]#1=^\con{N}#2}
 \newcommand{\hsub}[2]{[\sigma]#1=#2}
 \newcommand{\hsubext}[3]{[\sigma, #1]#2=#3}
 
@@ -722,9 +723,9 @@ $$
 
 $$
 \infer
-  []{\hsub{(f \app a)}{b'}}
+  []{\hsubn{(f \app a)}{b'}}
 {
-  \hsub{f}{\lam b}
+  \hsubn{f}{\lam b}
   &
   \hsub{a}{a'}
   &
