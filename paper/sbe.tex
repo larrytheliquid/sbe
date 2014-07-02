@@ -70,6 +70,7 @@
 \newcommand{\turn}[1]{\vdash^\con{#1}}
 
 \newcommand{\hsub}[2]{[\sigma]#1=#2}
+\newcommand{\hsubext}[3]{[\sigma, #1]#2=#3}
 
 \newcommand{\ascribe}[2]{(#1 : #2)}
 \newcommand{\all}[1]{\forall#1.~}
@@ -529,7 +530,7 @@ $$
   &
   a \bigstep a'
   &
-  [a'/\con{here}]f' \bigstep b'
+  [a'/\con{here}]b \bigstep b'
 }
 $$
 
@@ -639,7 +640,7 @@ $$
 \end{theorem}
 
 \section{Intrinsic Big-Step Semantics}
-\label{sec:mod}
+\label{sec:emod}
 
 \todo[inline]{commutative diagram mentioning contexts}
 
@@ -708,11 +709,43 @@ $$
 \end{theorem}
 
 \begin{theorem}[Normalization by Evaluation]
-\label{thm:mod:norm}
+\label{thm:mod:enorm}
 $$
 \type{A} \marr \typv{A}
 $$
 \end{theorem}
+
+\section{Extrinsic Hereditary Substitution Semantics}
+\label{sec:vpred}
+
+\subsection{Non-Obvious Termination}
+
+$$
+\infer
+  []{\hsub{(f \app a)}{b'}}
+{
+  \hsub{f}{\lam b}
+  &
+  \hsub{a}{a'}
+  &
+  \hsubext{a'}{b}{b'}
+}
+$$
+
+\subsection{Possible Realizability Predicates}
+
+\section{Intrinsic Hereditary Substitution Semantics}
+\label{sec:vmod}
+
+\subsection{Model Canonical Evaluation}
+
+\begin{theorem}[Normalization by Hereditary Substitution]
+\label{thm:mod:vnorm}
+$$
+\type{A} \marr \typv{A}
+$$
+\end{theorem}
+
 
 %% \begin{align*}
 %% &\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
