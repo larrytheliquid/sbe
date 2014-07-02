@@ -40,20 +40,19 @@
 
 \usepackage[labelfont=bf]{caption}
 
-\newtheorem{mydfn}{Definition}
-\newtheorem{mysubdfn}{Case}
-\numberwithin{mysubdfn}{mydfn}
+\newtheorem{defin}{Definition}
+\newtheorem{subdefin}{Case}
+\numberwithin{subdefin}{defin}
 
-\newtheorem{mythm}{Theorem}
-\newtheorem{mylem}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{subtheorem}{Lemma}
+\numberwithin{subtheorem}{theorem}
+
+\newtheorem{lemma}{Lemma}
 
 \newcommand{\refdef}[1]{Definition \ref{dfn:#1}}
 \newcommand{\refthm}[1]{Theorem \ref{thm:#1}}
 \newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
-
-\newtheorem{mydef}{Definition}
-\newtheorem{myparte}{Part$_E$}
-\newtheorem{myparti}{Part$_I$}
 
 \newcommand{\reffig}[1]{Figure \ref{fig:#1}}
 \newcommand{\refsec}[1]{Section \ref{sec:#1}}
@@ -77,6 +76,8 @@
 \newcommand{\ex}[1]{\exists#1.~}
 
 \newcommand{\el}[1]{\llbracket ~ #1 ~ \rrbracket}
+
+\newcommand{\wkne}[1]{\fun{wkn}^\con{E} ~ \Delta ~ #1}
 
 \newcommand{\con}[1]{\textmd{#1}}
 \newcommand{\fun}[1]{\textmd{#1}}
@@ -105,10 +106,13 @@
 \newcommand{\dtypr}[1]{\Delta \turn{R} #1}
 \newcommand{\ctypr}[2]{\Gamma , #1 \turn{R} #2}
 
-\newcommand{\ren}[1]{\Gamma \le #1}
-\def\dren{\ren{\Delta}}
-\newcommand{\env}[1]{\Gamma \sqsubseteq #1}
-\def\denv{\env{\Delta}}
+\def\menv{\el{\fun{Env}}~\Gamma~\Delta}
+\def\env{\fun{Env}~\Gamma~\Delta}
+
+%% \newcommand{\ren}[1]{\Gamma \le #1}
+%% \def\dren{\ren{\Delta}}
+%% \newcommand{\env}[1]{\Gamma \sqsubseteq #1}
+%% \def\denv{\env{\Delta}}
 
 \begin{document}
 
@@ -536,6 +540,8 @@ there is no obvious termination measure to justify this.
 
 \subsection{Termination of Big-Step}
 
+\todo[inline]{commutative diagram mentioning contexts}
+
 The idea of the realizability predicate is to relate a term to the
 theorem we are trying to prove (big-step termination) at non-arrow
 base types (i.e. $\nat$), and use the function space of the
@@ -552,26 +558,27 @@ the expression using the big-step semantics terminates at some value.
 
 First, we give the definiton of the realizability predicate below.
 
-\begin{mydfn}[Big-Step Realizability Predicate]
+\begin{defin}[Big-Step Realizability Predicate]
+\label{def:ep}
 $ $\\
 For any context $\Gamma$ and type $A$, the predicate on the expression
 $(a : \type{A})$ is $\typm{A}(a)$.
 
-\begin{mysubdfn}[Natural numbers]
+\begin{subdefin}[Natural numbers]
 $\typm{\nat}(n)$
 $$
 \exists (n' : \type{\nat}).~ n \bigstep n' \wedge \fun{IsValue} ~ n'
 $$
 For natural numbers we require a proof that $n$ evalutes to
 some value $n'$ .
-\end{mysubdfn}
+\end{subdefin}
 
 
-\begin{mysubdfn}[Functions]
+\begin{subdefin}[Functions]
 $\typm{A \arr B}(f)$
 \begin{align*}
 \all{\Delta} &(a : \gdtype{A}) \marr \\
-&\gdtypm{A}(a) \marr \gdtypm{B}(\fun{wkn}^\con{E} ~ \Delta ~ f \app a)
+&\gdtypm{A}(a) \marr \gdtypm{B}(\wkne{f} \app a)
 \end{align*}
 
 
@@ -583,45 +590,62 @@ $\typm{A \arr B}(f)$
 For functions we require that for any weakened proof that $a$
 is realized, a proof that a weakened version of $f$ applied to
 $a$ is also realized.
-\end{mysubdfn}
+\end{subdefin}
 
-\end{mydfn}
+\end{defin}
 
 \subsubsection{Realizability Predicate Reification}
 
-\begin{mythm}[Predicate Reification]
+\begin{theorem}[Predicate Reification]
+\label{thm:ep:reify}
 $$
 \forall (a : \type{A}).~ \typm{A}(a) \marr
 \exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsValue} ~ a'
 $$
-\end{mythm}
+\end{theorem}
 
-\begin{mythm}[Predicate Reflection]
+\begin{subtheorem}[Predicate Reflection]
+\label{lem:ep:refl}
 $$\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)$$
-\end{mythm}
+\end{subtheorem}
 
-\begin{mythm}[Predicate Preservation]
+\begin{subtheorem}[Predicate Preservation]
+\label{lem:ep:pres}
 $$
 \forall (a, a' : \type{A}).~ \typm{A}(a) \marr 
 a \bigstep a' \marr \typm{A}(a')
 $$
-\end{mythm}
+\end{subtheorem}
 
 \subsubsection{Evaluation into Realizability Predicate}
 
-\begin{mythm}[Predicate Evaluation]
+\begin{theorem}[Predicate Evaluation]
+\label{thm:ep:eval}
 $$
-\forall (a : \type{A}) (\sigma : \denv).~ \dtypm{A}(\sigma ~ a)
+\forall (a : \type{A}) (\sigma : \menv).~ \dtypm{A}(\sigma ~ a)
 $$
-\end{mythm}
+\end{theorem}
 
+\subsubsection{Other Lemmas}
 
+\begin{lemma}[Big-Step Determinacy]
+\label{lem:ep:determ}
+$$
+e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
+$$
+\end{lemma}
 
+\begin{lemma}[Predicate Monotonicity]
+\label{lem:ep:mono}
+$$
+\forall (a : \type{A}) \marr \typm{A}(a) \marr \gdtypm{A}(\wkne{a})
+$$
+\end{lemma}
 
-\begin{align*}
-&\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
-&\typm{A}& &\dfn \typv{A}
-\end{align*}
+%% \begin{align*}
+%% &\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
+%% &\typm{A}& &\dfn \typv{A}
+%% \end{align*}
 
 
 
@@ -633,50 +657,6 @@ $$
 %%         & {\dtypm{A}} \ar[d]
 %% \\      & {\exists (v' : \dtypv{A}). ~ [ \sigma ] v = v'} }
 %% \end{displaymath}
-
-\todo[inline]{big picture:}
-\todo[inline]{
-
-This paper is about 2 things:
-1. Reducing the complexity of metatheory statements, and the number of
-proofs necessary in the metatheory. This is done by analogy with
-intrinsic typing, where we consider intrinsic semantics. Here we do
-not introduce any new techniques, we just offer a change of
-perspective and clarify what savings we get. In the scenario in
-question this amounts to shifting from an extrinsic relational semantics and a
-realizability predicate (here a unary logical relation) used to prove
-termination, to an intrinsic functional semantics using a Kripke model
-(which can be seen as a nullary logical relation).
-
-2. Adopting the perspective of intrinsic semantics in order to simply prove
-termination of hereditary substitution for G{\"o}del's System T. This
-amounts to shifting our attention from defining a semantics for
-expressions, to defining a semantics for canonicals, where we
-fortuitously get to reuse the same Kripke model.
-
-}
-
-
-\todo[inline]{Notational conventions}
-
-\todo[inline]{intro:}
-\todo[inline]{semantics of expressions vs semantics of canonicals}
-\todo[inline]{analogy with intrinsic typing and forward reference theorems saved below}
-\todo[inline]{rather than come up with predicate for hsub, reuse kripke model!}
-
-\todo[inline]{Intrinsic typing does not need type preservation}
-\todo[inline]{Intrinsic semantics does not determinacy of relation}
-\todo[inline]{Intrinsic semantics does not need model preservation}
-\todo[inline]{Intrinsic semantics needs mono (wkn pres) model, but not mono theory}
-
-\todo[inline]{We show proof savings when moving from realiz pred (unary logrel) to kripke model (nullary logrel)}
-\todo[inline]{Model preservation is way to thread extrinsic semantics through}
-\todo[inline]{Kripke model reify now does very little}
-\todo[inline]{Defn/semantics of eval/ceval very close to bigstep/hsub relation}
-\todo[inline]{Speculate saving similiar extrinsic hsub theorem as bigstep with predicate}
-
-\todo[inline]{logrel/hsub relation sections:}
-\todo[inline]{motivate model defn with how termination fails in application}
 
 \todo[inline]{last part is sub with env of values and returning a value}
 \todo[inline]{final part of expr norm via hsub, NbHSbCE}
