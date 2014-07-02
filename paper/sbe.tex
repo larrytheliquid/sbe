@@ -613,15 +613,6 @@ a \bigstep a' \marr \typm{A}(a')
 $$
 \end{subtheorem}
 
-\subsection{Evaluation into Realizability Predicate}
-
-\begin{theorem}[Evaluation into Predicate]
-\label{thm:pred:eval}
-$$
-\forall (a : \type{A}), ~ \sigma.~ \dtypm{A}(\sigma ~ a)
-$$
-\end{theorem}
-
 \subsection{Other Lemmas}
 
 \begin{lemma}[Predicate Monotonicity]
@@ -637,6 +628,15 @@ $$
 e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
 $$
 \end{lemma}
+
+\subsection{Evaluation into Realizability Predicate}
+
+\begin{theorem}[Evaluation into Predicate]
+\label{thm:pred:eval}
+$$
+\forall (a : \type{A}), ~ \sigma.~ \dtypm{A}(\sigma ~ a)
+$$
+\end{theorem}
 
 \section{Intrinsic Big-Step Semantics}
 \label{sec:mod}
@@ -689,15 +689,6 @@ $$
 $$
 \end{subtheorem}
 
-\subsection{Evaluation into Model}
-
-\begin{theorem}[Evaluation into Model]
-\label{thm:mod:eval}
-$$
-\type{A} \marr \menv \marr \dtypm{A}
-$$
-\end{theorem}
-
 \subsection{Other Lemmas}
 
 \begin{lemma}[Model Monotonicity]
@@ -706,6 +697,15 @@ $$
 \all{\Delta} \typm{A} \marr \gdtypm{A}
 $$
 \end{lemma}
+
+\subsection{Evaluation into Model}
+
+\begin{theorem}[Evaluation into Model]
+\label{thm:mod:eval}
+$$
+\type{A} \marr \menv \marr \dtypm{A}
+$$
+\end{theorem}
 
 %% \begin{align*}
 %% &\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
@@ -722,10 +722,6 @@ $$
 %% \\      & {\exists (v' : \dtypv{A}). ~ [ \sigma ] v = v'} }
 %% \end{displaymath}
 
-\todo[inline]{last part is sub with env of values and returning a value}
-\todo[inline]{final part of expr norm via hsub, NbHSbCE}
-\todo[inline]{Future work: state (via worlds), exceptions (via monad)}
-
 \section{Related Work}
 
 Our termination proof is a novel model-theoretic result, but it
@@ -733,6 +729,10 @@ does not solve the proof-theoretic version of the same problem.
 Nevertheless, we view our solution as somewhere in between a largely
 model theoretic, and proof theoretic semantics, as it is a syntactic
 model (rather than HA or CCC).
+
+\todo[inline]{last part is sub with env of values and returning a value}
+\todo[inline]{final part of expr norm via hsub, NbHSbCE}
+\todo[inline]{Future work: state (via worlds), exceptions (via monad)}
 
 \acks
 
