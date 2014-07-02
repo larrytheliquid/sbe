@@ -135,14 +135,23 @@
 \maketitle
 
 \begin{abstract}
-This paper is first about a change in perspective: thinking about
-termination proofs as defining an {\it intrinsic semantics}, resulting
-in simpler metatheoretical definitions and providing free theorems.
-This is analogous to the benefits obtained from taking advantage of
-{\it intrinsic typing}.
-The paper is second about showing how
-adopting this change in perspective helped us prove a novel result:
-that hereditary substitution for G{\"o}del's System T terminates.
+
+This paper is about termination proofs for the semantics of total lambda calculi.
+First we introduce a change in perspective about how one might
+think about such proofs. The standard perspective is to prove that a relationally
+specified semantics terminates, e.g. by using realizability predicates. Instead,
+we promote the perspective that the termination proof implicitly defines
+an {\it intrinsic semantics}, e.g. Normalization by Evaluation (NbE) into a Kripke model.
+Thus we think of the termination proof as an intrinsic functional semantics, as compared
+to the (no longer necessary) extrinsic relational semantics.
+
+Just as intrinsic typing of terms results in simpler metatheoretical definitions and provides
+free theorems, intrinsic semantics does the same. Adopting this perspective
+led us to an elegant proof
+that hereditary substitution for G{\"o}del's System T terminates. This proof
+reuses the Kripke model (of NbE) and introduces a new technique we call
+Hereditary Substitution by Canonical Evaluation (SbE). Furthermore,
+our entire development is simple to formalize in a proof assistant, such as Agda.
 \end{abstract}
 
 \category{D.3}{Software}{Programming Languages}.
