@@ -44,6 +44,9 @@
 \newtheorem{subdefin}{Case}
 \numberwithin{subdefin}{defin}
 
+\theoremstyle{definition}
+%% \theoremstyle{plain}
+
 \newtheorem{theorem}{Theorem}
 \newtheorem{subtheorem}{Lemma}
 \numberwithin{subtheorem}{theorem}
@@ -73,8 +76,9 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
-\newcommand{\by}[1]{(\text{#1})}
-\newcommand{\term}[1]{(#1)}
+\def\assump{(\textit{assumption})}
+\newcommand{\ih}[1]{(\textit{i.h.}~ #1)}
+\newcommand{\by}[1]{(#1)}
 
 \newcommand{\turn}[1]{\vdash^\con{#1}}
 
@@ -714,24 +718,25 @@ $$
 
 \begin{proof}
 
+By induction on types.
+
 \begin{scase}[Natural numbers]
 
 \begin{align*}
-n  &: \typn{\nat} && \by{assumption}\\
-n' &: \typv{\nat} && \term{\con{neut}~n}
+n  &: \typn{\nat} && \assump\\
+n' &: \typv{\nat} && \by{\con{neut}~n}
 \end{align*}
 
 \end{scase}
 
 \begin{scase}[Functions]
 \begin{align*}
-f &: \typn{A \arr B} && \by{assumption}\\
-\Delta& && \by{assumption}\\
-a  &: \gdtypm{A} && \by{assumption}\\
-f' &: \gdtypn{A \arr B} && \term{\wknn{f}}\\
-a' &: \gdtypv{A} && \by{i.h. \fun{reify}~A~a}\\
-%% n' &: \typv{\nat} && \term{\con{neut}~n}
-b  &: \gdtypm{B} && \by{i.h. \fun{reflect}~B~($f' \cdot a'$)}
+f &: \typn{A \arr B} && \assump\\
+\Delta& && \assump\\
+a  &: \gdtypm{A} && \assump\\
+f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
+a' &: \gdtypv{A} && \ih{\fun{reify}~A~a}\\
+b  &: \gdtypm{B} && \ih{\fun{reflect}~B~(f' \cdot a')}
 \end{align*}
 \end{scase}
 
