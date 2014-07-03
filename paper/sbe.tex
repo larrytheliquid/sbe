@@ -48,6 +48,12 @@
 \newtheorem{subtheorem}{Lemma}
 \numberwithin{subtheorem}{theorem}
 
+\newtheorem{case}{Case}
+\numberwithin{case}{theorem}
+
+\newtheorem{scase}{Case}
+\numberwithin{scase}{subtheorem}
+
 \newtheorem{lemma}{Lemma}
 
 \newcommand{\refdef}[1]{Definition \ref{dfn:#1}}
@@ -67,6 +73,9 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
+\newcommand{\by}[1]{(\text{#1})}
+\newcommand{\term}[1]{(#1)}
+
 \newcommand{\turn}[1]{\vdash^\con{#1}}
 
 \newcommand{\hsubn}[2]{[\sigma]#1=^\con{N}#2}
@@ -80,6 +89,8 @@
 \newcommand{\el}[1]{\llbracket ~ #1 ~ \rrbracket}
 
 \newcommand{\wkne}[1]{\fun{wkn}^\con{E} ~ \Delta ~ #1}
+\newcommand{\wknv}[1]{\fun{wkn}^\con{V} ~ \Delta ~ #1}
+\newcommand{\wknn}[1]{\fun{wkn}^\con{N} ~ \Delta ~ #1}
 
 \newcommand{\con}[1]{\textmd{#1}}
 \newcommand{\fun}[1]{\textmd{#1}}
@@ -700,7 +711,34 @@ $$
 $$
 \typn{A} \marr \typm{A}
 $$
+
+\begin{proof}
+
+\begin{scase}[Natural numbers]
+
+\begin{align*}
+n  &: \typn{\nat} && \by{assumption}\\
+n' &: \typv{\nat} && \term{\con{neut}~n}
+\end{align*}
+
+\end{scase}
+
+\begin{scase}[Functions]
+\begin{align*}
+f &: \typn{A \arr B} && \by{assumption}\\
+\Delta& && \by{assumption}\\
+a  &: \gdtypm{A} && \by{assumption}\\
+f' &: \gdtypn{A \arr B} && \term{\wknn{f}}\\
+a' &: \gdtypv{A} && \by{i.h. \fun{reify}~A~a}\\
+%% n' &: \typv{\nat} && \term{\con{neut}~n}
+b  &: \gdtypm{B} && \by{i.h. \fun{reflect}~B~($f' \cdot a'$)}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
 \end{subtheorem}
+
 
 \subsection{Other Lemmas}
 
@@ -818,17 +856,23 @@ Nevertheless, we view our solution as somewhere in between a largely
 model theoretic, and proof theoretic semantics, as it is a syntactic
 model (rather than HA or CCC).
 
+\todo[inline]{mention that body is all definitional and appendix is propositional}
 \todo[inline]{formal version of Kripke model via renaming}
 \todo[inline]{extension polymorphic lists}
 \todo[inline]{correctness wrt contextual equiv on exprs}
 \todo[inline]{Future work: state (via worlds), exceptions (via monad),
   dependent types}
+\todo[inline]{reference morrison nbe formalization}
 
 \acks
 
 We would like to thank Andrew Cave for helping us understand subtle
-issues encountered when formalizing termination proofs.
+issues encountered when formalizing termination proofs. We would also
+like to thank Darin Morrison for originally introducing us to the connection
+between NbE and a Kripke model for intuitionistic logic.
 This work was supported by NSF/CISE/CCF grant \#1320934.
+
+
 
 \bibliographystyle{abbrvnat}
 \bibliography{sbe}
