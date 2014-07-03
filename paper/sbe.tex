@@ -76,8 +76,8 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
-\def\defin{(\textit{definition})}
-\def\assump{(\textit{assumption})}
+\def\bydef{(\textit{definition})}
+\def\byass{(\textit{assumption})}
 \newcommand{\ih}[1]{(\textit{i.h.}~ #1)}
 \newcommand{\by}[1]{(#1)}
 
@@ -719,14 +719,14 @@ By induction on types.
 
 \begin{scase}[Natural numbers]
 \begin{align*}
-n  &: \typm{\nat} && \assump\\
-n  &: \typv{\nat} && \defin
+n  &: \typm{\nat} && \byass\\
+n  &: \typv{\nat} && \bydef
 \end{align*}
 \end{scase}
 
 \begin{scase}[Functions]
 \begin{align*}
-f &: \typm{A \arr B} && \assump\\
+f &: \typm{A \arr B} && \byass\\
 a &: \gatypm{A} && \ih{\fun{reflect}~A~(\con{var here})}\\
 b &: \gatypm{B} && \by{f~(\epsilon, A)~a}\\
 b' &: \gatypv{B} && \ih{\fun{reify}~B~b}\\
@@ -750,17 +750,17 @@ By induction on types.
 
 \begin{scase}[Natural numbers]
 \begin{align*}
-n  &: \typn{\nat} && \assump\\
+n  &: \typn{\nat} && \byass\\
 n' &: \typv{\nat} && \by{\con{neut}~n}\\
-n' &: \typm{\nat} && \defin
+n' &: \typm{\nat} && \bydef
 \end{align*}
 \end{scase}
 
 \begin{scase}[Functions]
 \begin{align*}
-f &: \typn{A \arr B} && \assump\\
-\Delta& && \assump\\
-a  &: \gdtypm{A} && \assump\\
+f &: \typn{A \arr B} && \byass\\
+\Delta& && \byass\\
+a  &: \gdtypm{A} && \byass\\
 f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
 a' &: \gdtypv{A} && \ih{\fun{reify}~A~a}\\
 b  &: \gdtypm{B} && \ih{\fun{reflect}~B~(f' \cdot a')}
