@@ -76,6 +76,12 @@
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
 
+\def\cevalv{\fun{ceval}^\con{V}}
+\def\cevaln{\fun{ceval}^\con{N}}
+
+\def\hsubv{\fun{sbe}^\con{V}}
+\def\hsubn{\fun{sbe}^\con{N}}
+
 \def\bydef{(\textit{definition})}
 \def\byass{(\textit{assumption})}
 \newcommand{\ih}[1]{(\textit{i.h.}~ #1)}
@@ -83,9 +89,9 @@
 
 \newcommand{\turn}[1]{\vdash^\con{#1}}
 
-\newcommand{\hsubn}[2]{[\sigma]#1=^\con{N}#2}
-\newcommand{\hsub}[2]{[\sigma]#1=^\con{V}#2}
-\newcommand{\hsubext}[3]{[\sigma, #1]#2=^\con{V}#3}
+\newcommand{\rhsubn}[2]{[\sigma]#1=^\con{N}#2}
+\newcommand{\rhsub}[2]{[\sigma]#1=^\con{V}#2}
+\newcommand{\rhsubext}[3]{[\sigma, #1]#2=^\con{V}#3}
 
 \newcommand{\ascribe}[2]{(#1 : #2)}
 \newcommand{\all}[1]{\forall#1.~}
@@ -368,7 +374,7 @@ hereditary substitution relation and prove that it terminates directly.
 \paragraph{Termination of Hereditary Substitution}
 
 $$
-\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}} \hsub{v}{v'}
+\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}} \rhsub{v}{v'}
 $$
 
 Just like proving termination of big-step semantics, we would need to
@@ -710,7 +716,7 @@ model whose type is the codomain of the function.
 \begin{theorem}[Model Reification]
 \label{thm:mod:reify}
 $$
-\typm{A} \marr \typv{A}
+\fun{reify} : \typm{A} \marr \typv{A}
 $$
 
 \begin{proof}
@@ -741,7 +747,7 @@ f' &: \typv{A \arr B} && \by{\lam b'}
 \begin{subtheorem}[Model Reflection]
 \label{lem:mod:refl}
 $$
-\typn{A} \marr \typm{A}
+\fun{reflect} : \typn{A} \marr \typm{A}
 $$
 
 \begin{proof}
@@ -777,7 +783,7 @@ b  &: \gdtypm{B} && \ih{\fun{reflect}~B~(f' \cdot a')}
 \begin{lemma}[Model Monotonicity]
 \label{lem:mod:mono}
 $$
-\all{\Delta} \typm{A} \marr \gdtypm{A}
+\fun{mono} : \all{\Delta} \typm{A} \marr \gdtypm{A}
 $$
 \end{lemma}
 
@@ -786,16 +792,25 @@ $$
 \begin{theorem}[Evaluation into Model]
 \label{thm:mod:eval}
 $$
-\type{A} \marr \menv \marr \dtypm{A}
+\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
 $$
 \end{theorem}
+
+\begin{subtheorem}[Model Primitive Recursion]
+\label{thm:mod:rec}
+$$
+\el{\fun{rec}} : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
+$$
+\end{subtheorem}
+
+
 
 \subsection{Normalization}
 
 \begin{theorem}[Normalization by Evaluation]
 \label{thm:mod:enorm}
 $$
-\type{A} \marr \typv{A}
+\fun{nbe} : \type{A} \marr \typv{A}
 $$
 \end{theorem}
 
@@ -806,13 +821,13 @@ $$
 
 $$
 \infer
-  []{\hsubn{(f \app a)}{b'}}
+  []{\rhsubn{(f \app a)}{b'}}
 {
-  \hsubn{f}{\lam b}
+  \rhsubn{f}{\lam b}
   &
-  \hsub{a}{a'}
+  \rhsub{a}{a'}
   &
-  \hsubext{a'}{b}{b'}
+  \rhsubext{a'}{b}{b'}
 }
 $$
 
@@ -828,14 +843,14 @@ $$
 \begin{theorem}[Canonical Evaluation (of values) into Model]
 \label{thm:mod:veval}
 $$
-\typv{A} \marr \menv \marr \dtypm{A}
+\cevalv : \typv{A} \marr \menv \marr \dtypm{A}
 $$
 \end{theorem}
 
 \begin{subtheorem}[Canonical Evaluation (of neutrals) into Model]
 \label{thm:mod:neval}
 $$
-\typn{A} \marr \menv \marr \dtypm{A}
+\cevaln : \typn{A} \marr \menv \marr \dtypm{A}
 $$
 \end{subtheorem}
 
@@ -844,14 +859,14 @@ $$
 \begin{theorem}[Hereditary Substitution (into values) by Canonical Evaluation]
 \label{thm:mod:vhsub}
 $$
-\typv{A} \marr \env \marr \dtypv{A}
+\hsubv : \typv{A} \marr \env \marr \dtypv{A}
 $$
 \end{theorem}
 
 \begin{subtheorem}[Hereditary Substitution (into neutrals) by Canonical Evaluation]
 \label{thm:mod:nhsub}
 $$
-\typn{A} \marr \env \marr \dtypv{A}
+\hsubn : \typn{A} \marr \env \marr \dtypv{A}
 $$
 \end{subtheorem}
 
@@ -860,7 +875,7 @@ $$
 \begin{theorem}[Normalization by Hereditary Substitution]
 \label{thm:mod:vnorm}
 $$
-\type{A} \marr \typv{A}
+\fun{nbs} : \type{A} \marr \typv{A}
 $$
 \end{theorem}
 
