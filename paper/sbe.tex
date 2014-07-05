@@ -684,22 +684,20 @@ $$
 \begin{defin}[Model of Values]
 \label{def:mod}
 $ $\\
-For any context $\Gamma$ and type $A$, the model of values is
-$\typm{A}$.
+The model of values $\typm{A}$ is defined inductively on the structure
+of types.
 
 \begin{subdefin}[Natural numbers]
-$\typm{\nat}$
 $$
-\typv{\nat}
+\typm{\nat} \dfn \typv{\nat}
 $$
 For natural numbers we require an intrinsically typed natural number
 value.
 \end{subdefin}
 
 \begin{subdefin}[Functions]
-$\typm{A \arr B}$
 $$
-\all{\Delta} \gdtypm{A} \marr \gdtypm{B}
+\typm{A \arr B} \dfn \all{\Delta} \gdtypm{A} \marr \gdtypm{B}
 $$
 
 For functions you get a weakened element of the model whose type is
@@ -785,6 +783,37 @@ b  &: \gdtypm{B} && \ih{\fun{reflect}~B~(f' \cdot a')}
 $$
 \fun{mono} : \all{\Delta} \typm{A} \marr \gdtypm{A}
 $$
+
+\begin{proof}
+
+By induction on the type $A$.
+
+\begin{scase}[Natural numbers]
+\begin{align*}
+\Delta& && \byass\\
+n  &: \typm{\nat} && \byass\\
+n  &: \typv{\nat} && \bydef\\
+n' &: \gdtypv{\nat} && \by{\wknv{n}}\\
+n' &: \gdtypm{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Functions]
+\begin{align*}
+\Delta& && \byass\\
+f  &: \typm{A \arr B} && \byass\\
+\Xi& && \byass\\
+a  &: \el{(\Gamma, \Delta), \Xi \vdash A} && \byass\\
+a  &: \el{\Gamma, (\Delta, \Xi) \vdash A} && \by{associativity}\\
+b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a}\\
+b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+
+
 \end{lemma}
 
 \subsection{Model Evaluation}

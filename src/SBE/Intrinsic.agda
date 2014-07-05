@@ -106,9 +106,9 @@ lookup (xs , x) (there i) = lookup xs i
 
 ⟦wkn⟧ : ∀{Γ} A Δ → ⟦ Γ ⊢ A ⟧ → ⟦ Γ ++ Δ ⊢ A ⟧
 ⟦wkn⟧ `ℕ Δ n = wkn Δ n
-⟦wkn⟧ {Γ = Γ} (A `→ B) Ξ f = lemma where
-  lemma : (Δ : Ctx) → ⟦ (Γ ++ Ξ) ++ Δ ⊢ A ⟧ → ⟦ (Γ ++ Ξ) ++ Δ ⊢ B ⟧
-  lemma Δ a rewrite assoc++ Γ Ξ Δ = f (Ξ ++ Δ) a
+⟦wkn⟧ {Γ = Γ} (A `→ B) Δ f = lemma where
+  lemma : (Ξ : Ctx) → ⟦ (Γ ++ Δ) ++ Ξ ⊢ A ⟧ → ⟦ (Γ ++ Δ) ++ Ξ ⊢ B ⟧
+  lemma Ξ a rewrite assoc++ Γ Δ Ξ = f (Δ ++ Ξ) a
 
 ⟦wknᴱ⟧ : ∀{Ξ} Δ Γ → ⟦Env⟧ Γ Ξ → ⟦Env⟧ Γ (Ξ ++ Δ)
 ⟦wknᴱ⟧ Δ ε tt = tt
