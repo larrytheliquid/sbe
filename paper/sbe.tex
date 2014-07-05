@@ -68,6 +68,7 @@
 \newcommand{\refparte}[1]{Part$_E$ \ref{parte:#1}}
 \newcommand{\refparti}[1]{Part$_I$ \ref{parti:#1}}
 
+\def\cross{\times}
 \def\dfn{\mapsto}
 \def\bigstep{\Downarrow}
 \def\arr{\supset}
@@ -135,6 +136,8 @@
 
 \def\menv{\el{\fun{Env}}~\Gamma~\Delta}
 \def\env{\fun{Env}~\Gamma~\Delta}
+\newcommand{\dmenv}[1]{\el{\fun{Env}}~#1~\Delta}
+\newcommand{\denv}[1]{\fun{Env}~#1~\Delta}
 
 %% \newcommand{\ren}[1]{\Gamma \le #1}
 %% \def\dren{\ren{\Delta}}
@@ -592,7 +595,7 @@ the expression using the big-step semantics terminates at some value.
 
 \subsection{Definition of Realizability Predicate}
 
-First, we give the definiton of the realizability predicate below.
+First, we give the definition of the realizability predicate below.
 
 \begin{defin}[Big-Step Realizability Predicate]
 \label{def:ep}
@@ -709,6 +712,40 @@ model whose type is the codomain of the function.
 
 \subsection{Definition of Environment Model}
 
+The model of environments is a mapping from all variables in some initial context
+$\Gamma$, to model values in some terminal context $\Delta$.
+
+\begin{defin}[Model of Environments]
+\label{def:mod}
+$ $\\
+The model of environments $\menv$ is defined inductively on the structure
+of the first context argument ($\Gamma$).
+
+\begin{subdefin}[Empty context]
+$$
+\dmenv{\epsilon} \dfn \top
+$$
+The empty context is trivially inhabited in the model.
+\end{subdefin}
+
+\begin{subdefin}[Context extension]
+$$
+\dmenv{\Gamma, A} \dfn \dmenv{\Gamma} \cross \dtypm{A}
+$$
+
+For context extension (extending $\Gamma$ by type $A$), the
+environment model must contain an element
+of the value model in the terminal context ($\Delta$) of the
+environment. Additionally, the model of the environment for the
+context being extended ($\Gamma$) is also required.
+
+%% For functions you get a weakened element of the model whose type is
+%% the domain of the function, and must provide a weakened element of the
+%% model whose type is the codomain of the function.
+\end{subdefin}
+
+\end{defin}
+
 \subsection{Model Reification}
 
 \begin{theorem}[Model Reification]
@@ -786,7 +823,7 @@ $$
 
 \begin{proof}
 
-By induction on the type $A$.
+By case analysis of the type $A$.
 
 \begin{scase}[Natural numbers]
 \begin{align*}
