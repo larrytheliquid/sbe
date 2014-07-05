@@ -730,18 +730,14 @@ The empty context is trivially inhabited in the model.
 
 \begin{subdefin}[Context extension]
 $$
-\dmenv{\Gamma, A} \dfn \dmenv{\Gamma} \cross \dtypm{A}
+\dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
 $$
 
-For context extension (extending $\Gamma$ by type $A$), the
-environment model must contain an element
-of the value model in the terminal context ($\Delta$) of the
-environment. Additionally, the model of the environment for the
-context being extended ($\Gamma$) is also required.
+The environment model of a context extension consists of two parts. The first part
+is a model of the environment context being extended ($\Gamma$). The second part
+consists of a model of a value in the terminal context ($\Delta$),
+whose type is the type of the context extension ($A$).
 
-%% For functions you get a weakened element of the model whose type is
-%% the domain of the function, and must provide a weakened element of the
-%% model whose type is the codomain of the function.
 \end{subdefin}
 
 \end{defin}
@@ -978,7 +974,7 @@ model (rather than HA or CCC).
 \acks
 
 We would like to thank Andrew Cave for helping us understand subtle
-issues encountered when formalizing termination proofs. We would also
+issues related to context weakening when formalizing termination proofs. We would also
 like to thank Darin Morrison for originally introducing us to the connection
 between NbE and a Kripke model for intuitionistic logic.
 This work was supported by NSF/CISE/CCF grant \#1320934.
