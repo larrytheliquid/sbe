@@ -126,7 +126,7 @@ f ⟦∙⟧ a = f ε a
 ⟦rec⟧ : ∀{Γ C} → ⟦ Γ ⊢ C ⟧ → ⟦ Γ ⊢ (C `→ C) ⟧ → ⟦ Γ ⊢ `ℕ ⟧ → ⟦ Γ ⊢ C ⟧
 ⟦rec⟧ cz cs `zero = cz
 ⟦rec⟧ cz cs (`suc n) = cs ε (⟦rec⟧ cz cs n)
-⟦rec⟧ cz cs (`neut n) = reflectᴺ _ (`rec (reify _ cz) (`λ (`neut (`var here))) n)
+⟦rec⟧ cz cs (`neut n) = reflectᴺ _ (`rec (reify _ cz) (reify _ cs) n)
 
 ----------------------------------------------------------------------
 

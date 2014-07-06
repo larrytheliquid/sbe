@@ -76,6 +76,7 @@
 \def\app{\cdot}
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
+\def\emp{\epsilon}
 
 \def\cevalv{\fun{ceval}}
 \def\cevaln{\fun{ceval}^\con{N}}
@@ -620,6 +621,9 @@ $\typm{A \arr B}(f)$
 &\gdtypm{A}(a) \marr \gdtypm{B}(\wkne{f} \app a)
 \end{align*}
 
+\todo[inline]{mention extra verbosity of statements and in proofs due
+  to terms appearning in the predicate, like needing to weaken f here}
+
 For functions we require that for any weakened proof that $a$
 is realized, a proof that a weakened version of $f$ applied to
 $a$ is also realized.
@@ -712,7 +716,10 @@ model whose type is the codomain of the function.
 
 \subsection{Definition of Environment Model}
 
-The model of environments is a mapping from all variables in some initial context
+The evaluation function (\refthm{TODO}) from expressions to model
+values requires an extra parameter, called the environment, to collect
+model values when evaluating underneath $\lambda$ terms in the model.
+The model of environments is thus a mapping from all variables in some initial context
 $\Gamma$, to model values in some terminal context $\Delta$.
 
 \begin{defin}[Model of Environments]
@@ -723,7 +730,7 @@ of the first context argument ($\Gamma$).
 
 \begin{subdefin}[Empty context]
 $$
-\dmenv{\epsilon} \dfn \top
+\dmenv{\emp} \dfn \top
 $$
 The empty context is trivially inhabited in the model.
 \end{subdefin}
@@ -752,7 +759,7 @@ $$
 
 \begin{proof}
 
-By induction on types.
+By induction on the type $A$.
 
 \begin{scase}[Natural numbers]
 \begin{align*}
@@ -765,7 +772,7 @@ n  &: \typv{\nat} && \bydef
 \begin{align*}
 f &: \typm{A \arr B} && \byass\\
 a &: \gatypm{A} && \ih{\fun{reflect}~A~(\con{var here})}\\
-b &: \gatypm{B} && \by{f~(\epsilon, A)~a}\\
+b &: \gatypm{B} && \by{f~(\emp, A)~a}\\
 b' &: \gatypv{B} && \ih{\fun{reify}~B~b}\\
 f' &: \typv{A \arr B} && \by{\lam b'}
 \end{align*}
@@ -783,7 +790,7 @@ $$
 
 \begin{proof}
 
-By induction on types.
+By induction on the type $A$.
 
 \begin{scase}[Natural numbers]
 \begin{align*}
@@ -851,11 +858,16 @@ b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 
 \subsection{Model Evaluation}
 
+\todo[inline]{description of eval and prim rec model}
+
 \begin{theorem}[Evaluation into Model]
 \label{thm:mod:eval}
 $$
 \fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
 $$
+
+\todo[inline]{eval proof}
+
 \end{theorem}
 
 \begin{subtheorem}[Model of Primitive Recursion]
@@ -863,9 +875,50 @@ $$
 $$
 \el{\fun{rec}} : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
 $$
+
+\begin{proof}
+
+By induction on the natural number model value $\typm{\nat}$.
+Definitionally, this reduces to induction on the natural number theory
+value $\typv{\nat}$.
+
+\begin{scase}[Zero]
+\begin{align*}
+c_z  &: \typm{C} && \byass
+\end{align*}
+\end{scase}
+
+\begin{scase}[Successor]
+\begin{align*}
+c_z  &: \typm{C} && \byass\\
+c_s  &: \typm{C \arr C} && \byass\\
+n    &: \typv{\nat} && \byass\\
+n    &: \typm{\nat} && \bydef\\
+c    &: \typm{C} && \ih{\el{\fun{rec}}~c_z~c_s~n}\\
+c'   &: \typm{C} && \by{c_s~\emp~c}
+\end{align*}
+\end{scase}
+
+\begin{scase}[Neutral]
+\begin{align*}
+c_z  &: \typm{C} && \byass\\
+c_s  &: \typm{C \arr C} && \byass\\
+n    &: \typn{\nat} && \byass\\
+c_z' &: \typv{C} && \by{\fun{reify}~C~c_z}\\
+c_s' &: \typv{C \arr C} && \by{\fun{reify}~(C \arr C)~c_s}\\
+c'   &: \typn{C} && \by{\fun{rec}~c_z'~c_s'~n}\\
+c''  &: \typm{C} && \by{\fun{reflect}~C~c'}
+\end{align*}
+\end{scase}
+
+
+\end{proof}
+
 \end{subtheorem}
 
 \subsection{Normalization}
+
+\todo[inline]{nbe proof}
 
 \begin{theorem}[Normalization by Evaluation]
 \label{thm:mod:enorm}
@@ -997,7 +1050,7 @@ an extrinsic typing relation over said grammar.
 }
 \begin{align*}
 A, B, C &::= \nat ~ | ~ A \arr B \\
-\Gamma, \Delta, \Xi &::= \epsilon ~ | ~ \Gamma , A
+\Gamma, \Delta, \Xi &::= \emp ~ | ~ \Gamma , A
 \end{align*}
 \label{fig:gram}
 \end{figure}
