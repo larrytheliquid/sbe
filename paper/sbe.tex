@@ -580,8 +580,6 @@ there is no obvious termination measure to justify this.
 
 \subsection{Termination of Big-Step}
 
-\todo[inline]{commutative diagram mentioning contexts}
-
 The idea of the realizability predicate is to relate a term to the
 theorem we are trying to prove (big-step termination) at non-arrow
 base types (i.e. $\nat$), and use the function space of the
@@ -593,6 +591,16 @@ of the argument. But before we can prove that all expressions satisfy
 the realizability predicate, we must prove that satisfaction of the
 realizability predicate for some expression implies that evaluating
 the expression using the big-step semantics terminates at some value.
+
+\begin{displaymath}
+    \xymatrix{
+          {\forall \ascribe{e}{\type{A}}} 
+          \ar[dr]_{\fun{termination}}
+          \ar[r]^{\fun{evaluate}}
+        & {\typm{A}(e)}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & {\ex{\ascribe{e'}{\type{A}}} ~ e \bigstep e' \wedge \fun{IsValue} ~ e'} }
+\end{displaymath}
 
 \subsection{Definition of Realizability Predicate}
 
@@ -684,7 +692,15 @@ $$
 \section{Intrinsic Big-Step Semantics}
 \label{sec:emod}
 
-\todo[inline]{commutative diagram mentioning contexts}
+\begin{displaymath}
+    \xymatrix{
+          {\type{A}} 
+          \ar[dr]_{\fun{nbe}}
+          \ar[r]^{\fun{eval}}
+        & {\typm{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & \typv{A} }
+\end{displaymath}
 
 \subsection{Definition of Value Model}
 
@@ -948,6 +964,16 @@ $$
 
 \section{Intrinsic Hereditary Substitution Semantics}
 \label{sec:vmod}
+
+\begin{displaymath}
+    \xymatrix{
+          {\typv{A} \cross \env} 
+          \ar[dr]_{\fun{sbe}}
+          \ar[r]^{\fun{ceval}}
+        & {\dtypm{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & \dtypv{A} }
+\end{displaymath}
 
 \subsection{Definition of Environment}
 
