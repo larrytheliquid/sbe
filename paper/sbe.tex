@@ -82,11 +82,15 @@
 \def\suc{\con{suc}}
 \def\neut{\con{neut}}
 
+\def\rec{\fun{rec}}
+
 \def\mono{\fun{mono}}
 \def\monos{\fun{monos}}
 
 \def\cevalv{\fun{ceval}}
 \def\cevaln{\fun{ceval}^\con{N}}
+
+\def\lookup{\fun{lookup}}
 
 \def\hsubv{\fun{sbe}}
 \def\hsubn{\fun{sbe}^\con{N}}
@@ -1084,6 +1088,48 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 $$
 \cevaln : \typn{A} \marr \menv \marr \dtypm{A}
 $$
+
+\begin{proof}
+
+By induction on the neutral $\typn{A}$.
+
+\begin{scase}[Variable]
+\begin{align*}
+i   &: \typr{A} && \byass\\
+\sigma  &: \menv && \byass\\
+a  &: \dtypm{A} && \by{\lookup~\sigma~i}
+\end{align*}
+\end{scase}
+
+\begin{scase}[Application]
+\begin{align*}
+f   &: \typn{A \arr B} && \byass\\
+a   &: \typv{A} && \byass\\
+\sigma  &: \menv && \byass\\
+f'  &: \dtypm{A \arr B} && \ih{\cevaln~f~\sigma}\\
+f'  &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
+a'  &: \dtypm{A} && \ih{\cevalv~a~\sigma}\\
+b   &: \dtypm{B} && \by{f~\emp~a'}
+\end{align*}
+\end{scase}
+
+\begin{scase}[Primitive Recursion]
+\begin{align*}
+c_z  &: \typv{C} && \byass\\
+c_s  &: \typv{C \arr C} && \byass\\
+n    &: \typn{\nat} && \byass\\
+\sigma  &: \menv && \byass\\
+c_z' &: \dtypm{C} && \ih{\cevalv~c_z~\sigma}\\
+c_s' &: \dtypm{C \arr C} && \ih{\cevalv~c_s~\sigma}\\
+n'   &: \dtypm{\nat} && \ih{\cevaln~n~\sigma}\\
+c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+
+
 \end{subtheorem}
 
 \subsection{Hereditary Substitution}
