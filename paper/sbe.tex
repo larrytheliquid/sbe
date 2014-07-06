@@ -78,6 +78,9 @@
 \def\nat{\mathbb{N}}
 \def\emp{\epsilon}
 
+\def\zero{\con{zero}}
+\def\suc{\con{suc}}
+
 \def\cevalv{\fun{ceval}}
 \def\cevaln{\fun{ceval}^\con{N}}
 
@@ -111,6 +114,7 @@
 \newcommand{\typm}[1]{\el{\Gamma \vdash #1}}
 \newcommand{\dtypm}[1]{\el{\Delta \vdash #1}}
 \newcommand{\gdtypm}[1]{\el{\Gamma, \Delta \vdash #1}}
+\newcommand{\gftypm}[1]{\el{\Gamma, \Phi \vdash #1}}
 \newcommand{\gatypm}[1]{\el{\Gamma, A \vdash #1}}
 \newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2}}
 
@@ -787,6 +791,7 @@ n  &: \typv{\nat} && \bydef
 \begin{scase}[Functions]
 \begin{align*}
 f &: \typm{A \arr B} && \byass\\
+f &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
 a &: \gatypm{A} && \ih{\fun{reflect}~A~(\con{var here})}\\
 b &: \gatypm{B} && \by{f~(\emp, A)~a}\\
 b' &: \gatypv{B} && \ih{\fun{reify}~B~b}\\
@@ -861,6 +866,7 @@ f  &: \typm{A \arr B} && \byass\\
 \Xi& && \byass\\
 a  &: \el{(\Gamma, \Delta), \Xi \vdash A} && \byass\\
 a  &: \el{\Gamma, (\Delta, \Xi) \vdash A} && \by{associativity}\\
+f  &: \all{\Phi} \gftypm{A} \marr \gftypm{B} && \bydef\\
 b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a}\\
 b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 \end{align*}
@@ -921,6 +927,7 @@ c_s  &: \typm{C \arr C} && \byass\\
 n    &: \typv{\nat} && \byass\\
 n    &: \typm{\nat} && \bydef\\
 c    &: \typm{C} && \ih{\el{\fun{rec}}~c_z~c_s~n}\\
+c_s  &: \all{\Delta} \gdtypm{C} \marr \gdtypm{C} && \bydef\\
 c'   &: \typm{C} && \by{c_s~\emp~c}
 \end{align*}
 \end{scase}
@@ -942,7 +949,7 @@ c''  &: \typm{C} && \by{\fun{reflect}~C~c'}
 
 \end{subtheorem}
 
-\subsection{Model Identity of Environment}
+\subsection{Identity Model Environment}
 
 \todo[inline]{description and proof}
 
@@ -1009,6 +1016,32 @@ $$
 \cevalv : \typv{A} \marr \menv \marr \dtypm{A}
 $$
 \end{theorem}
+
+\begin{proof}
+
+By induction on the value $\typv{A}$.
+
+\begin{scase}[Zero]
+\begin{align*}
+n  &: \dtypv{\nat} && \by{\zero}\\
+n  &: \dtypm{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Successor]
+\begin{align*}
+n   &: \typv{\nat} && \byass\\
+\sigma  &: \env && \byass\\
+n'  &: \dtypm{\nat} && \ih{\cevalv~n~\sigma}\\
+n'  &: \dtypv{\nat} && \bydef\\
+m   &: \dtypv{\nat} && \by{\suc~n'}\\
+m'  &: \dtypm{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+
 
 \begin{subtheorem}[Canonical Evaluation (of neutrals) into Model]
 \label{thm:mod:neval}
