@@ -215,6 +215,9 @@ norm (f `∙ a) = norm f ∙ norm a
 ⟦eval⟧ (`rec cz cs n) σ = ⟦rec⟧ (⟦eval⟧ cz σ) (⟦eval⟧ cs σ) (⟦eval⟧ n σ)
 ⟦eval⟧ (f `∙ a) σ = ⟦eval⟧ f σ ⟦∙⟧ ⟦eval⟧ a σ
 
+nbe : ∀{Γ A} → Expr Γ A → Val Γ A
+nbe x = reify _ (⟦eval⟧ x (⟦idEnv⟧ _))
+
 eval : ∀{Γ Δ A} → Expr Γ A → Env Γ Δ → Val Δ A
 eval x σ = reify _ (⟦eval⟧ x (reflectᴱ _ _ σ))
 
