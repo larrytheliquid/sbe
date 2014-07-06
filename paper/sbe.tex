@@ -80,6 +80,10 @@
 
 \def\zero{\con{zero}}
 \def\suc{\con{suc}}
+\def\neut{\con{neut}}
+
+\def\mono{\fun{mono}}
+\def\monos{\fun{monos}}
 
 \def\cevalv{\fun{ceval}}
 \def\cevaln{\fun{ceval}^\con{N}}
@@ -143,6 +147,9 @@
 \def\env{\fun{Env}~\Gamma~\Delta}
 \newcommand{\dmenv}[1]{\el{\fun{Env}}~#1~\Delta}
 \newcommand{\denv}[1]{\fun{Env}~#1~\Delta}
+\newcommand{\gmenv}[1]{\el{\fun{Env}}~\Gamma~#1}
+\newcommand{\genv}[1]{\fun{Env}~\Gamma~#1}
+
 
 %% \newcommand{\ren}[1]{\Gamma \le #1}
 %% \def\dren{\ren{\Delta}}
@@ -874,9 +881,18 @@ b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 
 \end{proof}
 
+\end{lemma}
 
+\begin{lemma}[Environment Model Monotonicity]
+\label{lem:mod:monos}
+$$
+\monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
+$$
 
 \end{lemma}
+
+\todo[inline]{description and proof}
+
 
 \subsection{Model Evaluation}
 
@@ -1031,13 +1047,33 @@ n  &: \dtypm{\nat} && \bydef
 \begin{scase}[Successor]
 \begin{align*}
 n   &: \typv{\nat} && \byass\\
-\sigma  &: \env && \byass\\
+\sigma  &: \menv && \byass\\
 n'  &: \dtypm{\nat} && \ih{\cevalv~n~\sigma}\\
 n'  &: \dtypv{\nat} && \bydef\\
 m   &: \dtypv{\nat} && \by{\suc~n'}\\
 m'  &: \dtypm{\nat} && \bydef
 \end{align*}
 \end{scase}
+
+\begin{scase}[Function]
+\begin{align*}
+b   &: \gatypv{B} && \byass\\
+\sigma  &: \menv && \byass\\
+\Xi& && \byass\\
+a   &: \el{\Delta, \Xi \vdash A} && \byass\\
+\sigma'  &: \gmenv{(\Delta, \Xi)} && \by{\monos~\Xi~\sigma}\\
+b'  &: \dtypm{B} && \ih{\cevalv~b~(\sigma', a)}\\
+\end{align*}
+\end{scase}
+
+\begin{scase}[Neutral]
+\begin{align*}
+a   &: \typn{A} && \byass\\
+\sigma  &: \menv && \byass\\
+a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
+\end{align*}
+\end{scase}
+
 
 \end{proof}
 

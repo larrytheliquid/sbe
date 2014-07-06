@@ -135,7 +135,7 @@ f ⟦∙⟧ a = f ε a
 
 ⟦sub⟧ `zero σ = `zero
 ⟦sub⟧ (`suc n) σ = `suc (⟦sub⟧ n σ)
-⟦sub⟧ {Γ = Γ} {Δ = Ξ} (`λ f) σ = λ Δ a → ⟦sub⟧ f (⟦wknᴱ⟧ Δ Γ σ , a)
+⟦sub⟧ {Γ = Γ} {Δ = Δ} (`λ b) σ = λ Ξ a → ⟦sub⟧ b (⟦wknᴱ⟧ Ξ Γ σ , a)
 ⟦sub⟧ (`neut x) σ = ⟦subᴺ⟧ x σ
 
 ⟦subᴺ⟧ (`var i) σ = lookup σ i
