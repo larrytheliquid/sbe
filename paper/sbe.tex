@@ -84,6 +84,9 @@
 \def\nat{\mathbb{N}}
 \def\emp{\epsilon}
 
+\def\here{\con{here}}
+\def\there{\con{there}}
+
 \def\var{\con{var}}
 \def\zero{\con{zero}}
 \def\suc{\con{suc}}
@@ -115,6 +118,7 @@
 
 \def\bydef{(\textit{definition})}
 \def\byass{(\textit{assumption})}
+\def\bytri{(\textit{trivial})}
 \newcommand{\ih}[1]{(\textit{i.h.}~ #1)}
 \newcommand{\by}[1]{(#1)}
 
@@ -916,10 +920,11 @@ $$
 $$
 
 \begin{proof}
-By induction on the context $\Delta$.
+By induction on the context $\Gamma$.
 
 \begin{lcase}[Empty Context]
 \begin{align*}
+\Delta& && \byass\\
 u &: \top && \byass\\
 u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
 \end{align*}
@@ -927,8 +932,7 @@ u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
 
 \begin{lcase}[Context extension]
 \begin{align*}
-\Gamma& && \byass\\
-A& && \byass\\
+\Delta& && \byass\\
 xs   &: \gmenv{\Xi} && \byass\\
 x    &: \xtypm{A} && \byass\\
 xs'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~xs}\\
@@ -1017,14 +1021,45 @@ c''  &: \typm{C} && \by{\fun{reflect}~C~c'}
 
 \subsection{Identity Model Environment}
 
-\todo[inline]{description and proof}
+\begin{lemma}[Identity Model Environment]
+\label{lem:mod:midenv}
+$$
+\midenv : \all{\Gamma} \gmenv{\Gamma}
+$$
+
+\begin{proof}
+By induction on the context $\Gamma$.
+
+\begin{lcase}[Empty Context]
+\begin{align*}
+u &: \top && \bytri\\
+u &: \cmenv{\emp}{\emp} && \bydef
+\end{align*}
+\end{lcase}
+
+\begin{lcase}[Context extension]
+\begin{align*}
+\Gamma& && \byass\\
+A& && \byass\\
+xs   &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
+xs'  &: \cmenv{\Gamma}{(\Gamma, A)} && \by{\monos~(\emp, A)~xs}\\
+x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
+xs'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{xs', x}
+\end{align*}
+\end{lcase}
+
+\end{proof}
+
+\end{lemma}
+
+\todo[inline]{description of identity model environment}
 
 \subsection{Normalization}
 
 \todo[inline]{nbe description}
 
 \begin{theorem}[Normalization by Evaluation]
-\label{thm:mod:enorm}
+\label{thm:mod:nbe}
 $$
 \fun{nbe} : \type{A} \marr \typv{A}
 $$
