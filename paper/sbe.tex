@@ -61,6 +61,10 @@
 
 \newtheorem{lemma}{Lemma}
 
+\newtheorem{lcase}{Case}
+\numberwithin{lcase}{lemma}
+
+
 \newcommand{\refdef}[1]{Definition \ref{dfn:#1}}
 \newcommand{\refthm}[1]{Theorem \ref{thm:#1}}
 \newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
@@ -135,6 +139,8 @@
 
 \newcommand{\typm}[1]{\el{\Gamma \vdash #1}}
 \newcommand{\dtypm}[1]{\el{\Delta \vdash #1}}
+\newcommand{\xtypm}[1]{\el{\Xi \vdash #1}}
+\newcommand{\xdtypm}[1]{\el{\Xi, \Delta \vdash #1}}
 \newcommand{\gdtypm}[1]{\el{\Gamma, \Delta \vdash #1}}
 \newcommand{\gftypm}[1]{\el{\Gamma, \Phi \vdash #1}}
 \newcommand{\gatypm}[1]{\el{\Gamma, A \vdash #1}}
@@ -167,6 +173,8 @@
 \newcommand{\denv}[1]{\fun{Env}~#1~\Delta}
 \newcommand{\gmenv}[1]{\el{\fun{Env}}~\Gamma~#1}
 \newcommand{\genv}[1]{\fun{Env}~\Gamma~#1}
+\newcommand{\cmenv}[2]{\el{\fun{Env}}~#1~#2}
+\newcommand{\cenv}[2]{\fun{Env}~#1~#2}
 
 
 %% \newcommand{\ren}[1]{\Gamma \le #1}
@@ -867,7 +875,7 @@ b  &: \gdtypm{B} && \ih{\fun{reflect}~B~(f' \cdot a')}
 \begin{lemma}[Model Monotonicity]
 \label{lem:mod:mono}
 $$
-\fun{mono} : \all{\Delta} \typm{A} \marr \gdtypm{A}
+\mono : \all{\Delta} \typm{A} \marr \gdtypm{A}
 $$
 
 \begin{proof}
@@ -907,9 +915,33 @@ $$
 \monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
 $$
 
+\begin{proof}
+By induction on the context $\Delta$.
+
+\begin{lcase}[Empty Context]
+\begin{align*}
+u &: \top && \byass\\
+u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
+\end{align*}
+\end{lcase}
+
+\begin{lcase}[Context extension]
+\begin{align*}
+\Gamma& && \byass\\
+A& && \byass\\
+xs   &: \gmenv{\Xi} && \byass\\
+x    &: \xtypm{A} && \byass\\
+xs'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~xs}\\
+x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
+xs'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{xs', x'}
+\end{align*}
+\end{lcase}
+
+\end{proof}
+
 \end{lemma}
 
-\todo[inline]{description and proof}
+\todo[inline]{description of environment model monotonicity}
 
 
 \subsection{Model Evaluation}
