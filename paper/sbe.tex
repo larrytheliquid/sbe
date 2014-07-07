@@ -236,9 +236,11 @@ Type theory; hereditary substitution; termination; formalization.
 As type theorists we often find ourselves in the following situation.
 We're studying some (hopefully) total lamba calculus. We define some
 syntax as an inductive datatype. Then we write down the typing rules and semantics 
-and other properties as relations. Some of our relations are propositional (described as a dependently
-typed, or indexed datatype) and some are definitional (described as
-one or more equations). For example we might have
+and other properties as relations. Some of our relations are
+propositional (i.e. a type family defined as an indexed datatype in a
+dependently typed language) and some are definitional (i.e. a type
+family defined as a function in a dependently typed language). For
+example we might have 
 
 \[
 \begin{array}{lll}
@@ -277,8 +279,8 @@ that they terminate as some value.
 In this case we have a unary
 logical relation on expressions, or a realizability
 predicate~\cite{TODO}. You can prove termination as the composition of
-evaluation of expressions into the logical relation, and reification
-of termination evidence as a function from the logical relation.
+evaluation of expressions into the realizability predicate, and reification
+of termination evidence as a function from the realizability predicate.
 
 \begin{displaymath}
     \xymatrix{
@@ -293,7 +295,7 @@ of termination evidence as a function from the logical relation.
 Many operational semantics have been proven to terminate using this
 method. For example, the realizability predicate and associated lemmas
 needed to prove that a big-step semantics terminates for G{\"o}del's
-System T are well known. It is easy to understand and verify such
+System T are well known. It is straightforward to understand and verify such
 completed definitions and proofs, but coming up with the correct
 realizability predicate and associated lemmas for a novel proof takes
 ingenuity. 
@@ -322,7 +324,7 @@ theorem of {\bf Type Preservation} for {\it free}!
 
 {\bf Now to the point:} 
 Recall the ``termination'' arrow in the commutative diagram for our
-logical relations proof above. By analogy to intrinsic typing, you
+realizability proof above. By analogy to intrinsic typing, you
 can think of the big-step relation on expressions as an
 {\it extrinsic semantics}, and the termination proof as a function
 that produces a witness that the extrinsic semantics terminates. Yet,
@@ -367,7 +369,7 @@ The similarities between realizability predicates and Kripke models are
 readily apparent. Neither of these concepts are new, we merely wish
 to point out that NbE falls out of thinking of the
 realizability predicate-based termination proof of an {\it extrinsic}
-operational semantics as (a rather complicated way of) defining an {\it intrinsic}
+operational semantics as defining an {\it intrinsic}
 semantics.
 
 Just as intrinsic typing simplifies statements of theorems, intrinsic semantics simplifies
@@ -468,10 +470,16 @@ the following diagram commute.
 \\      & \ex{\ascribe{v'}{A}} }
 \end{displaymath}
 
-We get to reuse the arrow on the right. Our contribution is the arrow
-on the top, performing ``canonical evaluation'' of values by injecting
+We get to reuse the arrow on the right. Our contributions is the arrow
+on the top (\refthm{TODO}) and the arrow on the bottom
+(\refthm{TODO}). 
+The former performs ``canonical evaluation'' of values by injecting
 them into the model and evaluating under an environment whenever a
-variable is encountered. For expressions, a Kripke model allows
+variable is encountered. The latter defines hereditary substitution as
+the composition of canonical evaluation and reification, as well as a
+more subtle reflection of the environment  $\sigma$ into the model
+(\refthm{TODO}).
+For expressions, a Kripke model allows
 normalization to be defined by evaluation (NbE). For values, a Kripke
 model allows hereditary substitution to be defined by canonical
 evaluation (SbE). Hence, our slogan:
