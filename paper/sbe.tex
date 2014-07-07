@@ -65,7 +65,7 @@
 \numberwithin{lcase}{lemma}
 
 
-\newcommand{\refdef}[1]{Definition \ref{dfn:#1}}
+\newcommand{\refdef}[1]{Definition \ref{def:#1}}
 \newcommand{\refthm}[1]{Theorem \ref{thm:#1}}
 \newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
 
@@ -795,7 +795,7 @@ interesting case is the the model of functions, which uses the
 higher-order structure of the metalanguage.
 
 \begin{defin}[Model of Values]
-\label{def:mod}
+\label{def:mval}
 $ $\\
 The model of values $\typm{A}$ is defined inductively on the structure
 of types.
@@ -822,6 +822,21 @@ model whose type is the codomain of the function.
 
 \subsection{Reification}
 \label{sec:emod:reify}
+
+Reification (\refthm{mod:reify}) is the process of turning a model value into a theory
+model. The model of natural numbers is the theory value, so their
+reification is immediate. The interesting case is the reification of
+functions. We need to somehow go from a higher-order model function to
+a first-order theory value of function type. The model of functions
+was specifically engineered to make it possible to weaken the domain
+and codomain by an arbitrary $\Delta$ for exactly this case! A
+function is reified by weakening by the type expected in the domain,
+passing in a free variable of De Bruijn zero, then constructing a
+lambda value from the reification of the result. However, the domain
+of the model function a model value, so we must translate the variable
+to an element of the model. Luckily, it is possible to
+reflect (\reflem{mod:reflect}) any neutral term (including variables),
+so we must prove reflection mutually with reification.
 
 \begin{theorem}[Model Reification]
 \label{thm:mod:reify}
@@ -855,8 +870,14 @@ f' &: \typv{A \arr B} && \by{\lam b'}
 
 \end{theorem}
 
+Note that we can only reflect neutrals. Values must instead be
+evaluated (\refthm{mod:eval}), which requires a model of an
+environment (\refdef{menv}) as an additional parameter that neutral reflection does
+not need. The proof of reflection is straightforward and given explicitly
+below. 
+
 \begin{subtheorem}[Model Reflection]
-\label{lem:mod:refl}
+\label{lem:mod:reflect}
 $$
 \fun{reflect} : \typn{A} \marr \typm{A}
 $$
@@ -898,7 +919,7 @@ The model of environments is thus a mapping from all variables in some initial c
 $\Gamma$, to model values in some terminal context $\Delta$.
 
 \begin{defin}[Model of Environments]
-\label{def:mod}
+\label{def:menv}
 $ $\\
 The model of environments $\menv$ is defined inductively on the structure
 of the first context argument ($\Gamma$).
