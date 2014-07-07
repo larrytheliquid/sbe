@@ -104,6 +104,7 @@
 \def\mono{\fun{mono}}
 \def\monos{\fun{monos}}
 
+\def\eval{\fun{eval}}
 \def\cevalv{\fun{ceval}}
 \def\cevaln{\fun{ceval}^\con{N}}
 
@@ -933,11 +934,11 @@ u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
 \begin{lcase}[Context extension]
 \begin{align*}
 \Delta& && \byass\\
-xs   &: \gmenv{\Xi} && \byass\\
+\sigma &: \gmenv{\Xi} && \byass\\
 x    &: \xtypm{A} && \byass\\
-xs'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~xs}\\
+\sigma'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~\sigma}\\
 x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
-xs'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{xs', x'}
+\sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
 \end{align*}
 \end{lcase}
 
@@ -1041,10 +1042,10 @@ u &: \cmenv{\emp}{\emp} && \bydef
 \begin{align*}
 \Gamma& && \byass\\
 A& && \byass\\
-xs   &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
-xs'  &: \cmenv{\Gamma}{(\Gamma, A)} && \by{\monos~(\emp, A)~xs}\\
+\sigma  &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
+\sigma' &: \cmenv{\Gamma}{(\Gamma, A)} && \by{\monos~(\emp, A)~\sigma}\\
 x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
-xs'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{xs', x}
+\sigma'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{\sigma', x}
 \end{align*}
 \end{lcase}
 
@@ -1063,9 +1064,19 @@ xs'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{xs', x}
 $$
 \fun{nbe} : \type{A} \marr \typv{A}
 $$
-\end{theorem}
 
-\todo[inline]{nbe proof}
+\begin{proof}
+\begin{align*}
+x    &: \type{A} && \byass\\
+\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
+x'  &: \typm{A} && \by{\eval~x~\sigma}\\
+x'' &: \typv{A} && \by{\reify~x'}
+\end{align*}
+\end{proof}
+
+
+
+\end{theorem}
 
 \section{Extrinsic Hereditary Substitution Semantics}
 \label{sec:vpred}
