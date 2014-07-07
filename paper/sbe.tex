@@ -742,6 +742,27 @@ $$
 \section{Intrinsic Big-Step Semantics}
 \label{sec:emod}
 
+Recall from \refsec{epred} that we had an extrinsic relational
+semantics ($e \bigstep e'$) that was not obviously terminating due to
+the lack of a clear termination measure in the function application
+case. To prove termination, we defined a realizability predicate
+($\typm{A}(e)$) with the key characteristic that it used the
+higher-order function space of the metalanguage for expressions of
+function type. This way ``evaluating'' a function application
+expression ($f \app a$) into the realizability predicate is obviously
+terminating (unlike the extrinsic semantics), because evaluating 
+the function ($f$) expression gives us a metalanguage function that
+can be applied to the result of evaluating the argument ($a$).
+
+If we get rid of the extrinsic semantics and the
+expression parameter of the realizability predicate, the realizability
+predicate becomes a Kripke model of values and the termination proof becomes an
+intrinsic (functional) big-step semantics from expressions to model
+values. Thus, normalization of expressions to values can be defined in
+terms of evaluation from expressions to model values, depicted once
+again in the commutative diagram below, this time using our
+formal notation that mentions contexts explicitly.
+
 \begin{displaymath}
     \xymatrix{
           {\type{A}} 
@@ -752,7 +773,26 @@ $$
 \\      & \typv{A} }
 \end{displaymath}
 
-\subsection{Definition of Value Model}
+%% In the remainder of this section we prove the arrows of
+%% the diagram above, and explain the definitions involved, in the following order:
+
+%% \begin{itemize}
+%% \item{\bf{\refsec{emod:reify}}} Reification
+%% \item{\bf{\refsec{emod:eval}}} Evaluation
+%% \item{\bf{\refsec{emod:nbe}}} Normalization
+%% \end{itemize}
+
+\subsection{Value Model}
+\label{sec:emod:model}
+
+We begin by defining the model of values that our semantics will
+evaluate into, from which we subsequently reify results out of
+(going from model values to theory values).
+
+The model of natural numbers can be thought of as a base case,
+consisting merely of natural numbers values of the theory. The
+interesting case is the the model of functions, which uses the
+higher-order structure of the metalanguage.
 
 \begin{defin}[Model of Values]
 \label{def:mod}
@@ -780,42 +820,8 @@ model whose type is the codomain of the function.
 
 \end{defin}
 
-\subsection{Definition of Environment Model}
-
-The evaluation function (\refthm{TODO}) from expressions to model
-values requires an extra parameter, called the environment, to collect
-model values when evaluating underneath $\lambda$ terms in the model.
-The model of environments is thus a mapping from all variables in some initial context
-$\Gamma$, to model values in some terminal context $\Delta$.
-
-\begin{defin}[Model of Environments]
-\label{def:mod}
-$ $\\
-The model of environments $\menv$ is defined inductively on the structure
-of the first context argument ($\Gamma$).
-
-\begin{subdefin}[Empty context]
-$$
-\dmenv{\emp} \dfn \top
-$$
-The empty context is trivially inhabited in the model.
-\end{subdefin}
-
-\begin{subdefin}[Context extension]
-$$
-\dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
-$$
-
-The environment model of a context extension consists of two parts. The first part
-is a model of the environment context being extended ($\Gamma$). The second part
-consists of a model of a value in the terminal context ($\Delta$),
-whose type is the type of the context extension ($A$).
-
-\end{subdefin}
-
-\end{defin}
-
-\subsection{Model Reification}
+\subsection{Reification}
+\label{sec:emod:reify}
 
 \begin{theorem}[Model Reification]
 \label{thm:mod:reify}
@@ -882,6 +888,41 @@ b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
 
 \end{subtheorem}
 
+\subsection{Definition of Environment Model}
+\label{sec:emod:menv}
+
+The evaluation function (\refthm{TODO}) from expressions to model
+values requires an extra parameter, called the environment, to collect
+model values when evaluating underneath $\lambda$ terms in the model.
+The model of environments is thus a mapping from all variables in some initial context
+$\Gamma$, to model values in some terminal context $\Delta$.
+
+\begin{defin}[Model of Environments]
+\label{def:mod}
+$ $\\
+The model of environments $\menv$ is defined inductively on the structure
+of the first context argument ($\Gamma$).
+
+\begin{subdefin}[Empty context]
+$$
+\dmenv{\emp} \dfn \top
+$$
+The empty context is trivially inhabited in the model.
+\end{subdefin}
+
+\begin{subdefin}[Context extension]
+$$
+\dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
+$$
+
+The environment model of a context extension consists of two parts. The first part
+is a model of the environment context being extended ($\Gamma$). The second part
+consists of a model of a value in the terminal context ($\Delta$),
+whose type is the type of the context extension ($A$).
+
+\end{subdefin}
+
+\end{defin}
 
 \subsection{Other Lemmas}
 
