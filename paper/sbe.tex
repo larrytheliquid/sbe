@@ -80,11 +80,14 @@
 \def\nat{\mathbb{N}}
 \def\emp{\epsilon}
 
+\def\var{\con{var}}
 \def\zero{\con{zero}}
 \def\suc{\con{suc}}
 \def\neut{\con{neut}}
 
 \def\rec{\fun{rec}}
+\def\rbs{\fun{rbs}}
+\def\abs{\fun{abs}}
 
 \def\reify{\fun{reify}}
 
@@ -99,8 +102,12 @@
 
 \def\lookup{\fun{lookup}}
 
-\def\hsubv{\fun{sbe}}
-\def\hsubn{\fun{sbe}^\con{N}}
+\def\sbe{\fun{sbe}}
+
+\def\nbs{\fun{nbs}}
+
+\def\idenv{\fun{idEnv}}
+\def\midenv{\el{\fun{idEnv}}}
 
 \def\bydef{(\textit{definition})}
 \def\byass{(\textit{assumption})}
@@ -109,9 +116,9 @@
 
 \newcommand{\turn}[1]{\vdash^\con{#1}}
 
-\newcommand{\rhsubn}[2]{[\sigma]#1=^\con{N}#2}
-\newcommand{\rhsub}[2]{[\sigma]#1=^\con{V}#2}
-\newcommand{\rhsubext}[3]{[\sigma, #1]#2=^\con{V}#3}
+\newcommand{\hsubn}[2]{[\sigma]#1=^\con{N}#2}
+\newcommand{\hsub}[2]{[\sigma]#1=^\con{V}#2}
+\newcommand{\hsubext}[3]{[\sigma, #1]#2=^\con{V}#3}
 
 \newcommand{\ascribe}[2]{(#1 : #2)}
 \newcommand{\all}[1]{\forall#1.~}
@@ -400,7 +407,7 @@ hereditary substitution relation and prove that it terminates directly.
 \paragraph{Termination of Hereditary Substitution}
 
 $$
-\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}} \rhsub{v}{v'}
+\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}} \hsub{v}{v'}
 $$
 
 Just like proving termination of big-step semantics, we would need to
@@ -1000,13 +1007,13 @@ $$
 
 $$
 \infer
-  []{\rhsubn{(f \app a)}{b'}}
+  []{\hsubn{(f \app a)}{b'}}
 {
-  \rhsubn{f}{\lam b}
+  \hsubn{f}{\lam b}
   &
-  \rhsub{a}{a'}
+  \hsub{a}{a'}
   &
-  \rhsubext{a'}{b}{b'}
+  \hsubext{a'}{b}{b'}
 }
 $$
 
@@ -1141,17 +1148,17 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 
 \subsection{Hereditary Substitution}
 
-\begin{theorem}[Hereditary Substitution (into values) by Canonical Evaluation]
+\begin{theorem}[Hereditary Substitution by Canonical Evaluation]
 \label{thm:mod:vhsub}
 $$
-\hsubv : \typv{A} \marr \env \marr \dtypv{A}
+\sbe : \typv{A} \marr \env \marr \dtypv{A}
 $$
 
 \begin{proof}
 \begin{align*}
 a    &: \typv{A} && \byass\\
 \sigma   &: \env && \byass\\
-\sigma'  &: \menv && \by{\reflects}\\
+\sigma'  &: \menv && \by{\reflects~\sigma}\\
 a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
 a''  &: \dtypv{A} && \by{\reify~A~a'}
 \end{align*}
@@ -1159,30 +1166,58 @@ a''  &: \dtypv{A} && \by{\reify~A~a'}
 
 \end{theorem}
 
-\begin{corollary}[Hereditary Substitution (into neutrals) by Canonical Evaluation]
-\label{thm:mod:nhsub}
+\subsection{Normalization}
+
+\begin{theorem}[Application by Hereditary Substitution]
+\label{thm:mod:abs}
 $$
-\hsubn : \typn{A} \marr \env \marr \dtypv{A}
+\abs : \typv{A \arr B} \marr \typv{A} \marr \typv{B}
 $$
 
 \begin{proof}
 \begin{align*}
-a    &: \typn{A} && \byass\\
-\sigma   &: \env && \byass\\
-a'   &: \typv{A} && \by{\neut~a}\\
-a''  &: \dtypv{A} && \by{\hsubv~a'~\sigma}
+&\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv~\Gamma, a)\\
+&\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
 \end{align*}
 \end{proof}
 
-\end{corollary}
+\end{theorem}
 
-\subsection{Normalization}
+\begin{theorem}[Primitive Recursion by Hereditary Substitution]
+\label{thm:mod:rbs}
+$$
+\rbs : \typv{C} \marr \typv{C \arr C} \marr \typv{\nat} \marr \typv{C}
+$$
+
+\begin{proof}
+\begin{align*}
+&\rbs ~ c_z ~ c_s ~ \zero &&\dfn&& c_z\\
+&\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfn&& \abs~c_s~(\rbs~c_z~c_s~n)\\
+&\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfn&& \neut~(\rec~c_z~c_s~n)
+\end{align*}
+\end{proof}
+
+\end{theorem}
 
 \begin{theorem}[Normalization by Hereditary Substitution]
-\label{thm:mod:vnorm}
+\label{thm:mod:nbs}
 $$
-\fun{nbs} : \type{A} \marr \typv{A}
+\nbs : \type{A} \marr \typv{A}
 $$
+
+\begin{proof}
+\begin{align*}
+&\nbs ~ \zero &&\dfn&& \zero\\
+&\nbs ~ (\suc~n) &&\dfn&& \suc ~ (\nbs~n)\\
+&\nbs ~ (\lam b) &&\dfn&& \lam (\nbs~b)\\
+&\nbs ~ (\var~i) &&\dfn&& \neut ~ (\var~i)\\
+&\nbs ~ (f~\app~a) &&\dfn&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
+&\nbs ~ (\rec~c_z~c_s~n) &&\dfn&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
+\end{align*}
+\end{proof}
+
+
+
 \end{theorem}
 
 
@@ -1243,7 +1278,7 @@ an extrinsic typing relation over said grammar.
 }
 \begin{align*}
 A, B, C &::= \nat ~ | ~ A \arr B \\
-\Gamma, \Delta, \Xi &::= \emp ~ | ~ \Gamma , A
+\Gamma, \Delta, \Xi, \Phi &::= \emp ~ | ~ \Gamma , A
 \end{align*}
 \label{fig:gram}
 \end{figure}
