@@ -50,6 +50,8 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{subtheorem}{Lemma}
 \numberwithin{subtheorem}{theorem}
+\newtheorem{corollary}{Corollary}
+\numberwithin{corollary}{theorem}
 
 \newtheorem{case}{Case}
 \numberwithin{case}{theorem}
@@ -83,6 +85,11 @@
 \def\neut{\con{neut}}
 
 \def\rec{\fun{rec}}
+
+\def\reify{\fun{reify}}
+
+\def\reflect{\fun{reflect}}
+\def\reflects{\fun{reflects}}
 
 \def\mono{\fun{mono}}
 \def\monos{\fun{monos}}
@@ -1139,14 +1146,35 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 $$
 \hsubv : \typv{A} \marr \env \marr \dtypv{A}
 $$
+
+\begin{proof}
+\begin{align*}
+a    &: \typv{A} && \byass\\
+\sigma   &: \env && \byass\\
+\sigma'  &: \menv && \by{\reflects}\\
+a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
+a''  &: \dtypv{A} && \by{\reify~A~a'}
+\end{align*}
+\end{proof}
+
 \end{theorem}
 
-\begin{subtheorem}[Hereditary Substitution (into neutrals) by Canonical Evaluation]
+\begin{corollary}[Hereditary Substitution (into neutrals) by Canonical Evaluation]
 \label{thm:mod:nhsub}
 $$
 \hsubn : \typn{A} \marr \env \marr \dtypv{A}
 $$
-\end{subtheorem}
+
+\begin{proof}
+\begin{align*}
+a    &: \typn{A} && \byass\\
+\sigma   &: \env && \byass\\
+a'   &: \typv{A} && \by{\neut~a}\\
+a''  &: \dtypv{A} && \by{\hsubv~a'~\sigma}
+\end{align*}
+\end{proof}
+
+\end{corollary}
 
 \subsection{Normalization}
 

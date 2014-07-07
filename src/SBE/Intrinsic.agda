@@ -166,7 +166,7 @@ sub : ∀{Γ Δ A} → Val Γ A → Env Γ Δ → Val Δ A
 sub x σ = reify _ (⟦sub⟧ x (reflectᴱ _ _ σ))
 
 subᴺ : ∀{Γ Δ A} → Neut Γ A → Env Γ Δ → Val Δ A
-subᴺ x σ = reify _ (⟦subᴺ⟧ x (reflectᴱ _ _ σ))
+subᴺ x σ = sub (`neut x) σ
 
 sub1 : ∀{Γ A B} → Val (Γ , A) B → Val Γ A → Val Γ B
 sub1 f a = sub f (idEnv _ , a)
