@@ -48,13 +48,18 @@
 %% \theoremstyle{plain}
 
 \newtheorem{theorem}{Theorem}
-\newtheorem{subtheorem}{Lemma}
+\newtheorem{subtheorem}{Theorem}
 \numberwithin{subtheorem}{theorem}
+\newtheorem{sublemma}{Lemma}
+\numberwithin{sublemma}{theorem}
 \newtheorem{corollary}{Corollary}
 \numberwithin{corollary}{theorem}
 
 \newtheorem{case}{Case}
 \numberwithin{case}{theorem}
+
+\newtheorem{slcase}{Case}
+\numberwithin{slcase}{sublemma}
 
 \newtheorem{scase}{Case}
 \numberwithin{scase}{subtheorem}
@@ -699,20 +704,20 @@ $$
 $$
 \end{theorem}
 
-\begin{subtheorem}[Predicate Reflection]
+\begin{sublemma}[Predicate Reflection]
 \label{lem:pred:refl}
 $$
 \forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)
 $$
-\end{subtheorem}
+\end{sublemma}
 
-\begin{subtheorem}[Predicate Preservation]
+\begin{sublemma}[Predicate Preservation]
 \label{lem:pred:pres}
 $$
 \forall (a, a' : \type{A}).~ \typm{A}(a) \marr 
 a \bigstep a' \marr \typm{A}(a')
 $$
-\end{subtheorem}
+\end{sublemma}
 
 \subsection{Other Lemmas}
 
@@ -874,7 +879,7 @@ environment (\refdef{menv}) as an additional parameter that neutral reflection d
 not need. The proof of reflection is straightforward and given explicitly
 below. 
 
-\begin{subtheorem}[Model Reflection]
+\begin{sublemma}[Model Reflection]
 \label{lem:mod:reflect}
 $$
 \fun{reflect} : \typn{A} \marr \typm{A}
@@ -884,15 +889,15 @@ $$
 
 By induction on the type $A$.
 
-\begin{scase}[Natural numbers]
+\begin{slcase}[Natural numbers]
 \begin{align*}
 n  &: \typn{\nat} && \byass\\
 n' &: \typv{\nat} && \by{\con{neut}~n}\\
 n' &: \typm{\nat} && \bydef
 \end{align*}
-\end{scase}
+\end{slcase}
 
-\begin{scase}[Functions]
+\begin{slcase}[Functions]
 \begin{align*}
 f &: \typn{A \arr B} && \byass\\
 \Delta& && \byass\\
@@ -901,11 +906,11 @@ f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
 a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
 b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
 \end{align*}
-\end{scase}
+\end{slcase}
 
 \end{proof}
 
-\end{subtheorem}
+\end{sublemma}
 
 \subsection{Environment Model}
 
