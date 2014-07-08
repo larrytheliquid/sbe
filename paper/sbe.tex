@@ -949,8 +949,12 @@ whose type is the type of the context extension ($A$).
 
 \subsection{Evaluation}
 
-Evaluation (\refthm{mod:eval}) takes an expression of the theory, and an
-environment of model values (\refdef{menv}), to a value of the model.
+Evaluation (\refthm{mod:eval}) is a type-preserving translation from
+an expression of the theory in some initial context, to a model value
+in some terminal context. In addition to the expression parameter,
+evaluation also requires an environment of model values
+(\refdef{menv}). Each model value must be in the terminal context, and
+a model value is required for each type in the initial context.
 The interesting cases include the evaluation of the following terms:
 
 \paragraph{Application} The whole point of the value model
@@ -963,7 +967,7 @@ evaluating the argument of the function application.
 return type of evaluation is a model-level function. This means that
 we get a model value from the domain of the model function, which we
 can subsequently extend the model environment with. Lucky for us, as
-the recursive evaluation of the $lam$ body requires a context extended
+the recursive evaluation of the $\lam$ body requires a context extended
 with just the type we need! Of course this is no coincidence, as it is
 the reason why evaluation requires an environment model parameter in
 the first place. The more interesting part of evaluating the function
@@ -1129,7 +1133,38 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 
 \end{lemma}
 
-\subsection{Identity Model Environment}
+\subsection{Normalization}
+
+Normalization (\refthm{mod:nbe}) is a type {\it and} context
+preserving translation from an expression to a value. It is defined
+mainly as the composition of evaluation (\refthm{mod:eval}) and
+reification (\refthm{mod:reify}), but evaluation also requires an
+environment parameter. Because normalization preserves contexts, we
+merely need an additional lemma to produce an identity model
+environment (\reflem{mod:midenv}).
+
+\begin{theorem}[Normalization by Evaluation]
+\label{thm:mod:nbe}
+$$
+\fun{nbe} : \type{A} \marr \typv{A}
+$$
+
+\begin{proof}
+\begin{align*}
+x    &: \type{A} && \byass\\
+\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
+x'  &: \typm{A} && \by{\eval~x~\sigma}\\
+x'' &: \typv{A} && \by{\reify~x'}
+\end{align*}
+\end{proof}
+
+\end{theorem}
+
+The identity model environment is a mapping from each variable in a
+context, to the same variable but as a model value. Essentially, the
+proof reflects each variable of the context, but it must also appeal
+to model environment monotonicity (\reflem{mod:monos}) to weaken the
+previously built identity model environment.
 
 \begin{lemma}[Identity Model Environment]
 \label{lem:mod:midenv}
@@ -1161,31 +1196,6 @@ x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 \end{proof}
 
 \end{lemma}
-
-\todo[inline]{description of identity model environment}
-
-\subsection{Normalization}
-
-\todo[inline]{nbe description}
-
-\begin{theorem}[Normalization by Evaluation]
-\label{thm:mod:nbe}
-$$
-\fun{nbe} : \type{A} \marr \typv{A}
-$$
-
-\begin{proof}
-\begin{align*}
-x    &: \type{A} && \byass\\
-\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
-x'  &: \typm{A} && \by{\eval~x~\sigma}\\
-x'' &: \typv{A} && \by{\reify~x'}
-\end{align*}
-\end{proof}
-
-
-
-\end{theorem}
 
 \section{Extrinsic Hereditary Substitution Semantics}
 \label{sec:vpred}
