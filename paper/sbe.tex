@@ -783,7 +783,6 @@ formal notation that mentions contexts explicitly.
 %% \end{itemize}
 
 \subsection{Value Model}
-\label{sec:emod:model}
 
 We begin by defining the model of values that our semantics will
 evaluate into, from which we subsequently reify results out of
@@ -821,7 +820,6 @@ model whose type is the codomain of the function.
 \end{defin}
 
 \subsection{Reification}
-\label{sec:emod:reify}
 
 Reification (\refthm{mod:reify}) is the process of turning a model value into a theory
 model. The model of natural numbers is the theory value, so their
@@ -909,10 +907,9 @@ b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
 
 \end{subtheorem}
 
-\subsection{Definition of Environment Model}
-\label{sec:emod:menv}
+\subsection{Environment Model}
 
-The evaluation function (\refthm{TODO}) from expressions to model
+The evaluation function (\refthm{mod:eval}) from expressions to model
 values requires an extra parameter, called the environment, to collect
 model values when evaluating underneath $\lambda$ terms in the model.
 The model of environments is thus a mapping from all variables in some initial context
@@ -945,7 +942,96 @@ whose type is the type of the context extension ($A$).
 
 \end{defin}
 
-\subsection{Other Lemmas}
+\subsection{Evaluation}
+
+Evaluation (\refthm{mod:eval}) takes an expression of the theory, and an
+environment of model values (\refdef{menv}), to a value of the model.
+The interesting cases include the evaluation of the following terms:
+
+\paragraph{Application} The whole point of the value model
+(\refdef{mval}) is to make this case easy to define. Evaluating the
+applied function results in a metalanguage function, which we can
+apply to an empty context extension ($\emp$) and the result of
+evaluating the argument of the function application.
+
+\paragraph{Function} When evaluating a function (a $\lam$ term),
+return type of evaluation is a model-level function. This means that
+we get a model value from the domain of the model function, which we
+can subsequently extend the model environment with. Lucky for us, as
+the recursive evaluation of the $lam$ body requires a context extended
+with just the type we need! Of course this is no coincidence, as it is
+the reason why evaluation requires an environment model parameter in
+the first place. The more interesting part of evaluating the function
+is that the value we get (to extend the environment with) has been
+weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
+model environment, by appealing to the monotonicity lemma for
+environments (\reflem{mod:monos}).
+
+\paragraph{Primitive recursion} When an expression for primitive
+recursion ($\rec$), we can get inductive hypotheses for all the
+arguments to the primitive recursion, but we must perform a version of
+primitive recursion in the model using \reflem{mod:rec}.
+
+\begin{theorem}[Evaluation into Model]
+\label{thm:mod:eval}
+$$
+\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
+$$
+
+\begin{proof}
+
+By induction on the expression $\type{A}$. This proof is standard and
+we do not repeat it here for space reasons. However, part of the
+insight of this paper is that is that what we call
+{\it canonical evaluation} (\refthm{mod:cevalv}), the intrinsic hereditary substitution
+semantics, is essentially the same thing! To recover this proof,
+replace instances of values and neutrals with expressions in the proof
+of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
+
+\end{proof}
+
+\end{theorem}
+
+As mentioned above, we need environment model monotonicity
+to define the $\lam$ case of \refthm{mod:eval}. Environment model
+monotonicity is essentially a mapping of a value model
+monotonicity (\reflem{mod:mono}) across all inhabitants of the
+environment model.
+
+\begin{lemma}[Environment Model Monotonicity]
+\label{lem:mod:monos}
+$$
+\monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
+$$
+
+\begin{proof}
+By induction on the context $\Gamma$.
+
+\begin{lcase}[Empty Context]
+\begin{align*}
+\Delta& && \byass\\
+u &: \top && \byass\\
+u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
+\end{align*}
+\end{lcase}
+
+\begin{lcase}[Context extension]
+\begin{align*}
+\Delta& && \byass\\
+\sigma &: \gmenv{\Xi} && \byass\\
+x    &: \xtypm{A} && \byass\\
+\sigma'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~\sigma}\\
+x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
+\sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
+\end{align*}
+\end{lcase}
+
+\end{proof}
+
+\end{lemma}
+
+The model monotonicity lemma is basically a version of weakening (of
+theory values) lifted to values in the model. 
 
 \begin{lemma}[Model Monotonicity]
 \label{lem:mod:mono}
@@ -984,67 +1070,16 @@ b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 
 \end{lemma}
 
-\begin{lemma}[Environment Model Monotonicity]
-\label{lem:mod:monos}
-$$
-\monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
-$$
+Because the model of natural numbers is just a natural number value,
+the model of primitive recursion works basically the same way that
+normalization of primitive recursion would work in the theory. The
+main difference is that the arguments and return type are really
+elements of the model. In particular, the successor branch for the
+primitive recursion is a model function that we may simply apply to
+other model values (i.e. the induction hypothesis).
 
-\begin{proof}
-By induction on the context $\Gamma$.
-
-\begin{lcase}[Empty Context]
-\begin{align*}
-\Delta& && \byass\\
-u &: \top && \byass\\
-u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
-\end{align*}
-\end{lcase}
-
-\begin{lcase}[Context extension]
-\begin{align*}
-\Delta& && \byass\\
-\sigma &: \gmenv{\Xi} && \byass\\
-x    &: \xtypm{A} && \byass\\
-\sigma'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~\sigma}\\
-x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
-\sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
-\end{align*}
-\end{lcase}
-
-\end{proof}
-
-\end{lemma}
-
-\todo[inline]{description of environment model monotonicity}
-
-
-\subsection{Model Evaluation}
-
-\todo[inline]{description of eval and prim rec model}
-
-\begin{theorem}[Evaluation into Model]
-\label{thm:mod:eval}
-$$
-\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
-$$
-
-\begin{proof}
-
-By induction on the expression $\type{A}$. This proof is standard and
-we do not repeat it here for space reasons. However, part of the
-insight of this paper is that is that what we call
-{\it canonical evaluation} (\refthm{TODO}), the intrinsic hereditary substitution
-semantics, is essentially the same thing! To recover this proof,
-replace instances of values and neutrals with expressions in the proof
-of \refthm{TODO} in \refsec{TODO}.
-
-\end{proof}
-
-\end{theorem}
-
-\begin{subtheorem}[Model of Primitive Recursion]
-\label{thm:mod:rec}
+\begin{lemma}[Model of Primitive Recursion]
+\label{lem:mod:rec}
 $$
 \el{\fun{rec}} : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
 $$
@@ -1085,10 +1120,9 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 \end{align*}
 \end{scase}
 
-
 \end{proof}
 
-\end{subtheorem}
+\end{lemma}
 
 \subsection{Identity Model Environment}
 
@@ -1193,7 +1227,7 @@ $$
 \subsection{Model Canonical Evaluation}
 
 \begin{theorem}[Canonical Evaluation (of values) into Model]
-\label{thm:mod:veval}
+\label{thm:mod:cevalv}
 $$
 \cevalv : \typv{A} \marr \menv \marr \dtypm{A}
 $$
@@ -1246,7 +1280,7 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 
 
 \begin{subtheorem}[Canonical Evaluation (of neutrals) into Model]
-\label{thm:mod:neval}
+\label{thm:mod:cevaln}
 $$
 \cevaln : \typn{A} \marr \menv \marr \dtypm{A}
 $$
