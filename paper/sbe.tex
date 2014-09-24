@@ -198,9 +198,10 @@
 
 \title{Hereditary Substitution \\by Canonical Evaluation (SbE)}
 
-%% \authorinfo{Larry Diehl\and Tim Sheard}
-%%            {Portland State University}
-%%            {\{ldiehl,sheard\}@cs.pdx.edu}
+\author{Larry Diehl \and Tim Sheard}
+
+\institute{Portland State University\\
+\email{\{ldiehl,sheard\}@cs.pdx.edu}}
 
 \maketitle
 
@@ -279,12 +280,12 @@ Kripke model value, and then reifing back to a syntactic value.
 
 \begin{displaymath}
     \xymatrix{
-          \all{\ascribe{v}{A}, \sigma}
+          \forall{\ascribe{v}{A}, \sigma}
           \ar[dr]_{\fun{hsub}}
           \ar[r]^{\fun{ceval}}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
-\\      & \ex{\ascribe{v'}{A}} }
+\\      & \exists{\ascribe{v'}{A}} }
 \end{displaymath}
 
 SbE is a functional definition of hereditary substitution that
