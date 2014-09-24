@@ -195,7 +195,7 @@
 \frontmatter
 \pagestyle{headings}
 
-\title{Hereditary Substitution by Canonical Evaluation (SbE)}
+\title{Hereditary Substitution \\by Canonical Evaluation (SbE)}
 
 %% \authorinfo{Larry Diehl\and Tim Sheard}
 %%            {Portland State University}
@@ -230,6 +230,74 @@ Type theory; hereditary substitution; termination; formalization.
 
 \section{Introduction}
 \label{sec:intro}
+
+Normalization by Evaluation (NbE)~\cite{TODO} is a model-theoretic
+technique for defining the semantics of a $\lambda$-calculus. For
+example, normalization for a total $\lambda$-calculus with inductive
+types (such as G{\"o}del's System T) can be defined by first
+evaluating an expression to a Kripke model value, and then
+reifying the value back to an expression. 
+
+\todo[inline]{nbe picture}
+
+NbE is especially convenient for formalizing the semantics of total
+$\lambda$-calculi in dependently typed languages (such as
+Coq~\cite{TODO}, Agda~\cite{TODO}, or Idris~\cite{TODO}), because the
+proof of termination of the semantics is \textit{implicit} in its definition.
+In contrast, formalizing the semantics of expressions as a
+relation (e.g. a small or big-step relation), or as a
+coinductive function~\cite{TODO}, requires the additional of overhead
+of supplying an \textit{explicit}
+termination proof \textit{a posteriori} using techniques such as
+logical relations~\cite{TODO}.
+
+In a standard type theory \textit{expressions} are emphasized and
+their semantics is defined directly. Alternatively, a
+\textit{canonical type theory} emphasizes \textit{values} and defines
+the semantics of expressions in terms of hereditary substitution of
+values. Values are not closed under ordinary substitution, because a
+substitution can introduce a $\beta$-redex. Hereditary substitution
+fixes this problem by reducing whenever a $\beta$-redex is created as
+the result of substitution.
+
+\textbf{Our contribution} is adapting NbE to canonical terms, giving us a model-theoretic
+definition of hereditary substitution. We call this technique
+``Hereditary Substitution by Canonical Evaluation (SbE)''. Defining
+SbE requires us to introduce novel definitions, but we also get to
+reuse the model from NbE, as well as some of its definitions. SbE is
+defined by \textit{canonically evaluating} a syntactic value to a
+Kripke model value, and then reifing back to a syntactic value.
+
+\todo[inline]{sbe picture}
+
+SbE is a functional definition of hereditary substitution that
+contains an intrinsic termination proof, just like the functional
+definition of normalization that you get from NbE. Thus, SbE is
+amenable to formalization, allowing canonical type theory for
+$\lambda$-calculi with inductive types to be defined in dependent type
+theory. For simplicity, we use G{\"o}del's System T for our examples
+in this paper, but SbE scales to systems with paramterized inductive
+types (such as lists or trees) for the same reasons that NbE does.
+
+\subsection{Proof Theoretic Semantics}
+
+Hereditary substitution has historically been studied in the context
+of proof-theoretic semantics. Just like NbE, hereditary substitution
+can be used to define a semantics directly as a function, whose
+termination argument is intrinsically given by lexicographic induction
+on terms and types. For example, \cite{TODO} show how to formalize the
+semantics of the STLC in Agda using hereditary substitution. The
+advantage of a purely syntactic definition of hereditary substitution
+is that it demands less from the metalanguage (i.e. the metalanguage
+function space is not needed to construct a model). A disadvantage is
+that exposing the lexicographic termination argument requires changing
+the structure of values to be in spine form. More importantly,
+constructive proofs of hereditary substitution within dependently
+typed languages, such as the one given by \cite{TODO}, have been
+unable to scale to calculi with inductive types.
+
+
+
 
 As type theorists we often find ourselves in the following situation.
 We're studying some (hopefully) total lamba calculus. We define some
@@ -543,7 +611,8 @@ $$
 $$
 
 Instead, we use the proof terms of our typing relation as
-intrinsically typed terms.
+intrinsically typed terms (combining both definitions above into the
+single definition below).
 
 $$
 \infer
