@@ -1,4 +1,5 @@
 \documentclass{llncs}
+\usepackage{etex} % trick to get xypic to load
 \usepackage[authoryear,square]{natbib}
 \usepackage{proof}
 
@@ -16,7 +17,7 @@
 \usepackage{autofe}
 \usepackage{stmaryrd}
 \usepackage{enumitem}
-%% \usepackage[all]{xy}
+\usepackage[all]{xy}
 
 \usepackage{float}
 \floatstyle{boxed}
@@ -238,7 +239,15 @@ types (such as G{\"o}del's System T) can be defined by first
 evaluating an expression to a Kripke model value, and then
 reifying the value back to an expression. 
 
-\todo[inline]{nbe picture}
+\begin{displaymath}
+    \xymatrix{
+          {\forall (e : A)} 
+          \ar[dr]_{\fun{normalize}}
+          \ar[r]^{\fun{evaluate}}
+        & {\el{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & \exists (v : A) }
+\end{displaymath}
 
 NbE is especially convenient for formalizing the semantics of total
 $\lambda$-calculi in dependently typed languages (such as
@@ -268,7 +277,15 @@ reuse the model from NbE, as well as some of its definitions. SbE is
 defined by \textit{canonically evaluating} a syntactic value to a
 Kripke model value, and then reifing back to a syntactic value.
 
-\todo[inline]{sbe picture}
+\begin{displaymath}
+    \xymatrix{
+          \all{\ascribe{v}{A}, \sigma}
+          \ar[dr]_{\fun{hsub}}
+          \ar[r]^{\fun{ceval}}
+        & {\el{A}}
+          \ar[d]^{\large{\fun{reify}}}
+\\      & \ex{\ascribe{v'}{A}} }
+\end{displaymath}
 
 SbE is a functional definition of hereditary substitution that
 contains an intrinsic termination proof, just like the functional
