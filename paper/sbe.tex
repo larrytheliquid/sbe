@@ -1,0 +1,1644 @@
+\documentclass{llncs}
+\usepackage[authoryear,square]{natbib}
+\usepackage{proof}
+
+\usepackage{todonotes}
+\usepackage{amsmath}
+%% \usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{comment}
+\usepackage{url}
+\usepackage{bbm}
+\usepackage[greek,english]{babel}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage{autofe}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+%% \usepackage[all]{xy}
+
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+
+\DeclareUnicodeCharacter{8988}{\ensuremath{\ulcorner}}
+\DeclareUnicodeCharacter{8989}{\ensuremath{\urcorner}}
+\DeclareUnicodeCharacter{8803}{\ensuremath{\overline{\equiv}}}
+\DeclareUnicodeCharacter{8759}{\ensuremath{\colon\colon}}
+\DeclareUnicodeCharacter{12314}{\ensuremath{\llbracket}}
+\DeclareUnicodeCharacter{12315}{\ensuremath{\rrbracket}}
+\DeclareUnicodeCharacter{10214}{\ensuremath{\llbracket}}
+\DeclareUnicodeCharacter{10215}{\ensuremath{\rrbracket}}
+\DeclareUnicodeCharacter{8614}{\ensuremath{\mapsto}}
+\DeclareUnicodeCharacter{8799}{\ensuremath{\stackrel{?}{=}}}
+\DeclareUnicodeCharacter{8669}{\ensuremath{\leadsto}}
+
+\usepackage{fancyvrb}
+
+\usepackage[labelfont=bf]{caption}
+
+\newtheorem{defin}{Definition}
+\newtheorem{subdefin}{Case}
+%% \numberwithin{subdefin}{defin}
+
+%% \theoremstyle{definition}
+%% \theoremstyle{plain}
+
+%% \newtheorem{theorem}{Theorem}
+\newtheorem{subtheorem}{Theorem}
+%% \numberwithin{subtheorem}{theorem}
+\newtheorem{sublemma}{Lemma}
+%% \numberwithin{sublemma}{theorem}
+%% \newtheorem{corollary}{Corollary}
+%% \numberwithin{corollary}{theorem}
+
+%% \newtheorem{case}{Case}
+%% \numberwithin{case}{theorem}
+
+\newtheorem{slcase}{Case}
+%% \numberwithin{slcase}{sublemma}
+
+\newtheorem{scase}{Case}
+%% \numberwithin{scase}{subtheorem}
+
+%% \newtheorem{lemma}{Lemma}
+
+\newtheorem{lcase}{Case}
+%% \numberwithin{lcase}{lemma}
+
+
+\newcommand{\refdef}[1]{Definition \ref{def:#1}}
+\newcommand{\refthm}[1]{Theorem \ref{thm:#1}}
+\newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
+
+\newcommand{\reffig}[1]{Figure \ref{fig:#1}}
+\newcommand{\refsec}[1]{Section \ref{sec:#1}}
+\newcommand{\refparte}[1]{Part$_E$ \ref{parte:#1}}
+\newcommand{\refparti}[1]{Part$_I$ \ref{parti:#1}}
+
+\def\cross{\times}
+\def\dfn{\mapsto}
+\def\bigstep{\Downarrow}
+\def\arr{\supset}
+\def\marr{\rightarrow}
+\def\app{\cdot}
+\def\lam{\lambda}
+\def\nat{\mathbb{N}}
+\def\emp{\epsilon}
+
+\def\here{\con{here}}
+\def\there{\con{there}}
+
+\def\var{\con{var}}
+\def\zero{\con{zero}}
+\def\suc{\con{suc}}
+\def\neut{\con{neut}}
+
+\def\rec{\fun{rec}}
+\def\rbs{\fun{rbs}}
+\def\abs{\fun{abs}}
+
+\def\reify{\fun{reify}}
+
+\def\reflect{\fun{reflect}}
+\def\reflects{\fun{reflects}}
+
+\def\mono{\fun{mono}}
+\def\monos{\fun{monos}}
+
+\def\eval{\fun{eval}}
+\def\cevalv{\fun{ceval}}
+\def\cevaln{\fun{ceval}^\con{N}}
+
+\def\lookup{\fun{lookup}}
+
+\def\sbe{\fun{sbe}}
+
+\def\nbs{\fun{nbs}}
+
+\def\idenv{\fun{idEnv}}
+\def\midenv{\el{\fun{idEnv}}}
+
+\def\bydef{(\textit{definition})}
+\def\byass{(\textit{assumption})}
+\def\bytri{(\textit{trivial})}
+\newcommand{\ih}[1]{(\textit{i.h.}~ #1)}
+\newcommand{\by}[1]{(#1)}
+
+\newcommand{\turn}[1]{\vdash^\con{#1}}
+
+\newcommand{\hsubn}[2]{[\sigma]#1=^\con{N}#2}
+\newcommand{\hsub}[2]{[\sigma]#1=^\con{V}#2}
+\newcommand{\hsubext}[3]{[\sigma, #1]#2=^\con{V}#3}
+
+\newcommand{\ascribe}[2]{(#1 : #2)}
+\newcommand{\all}[1]{\forall#1.~}
+\newcommand{\ex}[1]{\exists#1.~}
+
+\newcommand{\el}[1]{\llbracket ~ #1 ~ \rrbracket}
+
+\newcommand{\wkne}[1]{\fun{wkn}^\con{E} ~ \Delta ~ #1}
+\newcommand{\wknv}[1]{\fun{wkn}^\con{V} ~ \Delta ~ #1}
+\newcommand{\wknn}[1]{\fun{wkn}^\con{N} ~ \Delta ~ #1}
+
+\newcommand{\con}[1]{\textmd{#1}}
+\newcommand{\fun}[1]{\textmd{#1}}
+
+\newcommand{\typm}[1]{\el{\Gamma \vdash #1}}
+\newcommand{\dtypm}[1]{\el{\Delta \vdash #1}}
+\newcommand{\xtypm}[1]{\el{\Xi \vdash #1}}
+\newcommand{\xdtypm}[1]{\el{\Xi, \Delta \vdash #1}}
+\newcommand{\gdtypm}[1]{\el{\Gamma, \Delta \vdash #1}}
+\newcommand{\gftypm}[1]{\el{\Gamma, \Phi \vdash #1}}
+\newcommand{\gatypm}[1]{\el{\Gamma, A \vdash #1}}
+\newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2}}
+
+\newcommand{\type}[1]{\Gamma \turn{E} #1}
+\newcommand{\dtype}[1]{\Delta \turn{E} #1}
+\newcommand{\gdtype}[1]{\Gamma, \Delta \turn{E} #1}
+\newcommand{\ctype}[2]{\Gamma , #1 \turn{E} #2}
+
+\newcommand{\typv}[1]{\Gamma \turn{V} #1}
+\newcommand{\dtypv}[1]{\Delta \turn{V} #1}
+\newcommand{\gdtypv}[1]{\Gamma, \Delta \turn{V} #1}
+\newcommand{\gatypv}[1]{\Gamma, A \turn{V} #1}
+\newcommand{\ctypv}[2]{\Gamma , #1 \turn{V} #2}
+
+\newcommand{\typn}[1]{\Gamma \turn{N} #1}
+\newcommand{\dtypn}[1]{\Delta \turn{N} #1}
+\newcommand{\gdtypn}[1]{\Gamma, \Delta \turn{N} #1}
+\newcommand{\gatypn}[1]{\Gamma, A \turn{N} #1}
+\newcommand{\ctypn}[2]{\Gamma , #1 \turn{N} #2}
+
+\newcommand{\typr}[1]{\Gamma \turn{R} #1}
+\newcommand{\dtypr}[1]{\Delta \turn{R} #1}
+\newcommand{\ctypr}[2]{\Gamma , #1 \turn{R} #2}
+
+\def\menv{\el{\fun{Env}}~\Gamma~\Delta}
+\def\env{\fun{Env}~\Gamma~\Delta}
+\newcommand{\dmenv}[1]{\el{\fun{Env}}~#1~\Delta}
+\newcommand{\denv}[1]{\fun{Env}~#1~\Delta}
+\newcommand{\gmenv}[1]{\el{\fun{Env}}~\Gamma~#1}
+\newcommand{\genv}[1]{\fun{Env}~\Gamma~#1}
+\newcommand{\cmenv}[2]{\el{\fun{Env}}~#1~#2}
+\newcommand{\cenv}[2]{\fun{Env}~#1~#2}
+
+
+%% \newcommand{\ren}[1]{\Gamma \le #1}
+%% \def\dren{\ren{\Delta}}
+%% \newcommand{\env}[1]{\Gamma \sqsubseteq #1}
+%% \def\denv{\env{\Delta}}
+
+\begin{document}
+
+\frontmatter
+\pagestyle{headings}
+
+\title{Hereditary Substitution by Canonical Evaluation (SbE)}
+
+%% \authorinfo{Larry Diehl\and Tim Sheard}
+%%            {Portland State University}
+%%            {\{ldiehl,sheard\}@cs.pdx.edu}
+
+\maketitle
+
+\begin{abstract}
+
+This paper is about termination proofs for the semantics of total lambda calculi.
+We introduce a change in perspective about how one might
+think about such proofs. The standard perspective is to prove that a relationally
+specified semantics terminates, e.g. by using realizability predicates. Instead,
+we promote the perspective that the termination proof implicitly defines
+an \textit{intrinsic semantics}, e.g. Normalization by Evaluation (NbE) into a Kripke model.
+Thus we think of the termination proof as an intrinsic functional semantics, as compared
+to the (no longer necessary) extrinsic relational semantics.
+
+Just as intrinsic typing of terms results in simpler metatheoretical definitions and provides
+free theorems, intrinsic semantics does the same. Adopting this perspective
+led us to an elegant proof
+that hereditary substitution for G{\"o}del's System T terminates. This proof
+reuses the Kripke model (of NbE) and introduces a new technique that we call
+Hereditary Substitution by Canonical Evaluation (SbE). Furthermore,
+our entire development is simple to formalize in a proof assistant, such as Agda.
+\end{abstract}
+
+%% \category{D.3}{Software}{Programming Languages}.
+
+\keywords
+Type theory; hereditary substitution; termination; formalization.
+
+\section{Introduction}
+\label{sec:intro}
+
+As type theorists we often find ourselves in the following situation.
+We're studying some (hopefully) total lamba calculus. We define some
+syntax as an inductive datatype. Then we write down the typing rules and semantics 
+and other properties as relations. Some of our relations are
+propositional (i.e. a type family defined as an indexed datatype in a
+dependently typed language) and some are definitional (i.e. a type
+family defined as a function in a dependently typed language). For
+example we might have 
+
+\[
+\begin{array}{lll}
+
+\ascribe{e}{A} & \mbox{typing relation} & \mbox{propositional}\\
+e \bigstep e' & \mbox{big-step reduction} & \mbox{propositional} \\ 
+\fun{IsValue}(e') & \mbox{is a value} & \mbox{propositional}\\
+{\el{A}(e)} & \mbox{realizability predicate} & \mbox{definitional}\\
+
+\end{array}
+\]
+We then proceed to prove easy metatheorems like type safety (which is merely
+preservation for a big-step semantics).
+
+\paragraph{Big-Step Type Preservation}
+
+$$
+\all{\ascribe{e}{A}} e \bigstep e' \marr \ascribe{e'}{A}
+$$
+
+
+
+Unfortunately, our relationally specified semantics is not obviously
+terminating, so we begin the more difficult task of proving its
+termination.
+
+\paragraph{Termination of Big-Step}
+
+$$
+\all{\ascribe{e}{A}} \ex{\ascribe{e'}{A}} e \bigstep e' \land \fun{IsValue}(e')
+$$
+
+To prove termination, we come up with the appropriate logical
+relation~\cite{TODO} for our semantics, relating expressions to evidence
+that they terminate as some value.
+In this case we have a unary
+logical relation on expressions, or a realizability
+predicate~\cite{TODO}. You can prove termination as the composition of
+evaluation of expressions into the realizability predicate, and reification
+of termination evidence as a function from the realizability predicate.
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\forall (e : A)} 
+%%           \ar[dr]_{\fun{termination}}
+%%           \ar[r]^{\fun{evaluate}}
+%%         & {\el{A}(e)}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & {\exists (e' : A). ~ e \bigstep e' \wedge \fun{IsValue} ~ e'} }
+%% \end{displaymath}
+
+Many operational semantics have been proven to terminate using this
+method. For example, the realizability predicate and associated lemmas
+needed to prove that a big-step semantics terminates for G{\"o}del's
+System T are well known. It is straightforward to understand and verify such
+completed definitions and proofs, but coming up with the correct
+realizability predicate and associated lemmas for a novel proof takes
+ingenuity. 
+
+As we got stuck in various places trying to prove a novel termination result
+(that \textit{hereditary substitution}~\cite{TODO} terminates for
+G{\"o}del's System T), we were inspired by
+\textit{intrinsic typing}~\cite{TODO} as a means of simplifying our
+metatheory and getting free theorems. With \textit{extrinsic} typing you
+define expressions ($e$), a separate extrinsic typing relation $\ascribe{e}{A}$, and prove
+theorems ($P$) of the form:
+$$
+\all{\ascribe{e}{\con{Exp}}} \ascribe{e}{A} \marr P(e) $$
+
+Rather than having this pair of arguments everywhere, one can dispense with
+the terms ($e$), and instead use the typing relation $\ascribe{e}{A}$
+as an intrinsicly typed representation of terms, simplifying theorems to
+have the form:
+$$
+\all{\ascribe{e}{A}} P(e)
+$$
+
+Furthermore, as our big-step semantics is now defined on intrinsically
+typed expressions, the result is already type-correct so we get the
+theorem of {\bf Type Preservation} for \textit{free}!
+
+{\bf Now to the point:} 
+Recall the ``termination'' arrow in the commutative diagram for our
+realizability proof above. By analogy to intrinsic typing, you
+can think of the big-step relation on expressions as an
+\textit{extrinsic semantics}, and the termination proof as a function
+that produces a witness that the extrinsic semantics terminates. Yet,
+the termination proof can itself act as an \textit{intrinsic semantics}! 
+Just like with intrinsic typing, when we use an intrinsic semantics
+statements of theorems become simplified. For example, we can rename
+and restate our previous {\bf Termination} theorem, to more
+appropriately reflect that it \textit{defines} normalization (our
+semantics) as a function from expressions of some type to values of
+the same type:
+
+\paragraph{Normalization}
+$$
+\all{\ascribe{e}{A}} \ex{\ascribe{v}{A}}
+$$
+
+By the same token, our diagram is also simplified.
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\forall (e : A)} 
+%%           \ar[dr]_{\fun{normalize}}
+%%           \ar[r]^{\fun{evaluate}}
+%%         & {\el{A}}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & \exists (v : A) }
+%% \end{displaymath}
+
+Notice the codomain of evaluation has become simpler. Formerely, it
+was a realizability predicate ($\el{A}(e)$) that related the input
+expression to the underlying extrinsic big-step semantics. Now, it has
+become a Kripke model~\cite{TODO} ($\el{A}$) representing the
+collection of \textit{values} of the appropriate type! Thus, the normalization
+theorem is the well-known technique of defining your (intrinsic)
+semantics as Normalization by Evaluation (NbE)~\cite{TODO}.
+
+\subsection{The Perspective of Termination Proofs as Intrinsic Semantics}
+
+Our {\bf first major contribution} is the \textit{perspective} of thinking of
+termination proofs as defining an intrinsic semantics.
+The similarities between realizability predicates and Kripke models are
+readily apparent. Neither of these concepts are new, we merely wish
+to point out that NbE falls out of thinking of the
+realizability predicate-based termination proof of an \textit{extrinsic}
+operational semantics as defining an \textit{intrinsic}
+semantics.
+
+Just as intrinsic typing simplifies statements of theorems, intrinsic semantics simplifies
+theorems too. Moreover, intrinsic semantics also provides us with
+\textit{free} theorems, as shown in \refsec{TODO} and \refsec{TODO}!
+
+\paragraph{Big-Step Determinacy}
+
+$$
+e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
+$$
+
+Because our termination proof-based semantics is already a function,
+we do not need to prove that it produces unique outputs.
+
+\paragraph{Big-Step Predicate Preservation}
+
+$$
+\el{A}(e) \marr e \bigstep e' \marr \el{A}(e')
+$$
+
+One of the lemmas of a realizability predicate-based proof is showing that
+the big-step semantics preserves satisfiability
+of the predicate. This is analogous to type-preservation, but at the
+level of the realizability predicate. Because an intrinsic semantics
+does not need to thread through evidence of an extrinsic semantics, we
+also get this theorem for free.
+
+\subsection{Termination of Hereditary Substitution for G{\"o}del's System T}
+
+Our {\bf second major contribution} is an example of how adopting the
+perspective of intrinsic semantics helped us prove a conjecture:
+that hereditary substitution for G{\"o}del's System T terminates.
+
+Normally, you give a (e.g. big-step or small-step) semantics to
+\textit{expressions}. Instead, you can give a semantics to \textit{values}
+($\beta$-redex-free canonical terms) of a 
+of a canonical type theory~\cite{TODO}. The semantics for values is
+known as \textit{hereditary substitution}~\cite{TODO}. Because values are
+not closed under ordinary substitution (which would break the invariant that values
+do not contain $\beta$-redexes), hereditary substitution
+performs evaluation if the substitution would
+result in a $\beta$-redex.
+
+The standard purely syntactic approaches~\cite{TODO} of proving termination of
+hereditary substitution have not scaled to recursive inductive types
+(e.g. $\nat$). We were originally tempted to define an extrinsic
+hereditary substitution relation and prove that it terminates directly.
+
+\paragraph{Termination of Hereditary Substitution}
+
+$$
+\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}} \hsub{v}{v'}
+$$
+
+Just like proving termination of big-step semantics, we would need to
+come up with the correct definition of the realizability predicate,
+and the associated lemmas that make the following diagram commute.
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\forall (v : A), \sigma} 
+%%           \ar[dr]_{\fun{hsub}}
+%%           \ar[r]^{\fun{ceval}}
+%%         & {\el{A}(v)}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & {\exists (v' : A). ~ [ \sigma ] v = v'} }
+%% \end{displaymath}
+
+Originally, we tried to prove this directly but got stuck at various
+points in our attempts. Eventually, we adopted the perspective of the
+would-be termination proof as an intrinsic semantics. Thus, our goal
+becomes instead to define hereditary substitution directly as a
+function.
+
+\paragraph{Hereditary Substitution}
+$$
+\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}}
+$$
+
+Note that the type of this high-level presentation of the function does
+not seem to guarantee any kind of correctness. In \refsec{TODO}, the
+correctness becomes apparent once contexts are mentioned explicitly.
+
+Adopting an intrinsic semantics for expressions lead us to a Kripke
+model and NbE. Fortuitously, adopting an intrinsic semantics for
+values also leads us to the very same Kripke model, and we get to
+reuse associated lemmas (e.g. reification). This leads us to making
+the following diagram commute.
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           \all{\ascribe{v}{A}, \sigma}
+%%           \ar[dr]_{\fun{hsub}}
+%%           \ar[r]^{\fun{ceval}}
+%%         & {\el{A}}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & \ex{\ascribe{v'}{A}} }
+%% \end{displaymath}
+
+We get to reuse the arrow on the right. Our contributions is the arrow
+on the top (\refthm{TODO}) and the arrow on the bottom
+(\refthm{TODO}). 
+The former performs ``canonical evaluation'' of values by injecting
+them into the model and evaluating under an environment whenever a
+variable is encountered. The latter defines hereditary substitution as
+the composition of canonical evaluation and reification, as well as a
+more subtle reflection of the environment  $\sigma$ into the model
+(\refthm{TODO}).
+For expressions, a Kripke model allows
+normalization to be defined by evaluation (NbE). For values, a Kripke
+model allows hereditary substitution to be defined by canonical
+evaluation (SbE). Hence, our slogan:
+\textit{Hereditary Substitution by Canonical Evaluation (SbE)}.
+
+\subsection{Outline}
+
+After a brief discussion about our notation, the rest of the paper is
+structured as follows:
+
+\begin{itemize}
+\item{\bf{\refsec{epred}}}
+We review the definitions and state the theorems needed to prove termination of
+an extrinsic big-step semantics for G{\"o}del's System T using a
+realizability predicate.
+
+\item{\bf{\refsec{emodel}}}
+We review the definitions and prove the theorems needed to define an
+intrinsic semantics for G{\"o}del's System T via NbE and a Kripke
+model. We point out which theorems from \refsec{epred} that we get for
+free.
+
+\item{\bf{\refsec{vmodel}}}
+We review why the extrinsic relational semantics for hereditary
+substitution does not obviously terminate, and show what choices you
+need to make when defining its realizability predicate. Instead of
+proving termination in the more complex setting of extrinsic
+semantics, we define hereditary substitution as an intrinsic
+semantics.
+
+\item{\bf{\refsec{list}}}
+We show how to extend the intrinsic semantics to a language including
+parametric inductive types (e.g. lists).
+
+\item{\bf{\refsec{correctness}}}
+We prove that normalization of expressions, defined in terms of
+hereditary substitution, is sound and complete with respect to a
+contextual equivalence relation for expressions.
+
+\item{\bf{\refsec{related}}}
+We discuss related work.
+\end{itemize}
+
+\subsection{Notation}
+
+We define types and contexts for G{\"o}del's System T using a standard
+BNF grammar in \reffig{gram}. However, we use intrinsically typed
+terms instead of defining a grammar for expressions and an extrinsic
+typing relation. Below is an example of the standard extrinsic typing
+of expressions.
+
+$$
+e ::= ... ~ | ~ \con{zero} ~ | ~ \con{suc} ~ n ~ | ~ ...
+$$
+
+$$
+\infer
+  [\nat\con{-I}_2]
+  {\Gamma \turn{E} \con{suc} ~ n : \nat}
+{
+  \Gamma \turn{E} n : \nat
+}
+$$
+
+Instead, we use the proof terms of our typing relation as
+intrinsically typed terms.
+
+$$
+\infer
+  [\con{suc} ~ n]
+  {\type{\nat}}
+{
+  (n : \type{\nat})
+}
+$$
+
+We label each premise with a variable to
+the left of a colon, and the name of the typing rule shows how to use
+it as a proof term by applying it to the premise labels. In other
+words, the labels represent the derivations of the premises.
+
+The letter appearing as the superscript to the turnstyle is part of
+the name of each intrinsic typing judgment. For example, $\turn{E}$
+types expressions in \reffig{type}, $\turn{V}$ types values in
+\reffig{typv}, and $\turn{N}$ types neutrals in \reffig{typn}.
+
+Finally, we have taken care to ensure that all of our constructions
+are easily formalizable. For this reason, we
+use use De Bruijn~\cite{TODO} variables. For example, our typing rule
+for functions does not explicitly bind its variable.
+
+$$
+\infer
+  [\lam b]
+  {\type{A \arr B}}
+{
+  (b : \ctype{A}{B})
+}
+$$
+
+Additionally, proof that a De Bruijn variable of a particular type
+exists in the context is given by the $\turn{R}$ judgment in
+\reffig{typr}. Mentioning a variable in a term thus requires evidence
+that the variable judgment is satisfied.
+
+$$
+\infer
+  [\fun{var} ~ i]
+  {\type{A}}
+{
+  (i : \typr{A})
+}
+$$
+
+\section{Extrinsic Big-Step Semantics}
+\label{sec:epred}
+
+In order to compare standard practice with other parts of the paper,
+we review an extrinsic big-step semantics for expressions of
+G{\"o}del's T. Furthermore, we state the definition of the
+realizability predicate and the theorems necessary to prove
+that the big-step semantics terminates. We do not prove these standard
+theorems here, but their formal proofs can be found in the
+accompanying Agda source code. 
+
+\subsection{Non-Obvious Termination}
+
+The function application rule is the major hindrance when trying
+to prove that an extrinsic big-step semantics for expressions
+terminates. 
+
+$$
+\infer
+  []{f \app a \bigstep {b'}}
+{
+  f \bigstep \lam b
+  &
+  a \bigstep a'
+  &
+  [a'/\con{here}]b \bigstep b'
+}
+$$
+
+After evaluating the function to a lambda, we need to
+substitute the argument into the lambda body. This may have introduced
+new $\beta$-redexes, so we must evaluate again but
+there is no obvious termination measure to justify this.
+
+\subsection{Termination of Big-Step}
+
+The idea of the realizability predicate is to relate a term to the
+theorem we are trying to prove (big-step termination) at non-arrow
+base types (i.e. $\nat$), and use the function space of the
+metalanguage (implication) at the arrow type. This way, when proving
+that the application of a function to an argument satisfies the
+realizability predicate, the inductive hypothesis for the function
+gives us a metalanguage function to apply to the inductive hypothesis
+of the argument. But before we can prove that all expressions satisfy
+the realizability predicate, we must prove that satisfaction of the
+realizability predicate for some expression implies that evaluating
+the expression using the big-step semantics terminates at some value.
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\forall \ascribe{e}{\type{A}}} 
+%%           \ar[dr]_{\fun{termination}}
+%%           \ar[r]^{\fun{evaluate}}
+%%         & {\typm{A}(e)}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & {\ex{\ascribe{e'}{\type{A}}} ~ e \bigstep e' \wedge \fun{IsValue} ~ e'} }
+%% \end{displaymath}
+
+\subsection{Definition of Realizability Predicate}
+
+First, we give the definition of the realizability predicate below.
+
+\begin{defin}[Big-Step Realizability Predicate]
+\label{def:ep}
+$ $\\
+For any context $\Gamma$ and type $A$, the predicate on the expression
+$(a : \type{A})$ is $\typm{A}(a)$.
+
+\begin{subdefin}[Natural numbers]
+$\typm{\nat}(n)$
+$$
+\exists (n' : \type{\nat}).~ n \bigstep n' \wedge \fun{IsValue} ~ n'
+$$
+For natural numbers we require a proof that $n$ evalutes to
+some value $n'$ .
+\end{subdefin}
+
+
+\begin{subdefin}[Functions]
+$\typm{A \arr B}(f)$
+\begin{align*}
+\all{\Delta} &(a : \gdtype{A}) \marr \\
+&\gdtypm{A}(a) \marr \gdtypm{B}(\wkne{f} \app a)
+\end{align*}
+
+\todo[inline]{mention extra verbosity of statements and in proofs due
+  to terms appearning in the predicate, like needing to weaken f here}
+
+For functions we require that for any weakened proof that $a$
+is realized, a proof that a weakened version of $f$ applied to
+$a$ is also realized.
+\end{subdefin}
+
+\end{defin}
+
+\subsection{Realizability Predicate Reification}
+
+\begin{theorem}[Predicate Reification]
+\label{thm:pred:reify}
+$$
+\forall (a : \type{A}).~ \typm{A}(a) \marr
+\exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsValue} ~ a'
+$$
+\end{theorem}
+
+\begin{sublemma}[Predicate Reflection]
+\label{lem:pred:refl}
+$$
+\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)
+$$
+\end{sublemma}
+
+\begin{sublemma}[Predicate Preservation]
+\label{lem:pred:pres}
+$$
+\forall (a, a' : \type{A}).~ \typm{A}(a) \marr 
+a \bigstep a' \marr \typm{A}(a')
+$$
+\end{sublemma}
+
+\subsection{Other Lemmas}
+
+\begin{lemma}[Predicate Monotonicity]
+\label{lem:pred:mono}
+$$
+\forall (a : \type{A}) \marr \typm{A}(a) \marr \gdtypm{A}(\wkne{a})
+$$
+\end{lemma}
+
+\begin{lemma}[Big-Step Determinacy]
+\label{lem:pred:determ}
+$$
+e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
+$$
+\end{lemma}
+
+\subsection{Realizability Predicate Evaluation}
+
+\begin{theorem}[Evaluation into Predicate]
+\label{thm:pred:eval}
+$$
+\forall (a : \type{A}), ~ \sigma.~ \dtypm{A}(\sigma ~ a)
+$$
+\end{theorem}
+
+\section{Intrinsic Big-Step Semantics}
+\label{sec:emod}
+
+Recall from \refsec{epred} that we had an extrinsic relational
+semantics ($e \bigstep e'$) that was not obviously terminating due to
+the lack of a clear termination measure in the function application
+case. To prove termination, we defined a realizability predicate
+($\typm{A}(e)$) with the key characteristic that it used the
+higher-order function space of the metalanguage for expressions of
+function type. This way ``evaluating'' a function application
+expression ($f \app a$) into the realizability predicate is obviously
+terminating (unlike the extrinsic semantics), because evaluating 
+the function ($f$) expression gives us a metalanguage function that
+can be applied to the result of evaluating the argument ($a$).
+
+If we get rid of the extrinsic semantics and the
+expression parameter of the realizability predicate, the realizability
+predicate becomes a Kripke model of values and the termination proof becomes an
+intrinsic (functional) big-step semantics from expressions to model
+values. Thus, normalization of expressions to values can be defined in
+terms of evaluation from expressions to model values, depicted once
+again in the commutative diagram below, this time using our
+formal notation that mentions contexts explicitly.
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\type{A}} 
+%%           \ar[dr]_{\fun{nbe}}
+%%           \ar[r]^{\fun{eval}}
+%%         & {\typm{A}}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & \typv{A} }
+%% \end{displaymath}
+
+%% In the remainder of this section we prove the arrows of
+%% the diagram above, and explain the definitions involved, in the following order:
+
+%% \begin{itemize}
+%% \item{\bf{\refsec{emod:reify}}} Reification
+%% \item{\bf{\refsec{emod:eval}}} Evaluation
+%% \item{\bf{\refsec{emod:nbe}}} Normalization
+%% \end{itemize}
+
+\subsection{Value Model}
+
+We begin by defining the model of values that our semantics will
+evaluate into, from which we subsequently reify results out of
+(going from model values to theory values).
+
+The model of natural numbers can be thought of as a base case,
+consisting merely of natural numbers values of the theory. The
+interesting case is the the model of functions, which uses the
+higher-order structure of the metalanguage.
+
+\begin{defin}[Model of Values]
+\label{def:mval}
+$ $\\
+The model of values $\typm{A}$ is defined inductively on the structure
+of types.
+
+\begin{subdefin}[Natural numbers]
+$$
+\typm{\nat} \dfn \typv{\nat}
+$$
+For natural numbers we require an intrinsically typed natural number
+value.
+\end{subdefin}
+
+\begin{subdefin}[Functions]
+$$
+\typm{A \arr B} \dfn \all{\Delta} \gdtypm{A} \marr \gdtypm{B}
+$$
+
+For functions you get a weakened element of the model whose type is
+the domain of the function, and must provide a weakened element of the
+model whose type is the codomain of the function.
+\end{subdefin}
+
+\end{defin}
+
+\subsection{Reification}
+
+Reification (\refthm{mod:reify}) is the process of turning a model value into a theory
+model. The model of natural numbers is the theory value, so their
+reification is immediate. The interesting case is the reification of
+functions. We need to somehow go from a higher-order model function to
+a first-order theory value of function type. The model of functions
+was specifically engineered to make it possible to weaken the domain
+and codomain by an arbitrary $\Delta$ for exactly this case! A
+function is reified by weakening by the type expected in the domain,
+passing in a free variable of De Bruijn zero, then constructing a
+lambda value from the reification of the result. However, the domain
+of the model function a model value, so we must translate the variable
+to an element of the model. Luckily, it is possible to
+reflect (\reflem{mod:reflect}) any neutral term (including variables),
+so we must prove reflection mutually with reification.
+
+\begin{theorem}[Model Reification]
+\label{thm:mod:reify}
+$$
+\fun{reify} : \typm{A} \marr \typv{A}
+$$
+
+\begin{proof}
+
+By induction on the type $A$.
+
+\begin{scase}[Natural numbers]
+\begin{align*}
+n  &: \typm{\nat} && \byass\\
+n  &: \typv{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Functions]
+\begin{align*}
+f &: \typm{A \arr B} && \byass\\
+f &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
+a &: \gatypm{A} && \ih{\fun{reflect}~(\con{var here})}\\
+b &: \gatypm{B} && \by{f~(\emp, A)~a}\\
+b' &: \gatypv{B} && \ih{\fun{reify}~b}\\
+f' &: \typv{A \arr B} && \by{\lam b'}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+\end{theorem}
+
+Note that we can only reflect neutrals. Values must instead be
+evaluated (\refthm{mod:eval}), which requires a model of an
+environment (\refdef{menv}) as an additional parameter that neutral reflection does
+not need. The proof of reflection is straightforward and given explicitly
+below. 
+
+\begin{sublemma}[Model Reflection]
+\label{lem:mod:reflect}
+$$
+\fun{reflect} : \typn{A} \marr \typm{A}
+$$
+
+\begin{proof}
+
+By induction on the type $A$.
+
+\begin{slcase}[Natural numbers]
+\begin{align*}
+n  &: \typn{\nat} && \byass\\
+n' &: \typv{\nat} && \by{\con{neut}~n}\\
+n' &: \typm{\nat} && \bydef
+\end{align*}
+\end{slcase}
+
+\begin{slcase}[Functions]
+\begin{align*}
+f &: \typn{A \arr B} && \byass\\
+\Delta& && \byass\\
+a  &: \gdtypm{A} && \byass\\
+f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
+a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
+b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
+\end{align*}
+\end{slcase}
+
+\end{proof}
+
+\end{sublemma}
+
+\subsection{Environment Model}
+
+The evaluation function (\refthm{mod:eval}) from expressions to model
+values requires an extra parameter, called the environment, to collect
+model values when evaluating underneath $\lambda$ terms in the model.
+The model of environments is thus a mapping from all variables in some initial context
+$\Gamma$, to model values in some terminal context $\Delta$.
+
+\begin{defin}[Model of Environments]
+\label{def:menv}
+$ $\\
+The model of environments $\menv$ is defined inductively on the structure
+of the first context argument ($\Gamma$).
+
+\begin{subdefin}[Empty context]
+$$
+\dmenv{\emp} \dfn \top
+$$
+The empty context is trivially inhabited in the model.
+\end{subdefin}
+
+\begin{subdefin}[Context extension]
+$$
+\dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
+$$
+
+The environment model of a context extension consists of two parts. The first part
+is a model of the environment context being extended ($\Gamma$). The second part
+consists of a model of a value in the terminal context ($\Delta$),
+whose type is the type of the context extension ($A$).
+
+\end{subdefin}
+
+\end{defin}
+
+\subsection{Evaluation}
+
+Evaluation (\refthm{mod:eval}) is a type-preserving translation from
+an expression of the theory in some initial context, to a model value
+in some terminal context. In addition to the expression parameter,
+evaluation also requires an environment of model values
+(\refdef{menv}). Each model value must be in the terminal context, and
+a model value is required for each type in the initial context.
+The interesting cases include the evaluation of the following terms:
+
+\paragraph{Application} The whole point of the value model
+(\refdef{mval}) is to make this case easy to define. Evaluating the
+applied function results in a metalanguage function, which we can
+apply to an empty context extension ($\emp$) and the result of
+evaluating the argument of the function application.
+
+\paragraph{Function} When evaluating a function (a $\lam$ term),
+return type of evaluation is a model-level function. This means that
+we get a model value from the domain of the model function, which we
+can subsequently extend the model environment with. Lucky for us, as
+the recursive evaluation of the $\lam$ body requires a context extended
+with just the type we need! Of course this is no coincidence, as it is
+the reason why evaluation requires an environment model parameter in
+the first place. The more interesting part of evaluating the function
+is that the value we get (to extend the environment with) has been
+weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
+model environment, by appealing to the monotonicity lemma for
+environments (\reflem{mod:monos}).
+
+\paragraph{Primitive recursion} When an expression for primitive
+recursion ($\rec$), we can get inductive hypotheses for all the
+arguments to the primitive recursion, but we must perform a version of
+primitive recursion in the model using \reflem{mod:rec}.
+
+\begin{theorem}[Evaluation into Model]
+\label{thm:mod:eval}
+$$
+\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
+$$
+
+\begin{proof}
+
+By induction on the expression $\type{A}$. This proof is standard and
+we do not repeat it here for space reasons. However, part of the
+insight of this paper is that is that what we call
+\textit{canonical evaluation} (\refthm{mod:cevalv}), the intrinsic hereditary substitution
+semantics, is essentially the same thing! To recover this proof,
+replace instances of values and neutrals with expressions in the proof
+of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
+
+\end{proof}
+
+\end{theorem}
+
+As mentioned above, we need environment model monotonicity
+to define the $\lam$ case of \refthm{mod:eval}. Environment model
+monotonicity is essentially a mapping of a value model
+monotonicity (\reflem{mod:mono}) across all inhabitants of the
+environment model.
+
+\begin{lemma}[Environment Model Monotonicity]
+\label{lem:mod:monos}
+$$
+\monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
+$$
+
+\begin{proof}
+By induction on the context $\Gamma$.
+
+\begin{lcase}[Empty Context]
+\begin{align*}
+\Delta& && \byass\\
+u &: \top && \byass\\
+u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
+\end{align*}
+\end{lcase}
+
+\begin{lcase}[Context extension]
+\begin{align*}
+\Delta& && \byass\\
+\sigma &: \gmenv{\Xi} && \byass\\
+x    &: \xtypm{A} && \byass\\
+\sigma'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~\sigma}\\
+x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
+\sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
+\end{align*}
+\end{lcase}
+
+\end{proof}
+
+\end{lemma}
+
+The model monotonicity lemma is basically a version of weakening (of
+theory values) lifted to values in the model. 
+
+\begin{lemma}[Model Monotonicity]
+\label{lem:mod:mono}
+$$
+\mono : \all{\Delta} \typm{A} \marr \gdtypm{A}
+$$
+
+\begin{proof}
+
+By case analysis of the type $A$.
+
+\begin{scase}[Natural numbers]
+\begin{align*}
+\Delta& && \byass\\
+n  &: \typm{\nat} && \byass\\
+n  &: \typv{\nat} && \bydef\\
+n' &: \gdtypv{\nat} && \by{\wknv{n}}\\
+n' &: \gdtypm{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Functions]
+\begin{align*}
+\Delta& && \byass\\
+f  &: \typm{A \arr B} && \byass\\
+\Xi& && \byass\\
+a  &: \el{(\Gamma, \Delta), \Xi \vdash A} && \byass\\
+a  &: \el{\Gamma, (\Delta, \Xi) \vdash A} && \by{associativity}\\
+f  &: \all{\Phi} \gftypm{A} \marr \gftypm{B} && \bydef\\
+b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a}\\
+b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+\end{lemma}
+
+Because the model of natural numbers is just a natural number value,
+the model of primitive recursion works basically the same way that
+normalization of primitive recursion would work in the theory. The
+main difference is that the arguments and return type are really
+elements of the model. In particular, the successor branch for the
+primitive recursion is a model function that we may simply apply to
+other model values (i.e. the induction hypothesis).
+
+\begin{lemma}[Model of Primitive Recursion]
+\label{lem:mod:rec}
+$$
+\el{\fun{rec}} : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
+$$
+
+\begin{proof}
+
+By induction on the natural number model value $\typm{\nat}$.
+Definitionally, this reduces to induction on the natural number theory
+value $\typv{\nat}$.
+
+\begin{scase}[Zero]
+\begin{align*}
+c_z  &: \typm{C} && \byass
+\end{align*}
+\end{scase}
+
+\begin{scase}[Successor]
+\begin{align*}
+c_z  &: \typm{C} && \byass\\
+c_s  &: \typm{C \arr C} && \byass\\
+n    &: \typv{\nat} && \byass\\
+n    &: \typm{\nat} && \bydef\\
+c    &: \typm{C} && \ih{\el{\fun{rec}}~c_z~c_s~n}\\
+c_s  &: \all{\Delta} \gdtypm{C} \marr \gdtypm{C} && \bydef\\
+c'   &: \typm{C} && \by{c_s~\emp~c}
+\end{align*}
+\end{scase}
+
+\begin{scase}[Neutral]
+\begin{align*}
+c_z  &: \typm{C} && \byass\\
+c_s  &: \typm{C \arr C} && \byass\\
+n    &: \typn{\nat} && \byass\\
+c_z' &: \typv{C} && \by{\fun{reify}~c_z}\\
+c_s' &: \typv{C \arr C} && \by{\fun{reify}~c_s}\\
+c'   &: \typn{C} && \by{\fun{rec}~c_z'~c_s'~n}\\
+c''  &: \typm{C} && \by{\fun{reflect}~c'}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+\end{lemma}
+
+\subsection{Normalization}
+
+Normalization (\refthm{mod:nbe}) is a type \textit{and} context
+preserving translation from an expression to a value. It is defined
+mainly as the composition of evaluation (\refthm{mod:eval}) and
+reification (\refthm{mod:reify}), but evaluation also requires an
+environment parameter. Because normalization preserves contexts, we
+merely need an additional lemma to produce an identity model
+environment (\reflem{mod:midenv}).
+
+\begin{theorem}[Normalization by Evaluation]
+\label{thm:mod:nbe}
+$$
+\fun{nbe} : \type{A} \marr \typv{A}
+$$
+
+\begin{proof}
+\begin{align*}
+x    &: \type{A} && \byass\\
+\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
+x'  &: \typm{A} && \by{\eval~x~\sigma}\\
+x'' &: \typv{A} && \by{\reify~x'}
+\end{align*}
+\end{proof}
+
+\end{theorem}
+
+The identity model environment is a mapping from each variable in a
+context, to the same variable but as a model value. Essentially, the
+proof reflects each variable of the context, but it must also appeal
+to model environment monotonicity (\reflem{mod:monos}) to weaken the
+previously built identity model environment.
+
+\begin{lemma}[Identity Model Environment]
+\label{lem:mod:midenv}
+$$
+\midenv : \all{\Gamma} \gmenv{\Gamma}
+$$
+
+\begin{proof}
+By induction on the context $\Gamma$.
+
+\begin{lcase}[Empty Context]
+\begin{align*}
+u &: \top && \bytri\\
+u &: \cmenv{\emp}{\emp} && \bydef
+\end{align*}
+\end{lcase}
+
+\begin{lcase}[Context extension]
+\begin{align*}
+\Gamma& && \byass\\
+A& && \byass\\
+\sigma  &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
+\sigma' &: \cmenv{\Gamma}{(\Gamma, A)} && \by{\monos~(\emp, A)~\sigma}\\
+x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
+\sigma'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{\sigma', x}
+\end{align*}
+\end{lcase}
+
+\end{proof}
+
+\end{lemma}
+
+\section{Extrinsic Hereditary Substitution Semantics}
+\label{sec:vpred}
+
+\subsection{Non-Obvious Termination}
+
+$$
+\infer
+  []{\hsubn{(f \app a)}{b'}}
+{
+  \hsubn{f}{\lam b}
+  &
+  \hsub{a}{a'}
+  &
+  \hsubext{a'}{b}{b'}
+}
+$$
+
+\subsection{Possible Realizability Predicates}
+
+\section{Intrinsic Hereditary Substitution Semantics}
+\label{sec:vmod}
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\typv{A} \cross \env} 
+%%           \ar[dr]_{\fun{sbe}}
+%%           \ar[r]^{\fun{ceval}}
+%%         & {\dtypm{A}}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & \dtypv{A} }
+%% \end{displaymath}
+
+\subsection{Definition of Environment}
+
+\todo[inline]{environment definition}
+\todo[inline]{reflects: reflection of a neutral variable can result in
+  model functions!}
+
+\subsection{Identity Environment}
+
+\todo[inline]{description and proof}
+
+\subsection{Model Canonical Evaluation}
+
+\begin{theorem}[Canonical Evaluation (of values) into Model]
+\label{thm:mod:cevalv}
+$$
+\cevalv : \typv{A} \marr \menv \marr \dtypm{A}
+$$
+\end{theorem}
+
+\begin{proof}
+
+By induction on the value $\typv{A}$.
+
+\begin{scase}[Zero]
+\begin{align*}
+n  &: \dtypv{\nat} && \by{\zero}\\
+n  &: \dtypm{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Successor]
+\begin{align*}
+n   &: \typv{\nat} && \byass\\
+\sigma  &: \menv && \byass\\
+n'  &: \dtypm{\nat} && \ih{\cevalv~n~\sigma}\\
+n'  &: \dtypv{\nat} && \bydef\\
+m   &: \dtypv{\nat} && \by{\suc~n'}\\
+m'  &: \dtypm{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Function]
+\begin{align*}
+b   &: \gatypv{B} && \byass\\
+\sigma  &: \menv && \byass\\
+\Xi& && \byass\\
+a   &: \el{\Delta, \Xi \vdash A} && \byass\\
+\sigma'  &: \gmenv{(\Delta, \Xi)} && \by{\monos~\Xi~\sigma}\\
+b'  &: \dtypm{B} && \ih{\cevalv~b~(\sigma', a)}\\
+\end{align*}
+\end{scase}
+
+\begin{scase}[Neutral]
+\begin{align*}
+a   &: \typn{A} && \byass\\
+\sigma  &: \menv && \byass\\
+a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
+\end{align*}
+\end{scase}
+
+
+\end{proof}
+
+
+
+\begin{subtheorem}[Canonical Evaluation (of neutrals) into Model]
+\label{thm:mod:cevaln}
+$$
+\cevaln : \typn{A} \marr \menv \marr \dtypm{A}
+$$
+
+\begin{proof}
+
+By induction on the neutral $\typn{A}$.
+
+\begin{scase}[Variable]
+\begin{align*}
+i   &: \typr{A} && \byass\\
+\sigma  &: \menv && \byass\\
+a  &: \dtypm{A} && \by{\lookup~\sigma~i}
+\end{align*}
+\end{scase}
+
+\begin{scase}[Application]
+\begin{align*}
+f   &: \typn{A \arr B} && \byass\\
+a   &: \typv{A} && \byass\\
+\sigma  &: \menv && \byass\\
+f'  &: \dtypm{A \arr B} && \ih{\cevaln~f~\sigma}\\
+f'  &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
+a'  &: \dtypm{A} && \ih{\cevalv~a~\sigma}\\
+b   &: \dtypm{B} && \by{f~\emp~a'}
+\end{align*}
+\end{scase}
+
+\begin{scase}[Primitive Recursion]
+\begin{align*}
+c_z  &: \typv{C} && \byass\\
+c_s  &: \typv{C \arr C} && \byass\\
+n    &: \typn{\nat} && \byass\\
+\sigma  &: \menv && \byass\\
+c_z' &: \dtypm{C} && \ih{\cevalv~c_z~\sigma}\\
+c_s' &: \dtypm{C \arr C} && \ih{\cevalv~c_s~\sigma}\\
+n'   &: \dtypm{\nat} && \ih{\cevaln~n~\sigma}\\
+c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+
+
+\end{subtheorem}
+
+\subsection{Hereditary Substitution}
+
+\begin{theorem}[Hereditary Substitution by Canonical Evaluation]
+\label{thm:mod:vhsub}
+$$
+\sbe : \typv{A} \marr \env \marr \dtypv{A}
+$$
+
+\begin{proof}
+\begin{align*}
+a    &: \typv{A} && \byass\\
+\sigma   &: \env && \byass\\
+\sigma'  &: \menv && \by{\reflects~\sigma}\\
+a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
+a''  &: \dtypv{A} && \by{\reify~A~a'}
+\end{align*}
+\end{proof}
+
+\end{theorem}
+
+\subsection{Normalization}
+
+\begin{theorem}[Application by Hereditary Substitution]
+\label{thm:mod:abs}
+$$
+\abs : \typv{A \arr B} \marr \typv{A} \marr \typv{B}
+$$
+
+\begin{proof}
+\begin{align*}
+&\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv~\Gamma, a)\\
+&\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
+\end{align*}
+\end{proof}
+
+\end{theorem}
+
+\begin{theorem}[Primitive Recursion by Hereditary Substitution]
+\label{thm:mod:rbs}
+$$
+\rbs : \typv{C} \marr \typv{C \arr C} \marr \typv{\nat} \marr \typv{C}
+$$
+
+\begin{proof}
+\begin{align*}
+&\rbs ~ c_z ~ c_s ~ \zero &&\dfn&& c_z\\
+&\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfn&& \abs~c_s~(\rbs~c_z~c_s~n)\\
+&\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfn&& \neut~(\rec~c_z~c_s~n)
+\end{align*}
+\end{proof}
+
+\end{theorem}
+
+\begin{theorem}[Normalization by Hereditary Substitution]
+\label{thm:mod:nbs}
+$$
+\nbs : \type{A} \marr \typv{A}
+$$
+
+\begin{proof}
+\begin{align*}
+&\nbs ~ \zero &&\dfn&& \zero\\
+&\nbs ~ (\suc~n) &&\dfn&& \suc ~ (\nbs~n)\\
+&\nbs ~ (\lam b) &&\dfn&& \lam (\nbs~b)\\
+&\nbs ~ (\var~i) &&\dfn&& \neut ~ (\var~i)\\
+&\nbs ~ (f~\app~a) &&\dfn&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
+&\nbs ~ (\rec~c_z~c_s~n) &&\dfn&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
+\end{align*}
+\end{proof}
+
+
+
+\end{theorem}
+
+
+%% \begin{align*}
+%% &\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
+%% &\typm{A}& &\dfn \typv{A}
+%% \end{align*}
+
+
+
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\forall (v : \typv{A}) (\sigma : \denv)} \ar[dr] 
+%%             \ar[r]
+%%         & {\dtypm{A}} \ar[d]
+%% \\      & {\exists (v' : \dtypv{A}). ~ [ \sigma ] v = v'} }
+%% \end{displaymath}
+
+\section{Related Work}
+
+Our termination proof is a novel model-theoretic result, but it
+does not solve the proof-theoretic version of the same problem.
+Nevertheless, we view our solution as somewhere in between a largely
+model theoretic, and proof theoretic semantics, as it is a syntactic
+model (rather than HA or CCC).
+
+\todo[inline]{mention that body is all definitional and appendix is propositional}
+\todo[inline]{formal version of Kripke model via renaming}
+\todo[inline]{extension polymorphic lists}
+\todo[inline]{correctness wrt contextual equiv on exprs}
+\todo[inline]{Future work: state (via worlds), exceptions (via monad),
+  dependent types}
+\todo[inline]{reference morrison nbe formalization}
+
+%% \acks
+
+%% We would like to thank Andrew Cave for helping us understand subtle
+%% issues related to context weakening when formalizing termination proofs. We would also
+%% like to thank Darin Morrison for originally introducing us to the connection
+%% between NbE and a Kripke model for intuitionistic logic.
+%% This work was supported by NSF/CISE/CCF grant \#1320934.
+
+
+
+\bibliographystyle{abbrvnat}
+\bibliography{sbe}
+
+\appendix
+\clearpage
+
+\begin{figure}
+\caption{
+BNF grammar for \textit{types} and \textit{contexts}. 
+Expressions, values, and neutrals
+are not represented by a BNF grammar. Instead, they are defined by
+an intrinsically typed representation, rather than a BNF grammar and
+an extrinsic typing relation over said grammar.
+}
+\begin{align*}
+A, B, C &::= \nat ~ | ~ A \arr B \\
+\Gamma, \Delta, \Xi, \Phi &::= \emp ~ | ~ \Gamma , A
+\end{align*}
+\label{fig:gram}
+\end{figure}
+
+\begin{figure}
+\caption{
+Intrinsic typing of De Bruijn \textit{variables}.
+The intrinsically typed variables act as proofs that the type
+parameter of the judgment appears in the context parameter of the
+judgement.
+}
+$$
+\infer
+  [\con{here}]
+  {\ctypr{A}{A}}
+{
+}
+\qquad
+\infer
+  [\con{there} ~ i]
+  {\ctypr{B}{A}}
+{
+  (i : \typr{A})
+}
+$$
+\label{fig:typr}
+\end{figure}
+
+\begin{figure}
+\caption{
+Intrinsic typing of \textit{expressions} for G{\"o}del's System T. The
+intrinsically typed expressions act as proofs that the expression
+represented by the proof term is well typed.
+}
+$$
+\infer
+  [\con{zero}]
+  {\type{\nat}}
+{}
+\qquad
+\infer
+  [\con{suc} ~ n]
+  {\type{\nat}}
+{
+  (n : \type{\nat})
+}
+$$
+
+$$
+\infer
+  [\lam b]
+  {\type{A \arr B}}
+{
+  (b : \ctype{A}{B})
+}
+\qquad
+\infer
+  [\fun{var} ~ i]
+  {\type{A}}
+{
+  (i : \typr{A})
+}
+$$
+
+$$
+\infer
+  [f \app a]
+  {\type{B}}
+{
+  (f : \type{A \arr B})
+  &
+  (a : \type{A})
+}
+$$
+
+$$
+\infer
+  [\fun{rec} ~ n ~ c_z ~ c_s]
+  {\type{C}}
+{
+  (n : \type{\nat})
+  &
+  (c_z : \type{C})
+  &
+  (c_s : \type{C \arr C})
+}
+$$
+\label{fig:type}
+\end{figure}
+
+\begin{figure}
+\caption{
+Intrinsic typing of \textit{values} (canonical terms) for G{\"o}del's System T.
+The intrinsically typed values act as proofs that the value
+represented by the proof term is well typed. The grammar of values
+also includes all neutral terms.
+}
+$$
+\infer
+  [\con{zero}]
+  {\typv{\nat}}
+{}
+\qquad
+\infer
+  [\con{suc} ~ n]
+  {\typv{\nat}}
+{
+  (n : \typv{\nat})
+}
+$$
+
+$$
+\infer
+  [\lam b]
+  {\typv{A \arr B}}
+{
+  (b : \ctypv{A}{B})
+}
+\qquad
+\infer
+  [\fun{neut} ~ a]
+  {\typv{A}}
+{
+  (a : \typn{A})
+}
+$$
+\label{fig:typv}
+\end{figure}
+
+\begin{figure}
+\caption{
+Intrinsic typing of \textit{neutrals} (variables and elimination rules) 
+for G{\"o}del's System T.
+The intrinsically typed neutrals act as proofs that the neutral
+represented by the proof term is well typed.
+}
+
+$$
+\infer
+  [\fun{var} ~ i]
+  {\typn{A}}
+{
+  (i : \typr{A})
+}
+$$
+
+$$
+\infer
+  [f \app a]
+  {\typn{B}}
+{
+  (f : \typn{A \arr B})
+  &
+  (a : \typv{A})
+}
+$$
+
+$$
+\infer
+  [\fun{rec} ~ n ~ c_z ~ c_s]
+  {\typn{C}}
+{
+  (n : \typn{\nat})
+  &
+  (c_z : \typv{C})
+  &
+  (c_s : \typv{C \arr C})
+}
+$$
+\label{fig:typn}
+\end{figure}
+
+\end{document}
