@@ -424,20 +424,6 @@ $$
 }
 $$
 
-%% \subsection{Termination of Big-Step}
-
-%% The idea of the realizability predicate is to relate a term to the
-%% theorem we are trying to prove (big-step termination) at non-arrow
-%% base types (i.e. $\nat$), and use the function space of the
-%% metalanguage (implication) at the arrow type. This way, when proving
-%% that the application of a function to an argument satisfies the
-%% realizability predicate, the inductive hypothesis for the function
-%% gives us a metalanguage function to apply to the inductive hypothesis
-%% of the argument. But before we can prove that all expressions satisfy
-%% the realizability predicate, we must prove that satisfaction of the
-%% realizability predicate for some expression implies that evaluating
-%% the expression using the big-step semantics terminates at some value.
-
 %% \paragraph{Big-Step Type Preservation}
 
 %% $$
@@ -500,7 +486,7 @@ for substituting into neutral but also producing a value
 
 $$
 \infer
-  []{\hsubn{(f \app a)}{b'}}
+   []{\hsubn{(f \app a)}{b'}}
 {
   \hsubn{f}{\lam b}
   &
@@ -514,6 +500,74 @@ This relation is not obviously terminating for the same reason as
 normalization. We have inductive hypotheses for substituting into the
 function and its argument, but there is no inductive hypothesis for
 substituting into the $\lambda$-body.
+
+\subsection{Model of Values}
+
+Recall that the problematic case for normalization and hereditary
+substitution is function application. In NbE, normalization is no
+longer the ``meaty'' definition given by case analyzes over all
+possible expressions. Instead, evaluation is the ``meaty'' definition
+that case analyzes all expressions. Evaluation takes an expression
+to a \textit{model} value instead of a \textit{syntactic} value.
+Thus, normalization can be more simply defined as the composition of
+evaluation to a model value, and reification back to a syntactic value.
+
+So how can we define the model in a way that makes termination of the
+application case of evaluation no longer problematic? How about the
+Kripke model below?
+
+\begin{defin}[Model of Values]
+\label{def:mval}
+$ $\\
+The model of values $\typm{A}$ is defined inductively on the structure
+of types.
+
+\begin{subdefin}[Natural numbers]
+$$
+\typm{\nat} \dfn \typv{\nat}
+$$
+Syntactic natural number values are also natural numbers values in the
+model.
+\end{subdefin}
+
+\begin{subdefin}[Functions]
+$$
+\typm{A \arr B} \dfn \all{\Delta} \gdtypm{A} \marr \gdtypm{B}
+$$
+
+The model of functions is a function in the metalanguage.
+The model function takes a weakened model value (whose type is
+the domain of the function) as an argument, and produces a
+weakened element of the model (whose type is the codomain of the
+function). Both the input and output values of the model function are
+weakened by some arbitrary context $\Delta$.
+\end{subdefin}
+
+\end{defin}
+
+So how does this model help us to define the application case of
+evaluation? Now evaluating the function produces a model
+function, which we can apply to the model value produced by evaluating
+the argument (in this case the weakening $\Delta$ is merely the empty
+context). Hence, we can define the application case of evaluation in
+an structurally terminating way since it only needs to appeal to the
+two available inductive hypotheses.
+
+%% \subsection{Termination of Big-Step}
+
+%% The idea of the realizability predicate is to relate a term to the
+%% theorem we are trying to prove (big-step termination) at non-arrow
+%% base types (i.e. $\nat$), and use the function space of the
+%% metalanguage (implication) at the arrow type. This way, when proving
+%% that the application of a function to an argument satisfies the
+%% realizability predicate, the inductive hypothesis for the function
+%% gives us a metalanguage function to apply to the inductive hypothesis
+%% of the argument. But before we can prove that all expressions satisfy
+%% the realizability predicate, we must prove that satisfaction of the
+%% realizability predicate for some expression implies that evaluating
+%% the expression using the big-step semantics terminates at some
+%% value.
+
 
 \section{Extrinsic Big-Step Semantics}
 \label{sec:epred}
@@ -1357,7 +1411,6 @@ Nevertheless, we view our solution as somewhere in between a largely
 model theoretic, and proof theoretic semantics, as it is a syntactic
 model (rather than HA or CCC).
 
-\todo[inline]{mention that body is all definitional and appendix is propositional}
 \todo[inline]{formal version of Kripke model via renaming}
 \todo[inline]{extension polymorphic lists}
 \todo[inline]{correctness wrt contextual equiv on exprs}
