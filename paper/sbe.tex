@@ -424,12 +424,6 @@ $$
 }
 $$
 
-%% \paragraph{Big-Step Type Preservation}
-
-%% $$
-%% \all{\ascribe{e}{A}} e \bigstep e' \marr \ascribe{e'}{A}
-%% $$
-
 \section{Roadmap of NbE and SbE}
 \label{sec:road}
 
@@ -568,185 +562,37 @@ two available inductive hypotheses.
 %% the expression using the big-step semantics terminates at some
 %% value.
 
+\subsection{Normalization by Evaluation}
 
-\section{Extrinsic Big-Step Semantics}
-\label{sec:epred}
+So far we have seen the model of values and have some intuition for
+why it makes writing a terminating definition of evaluation possible.
+Now let's take a closer look at how exactly to define normalization in
+terms of evaluation. What additional theorems 
+\footnote{Because the ``definition'' of normalization contains an
+intrinsic termination proof, I refer to normalization, evaluation, and
+related ``definitions'' as \textit{theorems} and \textit{lemmas}.}
+do we need, and how do we instantiate these theorems in the proof of
+normalization?
 
-In order to compare standard practice with other parts of the paper,
-we review an extrinsic big-step semantics for expressions of
-G{\"o}del's T. Furthermore, we state the definition of the
-realizability predicate and the theorems necessary to prove
-that the big-step semantics terminates. We do not prove these standard
-theorems here, but their formal proofs can be found in the
-accompanying Agda source code. 
-
-\subsection{Non-Obvious Termination}
-
-The function application rule is the major hindrance when trying
-to prove that an extrinsic big-step semantics for expressions
-terminates. 
-
+\paragraph{Evaluation (\refthm{TODO} in \refsec{TODO})}
 $$
-\infer
-  []{f \app a \bigstep {b'}}
-{
-  f \bigstep \lam b
-  &
-  a \bigstep a'
-  &
-  [a'/\con{here}]b \bigstep b'
-}
+\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
 $$
 
-After evaluating the function to a lambda, we need to
-substitute the argument into the lambda body. This may have introduced
-new $\beta$-redexes, so we must evaluate again but
-there is no obvious termination measure to justify this.
-
-\subsection{Termination of Big-Step}
-
-The idea of the realizability predicate is to relate a term to the
-theorem we are trying to prove (big-step termination) at non-arrow
-base types (i.e. $\nat$), and use the function space of the
-metalanguage (implication) at the arrow type. This way, when proving
-that the application of a function to an argument satisfies the
-realizability predicate, the inductive hypothesis for the function
-gives us a metalanguage function to apply to the inductive hypothesis
-of the argument. But before we can prove that all expressions satisfy
-the realizability predicate, we must prove that satisfaction of the
-realizability predicate for some expression implies that evaluating
-the expression using the big-step semantics terminates at some value.
-
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\forall \ascribe{e}{\type{A}}} 
-%%           \ar[dr]_{\fun{termination}}
-%%           \ar[r]^{\fun{evaluate}}
-%%         & {\typm{A}(e)}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & {\ex{\ascribe{e'}{\type{A}}} ~ e \bigstep e' \wedge \fun{IsValue} ~ e'} }
-%% \end{displaymath}
-
-\subsection{Definition of Realizability Predicate}
-
-First, we give the definition of the realizability predicate below.
-
-\begin{defin}[Big-Step Realizability Predicate]
-\label{def:ep}
-$ $\\
-For any context $\Gamma$ and type $A$, the predicate on the expression
-$(a : \type{A})$ is $\typm{A}(a)$.
-
-\begin{subdefin}[Natural numbers]
-$\typm{\nat}(n)$
+\paragraph{Reification (\refthm{TODO} in \refsec{TODO})}
 $$
-\exists (n' : \type{\nat}).~ n \bigstep n' \wedge \fun{IsValue} ~ n'
+\fun{reify} : \typm{A} \marr \typv{A}
 $$
-For natural numbers we require a proof that $n$ evalutes to
-some value $n'$ .
-\end{subdefin}
 
-
-\begin{subdefin}[Functions]
-$\typm{A \arr B}(f)$
-\begin{align*}
-\all{\Delta} &(a : \gdtype{A}) \marr \\
-&\gdtypm{A}(a) \marr \gdtypm{B}(\wkne{f} \app a)
-\end{align*}
-
-\todo[inline]{mention extra verbosity of statements and in proofs due
-  to terms appearning in the predicate, like needing to weaken f here}
-
-For functions we require that for any weakened proof that $a$
-is realized, a proof that a weakened version of $f$ applied to
-$a$ is also realized.
-\end{subdefin}
-
-\end{defin}
-
-\subsection{Realizability Predicate Reification}
-
-\begin{theorem}[Predicate Reification]
-\label{thm:pred:reify}
+\paragraph{Identity Model Environment (\refthm{TODO} in \refsec{TODO})}
 $$
-\forall (a : \type{A}).~ \typm{A}(a) \marr
-\exists (a' : \type{A}).~ a \bigstep a' ~ \wedge ~ \fun{IsValue} ~ a'
+\midenv : \all{\Gamma} \gmenv{\Gamma}
 $$
-\end{theorem}
 
-\begin{sublemma}[Predicate Reflection]
-\label{lem:pred:refl}
-$$
-\forall (a : \type{A}).~ \fun{IsNeutral} ~ a \marr \typm{A}(a)
-$$
-\end{sublemma}
 
-\begin{sublemma}[Predicate Preservation]
-\label{lem:pred:pres}
-$$
-\forall (a, a' : \type{A}).~ \typm{A}(a) \marr 
-a \bigstep a' \marr \typm{A}(a')
-$$
-\end{sublemma}
-
-\subsection{Other Lemmas}
-
-\begin{lemma}[Predicate Monotonicity]
-\label{lem:pred:mono}
-$$
-\forall (a : \type{A}) \marr \typm{A}(a) \marr \gdtypm{A}(\wkne{a})
-$$
-\end{lemma}
-
-\begin{lemma}[Big-Step Determinacy]
-\label{lem:pred:determ}
-$$
-e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
-$$
-\end{lemma}
-
-\subsection{Realizability Predicate Evaluation}
-
-\begin{theorem}[Evaluation into Predicate]
-\label{thm:pred:eval}
-$$
-\forall (a : \type{A}), ~ \sigma.~ \dtypm{A}(\sigma ~ a)
-$$
-\end{theorem}
 
 \section{Intrinsic Big-Step Semantics}
 \label{sec:emod}
-
-Recall from \refsec{epred} that we had an extrinsic relational
-semantics ($e \bigstep e'$) that was not obviously terminating due to
-the lack of a clear termination measure in the function application
-case. To prove termination, we defined a realizability predicate
-($\typm{A}(e)$) with the key characteristic that it used the
-higher-order function space of the metalanguage for expressions of
-function type. This way ``evaluating'' a function application
-expression ($f \app a$) into the realizability predicate is obviously
-terminating (unlike the extrinsic semantics), because evaluating 
-the function ($f$) expression gives us a metalanguage function that
-can be applied to the result of evaluating the argument ($a$).
-
-If we get rid of the extrinsic semantics and the
-expression parameter of the realizability predicate, the realizability
-predicate becomes a Kripke model of values and the termination proof becomes an
-intrinsic (functional) big-step semantics from expressions to model
-values. Thus, normalization of expressions to values can be defined in
-terms of evaluation from expressions to model values, depicted once
-again in the commutative diagram below, this time using our
-formal notation that mentions contexts explicitly.
-
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\type{A}} 
-%%           \ar[dr]_{\fun{nbe}}
-%%           \ar[r]^{\fun{eval}}
-%%         & {\typm{A}}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & \typv{A} }
-%% \end{displaymath}
 
 %% In the remainder of this section we prove the arrows of
 %% the diagram above, and explain the definitions involved, in the following order:
@@ -756,43 +602,6 @@ formal notation that mentions contexts explicitly.
 %% \item{\bf{\refsec{emod:eval}}} Evaluation
 %% \item{\bf{\refsec{emod:nbe}}} Normalization
 %% \end{itemize}
-
-\subsection{Value Model}
-
-We begin by defining the model of values that our semantics will
-evaluate into, from which we subsequently reify results out of
-(going from model values to theory values).
-
-The model of natural numbers can be thought of as a base case,
-consisting merely of natural numbers values of the theory. The
-interesting case is the the model of functions, which uses the
-higher-order structure of the metalanguage.
-
-\begin{defin}[Model of Values]
-\label{def:mval}
-$ $\\
-The model of values $\typm{A}$ is defined inductively on the structure
-of types.
-
-\begin{subdefin}[Natural numbers]
-$$
-\typm{\nat} \dfn \typv{\nat}
-$$
-For natural numbers we require an intrinsically typed natural number
-value.
-\end{subdefin}
-
-\begin{subdefin}[Functions]
-$$
-\typm{A \arr B} \dfn \all{\Delta} \gdtypm{A} \marr \gdtypm{B}
-$$
-
-For functions you get a weakened element of the model whose type is
-the domain of the function, and must provide a weakened element of the
-model whose type is the codomain of the function.
-\end{subdefin}
-
-\end{defin}
 
 \subsection{Reification}
 
@@ -1166,25 +975,6 @@ x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 \end{proof}
 
 \end{lemma}
-
-\section{Extrinsic Hereditary Substitution Semantics}
-\label{sec:vpred}
-
-\subsection{Non-Obvious Termination}
-
-$$
-\infer
-  []{\hsubn{(f \app a)}{b'}}
-{
-  \hsubn{f}{\lam b}
-  &
-  \hsub{a}{a'}
-  &
-  \hsubext{a'}{b}{b'}
-}
-$$
-
-\subsection{Possible Realizability Predicates}
 
 \section{Intrinsic Hereditary Substitution Semantics}
 \label{sec:vmod}
