@@ -314,261 +314,6 @@ constructive proofs of hereditary substitution within dependently
 typed languages, such as the one given by \cite{TODO}, have been
 unable to scale to calculi with inductive types.
 
-
-
-
-As type theorists we often find ourselves in the following situation.
-We're studying some (hopefully) total lamba calculus. We define some
-syntax as an inductive datatype. Then we write down the typing rules and semantics 
-and other properties as relations. Some of our relations are
-propositional (i.e. a type family defined as an indexed datatype in a
-dependently typed language) and some are definitional (i.e. a type
-family defined as a function in a dependently typed language). For
-example we might have 
-
-\[
-\begin{array}{lll}
-
-\ascribe{e}{A} & \mbox{typing relation} & \mbox{propositional}\\
-e \bigstep e' & \mbox{big-step reduction} & \mbox{propositional} \\ 
-\fun{IsValue}(e') & \mbox{is a value} & \mbox{propositional}\\
-{\el{A}(e)} & \mbox{realizability predicate} & \mbox{definitional}\\
-
-\end{array}
-\]
-We then proceed to prove easy metatheorems like type safety (which is merely
-preservation for a big-step semantics).
-
-\paragraph{Big-Step Type Preservation}
-
-$$
-\all{\ascribe{e}{A}} e \bigstep e' \marr \ascribe{e'}{A}
-$$
-
-
-
-Unfortunately, our relationally specified semantics is not obviously
-terminating, so we begin the more difficult task of proving its
-termination.
-
-\paragraph{Termination of Big-Step}
-
-$$
-\all{\ascribe{e}{A}} \ex{\ascribe{e'}{A}} e \bigstep e' \land \fun{IsValue}(e')
-$$
-
-To prove termination, we come up with the appropriate logical
-relation~\cite{TODO} for our semantics, relating expressions to evidence
-that they terminate as some value.
-In this case we have a unary
-logical relation on expressions, or a realizability
-predicate~\cite{TODO}. You can prove termination as the composition of
-evaluation of expressions into the realizability predicate, and reification
-of termination evidence as a function from the realizability predicate.
-
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\forall (e : A)} 
-%%           \ar[dr]_{\fun{termination}}
-%%           \ar[r]^{\fun{evaluate}}
-%%         & {\el{A}(e)}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & {\exists (e' : A). ~ e \bigstep e' \wedge \fun{IsValue} ~ e'} }
-%% \end{displaymath}
-
-Many operational semantics have been proven to terminate using this
-method. For example, the realizability predicate and associated lemmas
-needed to prove that a big-step semantics terminates for G{\"o}del's
-System T are well known. It is straightforward to understand and verify such
-completed definitions and proofs, but coming up with the correct
-realizability predicate and associated lemmas for a novel proof takes
-ingenuity. 
-
-As we got stuck in various places trying to prove a novel termination result
-(that \textit{hereditary substitution}~\cite{TODO} terminates for
-G{\"o}del's System T), we were inspired by
-\textit{intrinsic typing}~\cite{TODO} as a means of simplifying our
-metatheory and getting free theorems. With \textit{extrinsic} typing you
-define expressions ($e$), a separate extrinsic typing relation $\ascribe{e}{A}$, and prove
-theorems ($P$) of the form:
-$$
-\all{\ascribe{e}{\con{Exp}}} \ascribe{e}{A} \marr P(e) $$
-
-Rather than having this pair of arguments everywhere, one can dispense with
-the terms ($e$), and instead use the typing relation $\ascribe{e}{A}$
-as an intrinsicly typed representation of terms, simplifying theorems to
-have the form:
-$$
-\all{\ascribe{e}{A}} P(e)
-$$
-
-Furthermore, as our big-step semantics is now defined on intrinsically
-typed expressions, the result is already type-correct so we get the
-theorem of {\bf Type Preservation} for \textit{free}!
-
-{\bf Now to the point:} 
-Recall the ``termination'' arrow in the commutative diagram for our
-realizability proof above. By analogy to intrinsic typing, you
-can think of the big-step relation on expressions as an
-\textit{extrinsic semantics}, and the termination proof as a function
-that produces a witness that the extrinsic semantics terminates. Yet,
-the termination proof can itself act as an \textit{intrinsic semantics}! 
-Just like with intrinsic typing, when we use an intrinsic semantics
-statements of theorems become simplified. For example, we can rename
-and restate our previous {\bf Termination} theorem, to more
-appropriately reflect that it \textit{defines} normalization (our
-semantics) as a function from expressions of some type to values of
-the same type:
-
-\paragraph{Normalization}
-$$
-\all{\ascribe{e}{A}} \ex{\ascribe{v}{A}}
-$$
-
-By the same token, our diagram is also simplified.
-
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\forall (e : A)} 
-%%           \ar[dr]_{\fun{normalize}}
-%%           \ar[r]^{\fun{evaluate}}
-%%         & {\el{A}}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & \exists (v : A) }
-%% \end{displaymath}
-
-Notice the codomain of evaluation has become simpler. Formerely, it
-was a realizability predicate ($\el{A}(e)$) that related the input
-expression to the underlying extrinsic big-step semantics. Now, it has
-become a Kripke model~\cite{TODO} ($\el{A}$) representing the
-collection of \textit{values} of the appropriate type! Thus, the normalization
-theorem is the well-known technique of defining your (intrinsic)
-semantics as Normalization by Evaluation (NbE)~\cite{TODO}.
-
-\subsection{The Perspective of Termination Proofs as Intrinsic Semantics}
-
-Our {\bf first major contribution} is the \textit{perspective} of thinking of
-termination proofs as defining an intrinsic semantics.
-The similarities between realizability predicates and Kripke models are
-readily apparent. Neither of these concepts are new, we merely wish
-to point out that NbE falls out of thinking of the
-realizability predicate-based termination proof of an \textit{extrinsic}
-operational semantics as defining an \textit{intrinsic}
-semantics.
-
-Just as intrinsic typing simplifies statements of theorems, intrinsic semantics simplifies
-theorems too. Moreover, intrinsic semantics also provides us with
-\textit{free} theorems, as shown in \refsec{TODO} and \refsec{TODO}!
-
-\paragraph{Big-Step Determinacy}
-
-$$
-e \bigstep e' \marr e \bigstep e'' \marr e' \equiv e''
-$$
-
-Because our termination proof-based semantics is already a function,
-we do not need to prove that it produces unique outputs.
-
-\paragraph{Big-Step Predicate Preservation}
-
-$$
-\el{A}(e) \marr e \bigstep e' \marr \el{A}(e')
-$$
-
-One of the lemmas of a realizability predicate-based proof is showing that
-the big-step semantics preserves satisfiability
-of the predicate. This is analogous to type-preservation, but at the
-level of the realizability predicate. Because an intrinsic semantics
-does not need to thread through evidence of an extrinsic semantics, we
-also get this theorem for free.
-
-\subsection{Termination of Hereditary Substitution for G{\"o}del's System T}
-
-Our {\bf second major contribution} is an example of how adopting the
-perspective of intrinsic semantics helped us prove a conjecture:
-that hereditary substitution for G{\"o}del's System T terminates.
-
-Normally, you give a (e.g. big-step or small-step) semantics to
-\textit{expressions}. Instead, you can give a semantics to \textit{values}
-($\beta$-redex-free canonical terms) of a 
-of a canonical type theory~\cite{TODO}. The semantics for values is
-known as \textit{hereditary substitution}~\cite{TODO}. Because values are
-not closed under ordinary substitution (which would break the invariant that values
-do not contain $\beta$-redexes), hereditary substitution
-performs evaluation if the substitution would
-result in a $\beta$-redex.
-
-The standard purely syntactic approaches~\cite{TODO} of proving termination of
-hereditary substitution have not scaled to recursive inductive types
-(e.g. $\nat$). We were originally tempted to define an extrinsic
-hereditary substitution relation and prove that it terminates directly.
-
-\paragraph{Termination of Hereditary Substitution}
-
-$$
-\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}} \hsub{v}{v'}
-$$
-
-Just like proving termination of big-step semantics, we would need to
-come up with the correct definition of the realizability predicate,
-and the associated lemmas that make the following diagram commute.
-
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\forall (v : A), \sigma} 
-%%           \ar[dr]_{\fun{hsub}}
-%%           \ar[r]^{\fun{ceval}}
-%%         & {\el{A}(v)}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & {\exists (v' : A). ~ [ \sigma ] v = v'} }
-%% \end{displaymath}
-
-Originally, we tried to prove this directly but got stuck at various
-points in our attempts. Eventually, we adopted the perspective of the
-would-be termination proof as an intrinsic semantics. Thus, our goal
-becomes instead to define hereditary substitution directly as a
-function.
-
-\paragraph{Hereditary Substitution}
-$$
-\all{\ascribe{v}{A}, \sigma} \ex{\ascribe{v'}{A}}
-$$
-
-Note that the type of this high-level presentation of the function does
-not seem to guarantee any kind of correctness. In \refsec{TODO}, the
-correctness becomes apparent once contexts are mentioned explicitly.
-
-Adopting an intrinsic semantics for expressions lead us to a Kripke
-model and NbE. Fortuitously, adopting an intrinsic semantics for
-values also leads us to the very same Kripke model, and we get to
-reuse associated lemmas (e.g. reification). This leads us to making
-the following diagram commute.
-
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           \all{\ascribe{v}{A}, \sigma}
-%%           \ar[dr]_{\fun{hsub}}
-%%           \ar[r]^{\fun{ceval}}
-%%         & {\el{A}}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & \ex{\ascribe{v'}{A}} }
-%% \end{displaymath}
-
-We get to reuse the arrow on the right. Our contributions is the arrow
-on the top (\refthm{TODO}) and the arrow on the bottom
-(\refthm{TODO}). 
-The former performs ``canonical evaluation'' of values by injecting
-them into the model and evaluating under an environment whenever a
-variable is encountered. The latter defines hereditary substitution as
-the composition of canonical evaluation and reification, as well as a
-more subtle reflection of the environment  $\sigma$ into the model
-(\refthm{TODO}).
-For expressions, a Kripke model allows
-normalization to be defined by evaluation (NbE). For values, a Kripke
-model allows hereditary substitution to be defined by canonical
-evaluation (SbE). Hence, our slogan:
-\textit{Hereditary Substitution by Canonical Evaluation (SbE)}.
-
 \subsection{Outline}
 
 After a brief discussion about our notation, the rest of the paper is
@@ -678,6 +423,97 @@ $$
   (i : \typr{A})
 }
 $$
+
+%% \subsection{Termination of Big-Step}
+
+%% The idea of the realizability predicate is to relate a term to the
+%% theorem we are trying to prove (big-step termination) at non-arrow
+%% base types (i.e. $\nat$), and use the function space of the
+%% metalanguage (implication) at the arrow type. This way, when proving
+%% that the application of a function to an argument satisfies the
+%% realizability predicate, the inductive hypothesis for the function
+%% gives us a metalanguage function to apply to the inductive hypothesis
+%% of the argument. But before we can prove that all expressions satisfy
+%% the realizability predicate, we must prove that satisfaction of the
+%% realizability predicate for some expression implies that evaluating
+%% the expression using the big-step semantics terminates at some value.
+
+%% \paragraph{Big-Step Type Preservation}
+
+%% $$
+%% \all{\ascribe{e}{A}} e \bigstep e' \marr \ascribe{e'}{A}
+%% $$
+
+\section{Roadmap of NbE and SbE}
+\label{sec:road}
+
+After reviewing why proving termination of naive definitions of
+normalization and hereditary substitution fails, we provide a
+high-level roadmap of theorems and definitions necessary to define NbE
+and SbE, and we compare and contrast them. This section references
+theorems, which reference other sections containing their proofs, as
+well as additional lemmas. You can think of this section as a sort of
+``abstract interface'' that only exposes the theorems and definitions
+necessary to define NbE and SbE. To get more detail about the proofs
+of these theorems, and what additional definitions and lemmas are
+needed to write the proofs, see the referenced sections, or
+``the implementation behind the abstract interface''.
+
+\subsection{Termination Issues with Naive Definitions}
+
+In both the defintions of normalization and hereditary substitution, the
+main problem preventing an obvious termination
+argument by structural induction has to do with the lack of an appeal
+to an inductive hypothesis in the function application case.
+
+\paragraph{Naive Normalization}
+Consider the application case in the definition of strong normalization
+below, given as a big-step binary relation between expressions.
+
+$$
+\infer
+  []{f \app a \bigstep {b'}}
+{
+  f \bigstep \lam b
+  &
+  a \bigstep a'
+  &
+  [a'/\con{here}]b \bigstep b'
+}
+$$
+
+After evaluating the function to a lambda, we need to
+substitute the argument into the lambda body. This may have introduced
+new $\beta$-redexes, so we must evaluate again but
+there is no obvious termination measure to justify this (we have
+already appealed to two inductive hypotheses, and there are no others
+available).
+
+\paragraph{Naive Hereditary Substitution}
+Consider the application case in the definition of hereditary substitution
+below, given as a trinary relation between an input value, a mapping from
+variables to values ($\sigma$), and a resulting value. Note that we
+actually have two mutually defined relations, one for substituting
+into a value and producing a new value ($\hsub{v}{v'}$), and another
+for substituting into neutral but also producing a value
+($\hsubn{n}{v}$).
+
+$$
+\infer
+  []{\hsubn{(f \app a)}{b'}}
+{
+  \hsubn{f}{\lam b}
+  &
+  \hsub{a}{a'}
+  &
+  \hsubext{a'}{b}{b'}
+}
+$$
+
+This relation is not obviously terminating for the same reason as
+normalization. We have inductive hypotheses for substituting into the
+function and its argument, but there is no inductive hypothesis for
+substituting into the $\lambda$-body.
 
 \section{Extrinsic Big-Step Semantics}
 \label{sec:epred}
