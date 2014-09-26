@@ -237,8 +237,9 @@ Normalization by Evaluation (NbE)~\cite{TODO} is a model-theoretic
 technique for defining the semantics of a $\lambda$-calculus. For
 example, normalization for a total $\lambda$-calculus with inductive
 types (such as G{\"o}del's System T) can be defined by first
-evaluating an expression to a Kripke model value, and then
-reifying the value back to an expression. 
+evaluating a syntactic expression (possibly containing $\beta$-redexes) to a
+Kripke model value, and then reifying the result to a syntactic value
+(not containing any $\beta$-redexes).
 
 \begin{displaymath}
     \xymatrix{
@@ -253,10 +254,12 @@ reifying the value back to an expression.
 NbE is especially convenient for formalizing the semantics of total
 $\lambda$-calculi in dependently typed languages (such as
 Coq~\cite{TODO}, Agda~\cite{TODO}, or Idris~\cite{TODO}), because the
-proof of termination of the semantics is \textit{implicit} in its definition.
+proof of termination of the semantics is \textit{implicit} in its
+definition. In other words, normalization can be defined as a total
+function within the language.
 In contrast, formalizing the semantics of expressions as a
 relation (e.g. a small or big-step relation), or as a
-coinductive function~\cite{TODO}, requires the additional of overhead
+coinductive function~\cite{TODO}, requires the additional overhead
 of supplying an \textit{explicit}
 termination proof \textit{a posteriori} using techniques such as
 logical relations~\cite{TODO}.
@@ -268,7 +271,10 @@ the semantics of expressions in terms of hereditary substitution of
 values. Values are not closed under ordinary substitution, because a
 substitution can introduce a $\beta$-redex. Hereditary substitution
 fixes this problem by reducing whenever a $\beta$-redex is created as
-the result of substitution.
+the result of substitution. But, it is not easy to show that
+traditional proof-theoretic definitions (discussed below in
+\refsec{proof-theoretic}) of hereditary substitution terminate in
+dependently typed languages.
 
 \textbf{Our contribution} is adapting NbE to canonical terms, giving us a model-theoretic
 definition of hereditary substitution. We call this technique
@@ -276,7 +282,7 @@ definition of hereditary substitution. We call this technique
 SbE requires us to introduce novel definitions, but we also get to
 reuse the model from NbE, as well as some of its definitions. SbE is
 defined by \textit{canonically evaluating} a syntactic value to a
-Kripke model value, and then reifing back to a syntactic value.
+Kripke model value, and then reifying back to a syntactic value.
 
 \begin{displaymath}
     \xymatrix{
@@ -298,21 +304,26 @@ in this paper, but SbE scales to systems with paramterized inductive
 types (such as lists or trees) for the same reasons that NbE does.
 
 \subsection{Proof Theoretic Semantics}
+\label{sec:proof-theoretic}
 
 Hereditary substitution has historically been studied in the context
-of proof-theoretic semantics. Just like NbE, hereditary substitution
-can be used to define a semantics directly as a function, whose
-termination argument is intrinsically given by lexicographic induction
-on terms and types. For example, \cite{TODO} show how to formalize the
-semantics of the STLC in Agda using hereditary substitution. The
-advantage of a purely syntactic definition of hereditary substitution
-is that it demands less from the metalanguage (i.e. the metalanguage
+of proof-theoretic semantics. A proof-theoretic semantics takes
+syntactic inputs directly to syntactic outputs, without going through
+an intermediate semantic model. Formalizing this approach in
+dependently typed languages has been limited to simple calculi.
+For example, \cite{TODO} show how to formalize the
+semantics of the STLC in Agda using syntactic hereditary substitution.
+The termination of the hereditary substitution function is witnessed
+by lexicographic induction on terms and types, but this approach does
+not scale to $\lambda$-calculi with inductive types.
+
+The syntactic approach to hereditary substitution
+demands less from the metalanguage than from a model-theoretic
+approach (i.e. the metalanguage
 function space is not needed to construct a model). A disadvantage is
 that exposing the lexicographic termination argument requires changing
-the structure of values to be in spine form. More importantly,
-constructive proofs of hereditary substitution within dependently
-typed languages, such as the one given by \cite{TODO}, have been
-unable to scale to calculi with inductive types.
+the structure of values, e.g. requiring values to be in spine
+form.
 
 \subsection{Outline}
 
@@ -495,7 +506,7 @@ normalization. We have inductive hypotheses for substituting into the
 function and its argument, but there is no inductive hypothesis for
 substituting into the $\lambda$-body.
 
-\subsection{Model of Values}
+\subsection{The Model}
 
 Recall that the problematic case for normalization and hereditary
 substitution is function application. In NbE, normalization is no
@@ -503,7 +514,7 @@ longer the ``meaty'' definition given by case analyzes over all
 possible expressions. Instead, evaluation is the ``meaty'' definition
 that case analyzes all expressions. Evaluation takes an expression
 to a \textit{model} value instead of a \textit{syntactic} value.
-Thus, normalization can be more simply defined as the composition of
+Thus, normalization can defined more simply as the composition of
 evaluation to a model value, and reification back to a syntactic value.
 
 So how can we define the model in a way that makes termination of the
@@ -540,34 +551,61 @@ weakened by some arbitrary context $\Delta$.
 \end{defin}
 
 So how does this model help us to define the application case of
-evaluation? Now evaluating the function produces a model
+evaluation? Well, the result of evaluation (rather than
+normalization) take a syntactic expression to a model value (rather
+than a syntactic value).
+Thus, evaluating the function produces a model
 function, which we can apply to the model value produced by evaluating
 the argument (in this case the weakening $\Delta$ is merely the empty
 context). Hence, we can define the application case of evaluation in
 an structurally terminating way since it only needs to appeal to the
 two available inductive hypotheses.
 
-%% \subsection{Termination of Big-Step}
+Given that evaluation must map syntactic expressions to model values,
+what should it do when it encounters a variable? We can make
+evaluation take an additional argument, called the
+``model environment'', mapping variables to model values. More
+specifically, the model environment maps all variables in
+some initial context $\Gamma$ to model values in some terminal context
+$\Delta$.
 
-%% The idea of the realizability predicate is to relate a term to the
-%% theorem we are trying to prove (big-step termination) at non-arrow
-%% base types (i.e. $\nat$), and use the function space of the
-%% metalanguage (implication) at the arrow type. This way, when proving
-%% that the application of a function to an argument satisfies the
-%% realizability predicate, the inductive hypothesis for the function
-%% gives us a metalanguage function to apply to the inductive hypothesis
-%% of the argument. But before we can prove that all expressions satisfy
-%% the realizability predicate, we must prove that satisfaction of the
-%% realizability predicate for some expression implies that evaluating
-%% the expression using the big-step semantics terminates at some
-%% value.
+\todo[inline]{Should we explain extending the env when evaluating the
+  lambda case?}
+
+\begin{defin}[Model of Environments]
+\label{def:menv}
+$ $\\
+The model of environments $\menv$ is defined inductively on the structure
+of the first context argument ($\Gamma$).
+
+\begin{subdefin}[Empty context]
+$$
+\dmenv{\emp} \dfn \top
+$$
+The empty context is trivially inhabited in the environment model.
+\end{subdefin}
+
+\begin{subdefin}[Context extension]
+$$
+\dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
+$$
+
+The environment model of a context extension consists of two parts,
+given as a pair type. The first part
+is the environment model of the context being extended ($\Gamma$). The second part
+is of a model value in the terminal context ($\Delta$),
+whose type is the type of the context extension ($A$).
+
+\end{subdefin}
+
+\end{defin}
 
 \subsection{Normalization by Evaluation}
 
-So far we have seen the model of values and have some intuition for
-why it makes writing a terminating definition of evaluation possible.
+So far we have seen the model of values and environments, and the
+intuition behind the model enabling a terminating definition of evaluation.
 Now let's take a closer look at how exactly to define normalization in
-terms of evaluation. What additional theorems 
+terms of evaluation. What theorems 
 \footnote{Because the ``definition'' of normalization contains an
 intrinsic termination proof, I refer to normalization, evaluation, and
 related ``definitions'' as \textit{theorems} and \textit{lemmas}.}
@@ -576,12 +614,12 @@ normalization?
 
 \paragraph{Evaluation (\refthm{TODO} in \refsec{TODO})}
 $$
-\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
+\eval : \type{A} \marr \menv \marr \dtypm{A}
 $$
 
 \paragraph{Reification (\refthm{TODO} in \refsec{TODO})}
 $$
-\fun{reify} : \typm{A} \marr \typv{A}
+\reify : \typm{A} \marr \typv{A}
 $$
 
 \paragraph{Identity Model Environment (\refthm{TODO} in \refsec{TODO})}
@@ -589,6 +627,32 @@ $$
 \midenv : \all{\Gamma} \gmenv{\Gamma}
 $$
 
+As mentioned previously, the high-level plan of NbE is to define
+normalization as the composition of evaluation ($\eval$) of an expression to a
+model value, and reification ($\reify$) to a syntactic value. However,
+normalization only takes the input syntactic expression as an
+argument, while evaluation also takes a model environment as an
+argument. Thus, we define normalization by evaluating the input
+expression and creating an identity model environment, mapping
+syntactic variables in any context to variables as model values in the
+same context.
+
+\begin{theorem}[Normalization by Evaluation]
+\label{thm:mod:nbe}
+$$
+\fun{nbe} : \type{A} \marr \typv{A}
+$$
+
+\begin{proof}
+\begin{align*}
+x    &: \type{A} && \byass\\
+\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
+x'  &: \typm{A} && \by{\eval~x~\sigma}\\
+x'' &: \typv{A} && \by{\reify~x'}
+\end{align*}
+\end{proof}
+
+\end{theorem}
 
 
 \section{Intrinsic Big-Step Semantics}
@@ -690,41 +754,6 @@ b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
 \end{proof}
 
 \end{sublemma}
-
-\subsection{Environment Model}
-
-The evaluation function (\refthm{mod:eval}) from expressions to model
-values requires an extra parameter, called the environment, to collect
-model values when evaluating underneath $\lambda$ terms in the model.
-The model of environments is thus a mapping from all variables in some initial context
-$\Gamma$, to model values in some terminal context $\Delta$.
-
-\begin{defin}[Model of Environments]
-\label{def:menv}
-$ $\\
-The model of environments $\menv$ is defined inductively on the structure
-of the first context argument ($\Gamma$).
-
-\begin{subdefin}[Empty context]
-$$
-\dmenv{\emp} \dfn \top
-$$
-The empty context is trivially inhabited in the model.
-\end{subdefin}
-
-\begin{subdefin}[Context extension]
-$$
-\dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
-$$
-
-The environment model of a context extension consists of two parts. The first part
-is a model of the environment context being extended ($\Gamma$). The second part
-consists of a model of a value in the terminal context ($\Delta$),
-whose type is the type of the context extension ($A$).
-
-\end{subdefin}
-
-\end{defin}
 
 \subsection{Evaluation}
 
@@ -912,32 +941,6 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 
 \end{lemma}
 
-\subsection{Normalization}
-
-Normalization (\refthm{mod:nbe}) is a type \textit{and} context
-preserving translation from an expression to a value. It is defined
-mainly as the composition of evaluation (\refthm{mod:eval}) and
-reification (\refthm{mod:reify}), but evaluation also requires an
-environment parameter. Because normalization preserves contexts, we
-merely need an additional lemma to produce an identity model
-environment (\reflem{mod:midenv}).
-
-\begin{theorem}[Normalization by Evaluation]
-\label{thm:mod:nbe}
-$$
-\fun{nbe} : \type{A} \marr \typv{A}
-$$
-
-\begin{proof}
-\begin{align*}
-x    &: \type{A} && \byass\\
-\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
-x'  &: \typm{A} && \by{\eval~x~\sigma}\\
-x'' &: \typv{A} && \by{\reify~x'}
-\end{align*}
-\end{proof}
-
-\end{theorem}
 
 The identity model environment is a mapping from each variable in a
 context, to the same variable but as a model value. Essentially, the
