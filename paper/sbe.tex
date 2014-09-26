@@ -19,6 +19,9 @@
 \usepackage{enumitem}
 \usepackage[all]{xy}
 
+\usepackage{tabularx}
+\renewcommand{\arraystretch}{1.5} % more table padding
+
 \usepackage{float}
 \floatstyle{boxed}
 \restylefloat{figure}
@@ -602,6 +605,10 @@ whose type is the type of the context extension ($A$).
 
 \subsection{Normalization by Evaluation}
 
+$$
+\fun{nbe} : \type{A} \marr \typv{A}
+$$
+
 So far we have seen the model of values and environments, and the
 intuition behind the model enabling a terminating definition of evaluation.
 Now let's take a closer look at how exactly to define normalization in
@@ -612,20 +619,17 @@ related ``definitions'' as \textit{theorems} and \textit{lemmas}.}
 do we need, and how do we instantiate these theorems in the proof of
 normalization?
 
-\paragraph{Evaluation (\refthm{TODO} in \refsec{TODO})}
-$$
-\eval : \type{A} \marr \menv \marr \dtypm{A}
-$$
-
-\paragraph{Reification (\refthm{TODO} in \refsec{TODO})}
-$$
-\reify : \typm{A} \marr \typv{A}
-$$
-
-\paragraph{Identity Model Environment (\refthm{TODO} in \refsec{TODO})}
-$$
-\midenv : \all{\Gamma} \gmenv{\Gamma}
-$$
+\hfill \break
+\begin{tabularx}{\textwidth}{ |c|c|c|X| }
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\eval$ & $\type{A} \marr \menv \marr \dtypm{A}$ \\
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\midenv$ & $\all{\Gamma} \gmenv{\Gamma}$ \\
+  \hline
+\end{tabularx}
+\hfill \break
 
 As mentioned previously, the high-level plan of NbE is to define
 normalization as the composition of evaluation ($\eval$) of an expression to a
@@ -654,6 +658,29 @@ x'' &: \typv{A} && \by{\reify~x'}
 
 \end{theorem}
 
+\subsection{Hereditary Substitution by Canonical Evaluation}
+
+$$
+\sbe : \typv{A} \marr \env \marr \dtypv{A}
+$$
+
+\begin{theorem}[Hereditary Substitution by Canonical Evaluation]
+\label{thm:mod:vhsub}
+$$
+\sbe : \typv{A} \marr \env \marr \dtypv{A}
+$$
+
+\begin{proof}
+\begin{align*}
+a    &: \typv{A} && \byass\\
+\sigma   &: \env && \byass\\
+\sigma'  &: \menv && \by{\reflects~\sigma}\\
+a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
+a''  &: \dtypv{A} && \by{\reify~A~a'}
+\end{align*}
+\end{proof}
+
+\end{theorem}
 
 \section{Intrinsic Big-Step Semantics}
 \label{sec:emod}
@@ -1105,26 +1132,6 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 
 
 \end{subtheorem}
-
-\subsection{Hereditary Substitution}
-
-\begin{theorem}[Hereditary Substitution by Canonical Evaluation]
-\label{thm:mod:vhsub}
-$$
-\sbe : \typv{A} \marr \env \marr \dtypv{A}
-$$
-
-\begin{proof}
-\begin{align*}
-a    &: \typv{A} && \byass\\
-\sigma   &: \env && \byass\\
-\sigma'  &: \menv && \by{\reflects~\sigma}\\
-a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
-a''  &: \dtypv{A} && \by{\reify~A~a'}
-\end{align*}
-\end{proof}
-
-\end{theorem}
 
 \subsection{Normalization}
 
