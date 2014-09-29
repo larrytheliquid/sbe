@@ -105,8 +105,9 @@
 
 \def\reify{\fun{reify}}
 
-\def\reflect{\fun{reflect}}
-\def\reflects{\fun{reflects}}
+\def\reflectn{\fun{reflect}^\con{N}}
+\def\reflect{\reflectn}
+\def\reflecte{\fun{reflect}^\con{E}}
 
 \def\mono{\fun{mono}}
 \def\monos{\fun{monos}}
@@ -118,6 +119,7 @@
 \def\lookup{\fun{lookup}}
 
 \def\sbe{\fun{sbe}}
+\def\nsbe{\fun{nsbe}}
 
 \def\nbs{\fun{nbs}}
 
@@ -181,6 +183,7 @@
 
 \def\menv{\el{\fun{Env}}~\Gamma~\Delta}
 \def\env{\fun{Env}~\Gamma~\Delta}
+\def\enve{\fun{Env}^\con{E}~\Gamma~\Delta}
 \newcommand{\dmenv}[1]{\el{\fun{Env}}~#1~\Delta}
 \newcommand{\denv}[1]{\fun{Env}~#1~\Delta}
 \newcommand{\gmenv}[1]{\el{\fun{Env}}~\Gamma~#1}
@@ -596,7 +599,7 @@ $$
 The environment model of a context extension consists of two parts,
 given as a pair type. The first part
 is the environment model of the context being extended ($\Gamma$). The second part
-is of a model value in the terminal context ($\Delta$),
+is a model value in the terminal context ($\Delta$),
 whose type is the type of the context extension ($A$).
 
 \end{subdefin}
@@ -637,9 +640,9 @@ model value, and reification ($\reify$) to a syntactic value. However,
 normalization only takes the input syntactic expression as an
 argument, while evaluation also takes a model environment as an
 argument. Thus, we define normalization by evaluating the input
-expression and creating an identity model environment, mapping
-syntactic variables in any context to variables as model values in the
-same context.
+expression and creating an identity model environment ($\midenv$),
+mapping syntactic variables in any context to variables as model
+values in the same context.
 
 \begin{theorem}[Normalization by Evaluation]
 \label{thm:mod:nbe}
@@ -664,6 +667,51 @@ $$
 \sbe : \typv{A} \marr \env \marr \dtypv{A}
 $$
 
+How is the type of hereditary substitution different from that of
+normalization? First, we are substituting into a \textit{value} rather
+than normalizing an \textit{expression}. Second, hereditary
+substitution takes a \textit{syntactic} environment, a mapping of
+variables to syntactic values, as an additional argument.
+
+\begin{defin}[Syntax of Environments]
+\label{def:senv}
+$ $\\
+The syntax of environments $\env$ is defined exactly like the model of
+environments (\refdef{menv}, $\menv$), except it contains syntactic values
+instead of model values.
+\end{defin}
+
+Below are the theorems we need for SbE. In particular, notice that we
+get to reuse $\reify$ from NbE.
+
+\hfill \break
+\begin{tabularx}{\textwidth}{ |c|c|c|X| }
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\reflecte$ & $\env \marr \menv$ \\
+  \hline
+\end{tabularx}
+\hfill \break
+
+The high-level plan of SbE is to define
+hereditary substitution as the composition of
+canonical evaluation ($\cevalv$) of a syntactic value to a
+model value, and reification ($\reify$) back to a syntactic value.
+What exactly is canonical evaluation? Recall that evaluation of
+expressions turned syntactic expressions into model values, reducing
+$\beta$-redexes and replacing variables with their definition in the
+model environment ($\sigma$) along the way. On the other hand,
+canonical evaluation takes a syntactic value and a model environment
+to a model value. It will not come across $\beta$-redexes in the input
+syntactic value, but replacing variables with model values (from
+$\sigma$) may \textit{introduce} $\beta$-redexes that need to be
+immediately reduced. Finally, the syntactic environment argument of
+SbE is reflected as a model environment, and is used as the model
+environment argument of canonical evaluation.
+
 \begin{theorem}[Hereditary Substitution by Canonical Evaluation]
 \label{thm:mod:vhsub}
 $$
@@ -674,13 +722,51 @@ $$
 \begin{align*}
 a    &: \typv{A} && \byass\\
 \sigma   &: \env && \byass\\
-\sigma'  &: \menv && \by{\reflects~\sigma}\\
+\sigma'  &: \menv && \by{\reflecte~\sigma}\\
 a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
 a''  &: \dtypv{A} && \by{\reify~A~a'}
 \end{align*}
 \end{proof}
 
 \end{theorem}
+
+\subsection{NbE versus SbE}
+
+In the world of expressions
+evaluation takes an additional argument (the model environment) compared
+to normalization, which only takes the expression to reduce. But, in
+the world of values hereditary substitution and canonical evaluation
+both take a value, an environment, and produce a value. The only
+difference is that canonical evaluation takes a model environment and
+produces a model value. 
+In other words, canonical evaluation \textit{is}
+a model-theoretic hereditary substitution, compared to the typical
+proof-theoretic hereditary substitution.
+What a beautiful coincidence!
+
+A consequence of this is that normalization must invent a model
+environment to pass to evaluation. Because normalization does not
+change the value of free variables, the identity model environment
+($\midenv$) is used. In contrast, hereditary substitution already has
+a syntactic environment (that should be used to look up any free
+variables), so canonical evaluation takes the 
+reflection ($\reflecte$) of the syntactic environment as its model
+environment argument.
+
+Although there is a more direct correspondence between SbE and canonical
+evaluation (than there is between NbE and evaluation), there is
+nothing preventing us from defining a function on expressions that
+normalizes $\beta$-redexes, and simultaneously performs hereditary
+substitutions from an environment mapping variables to expressions.
+This normalization plus hereditary substitution function ($\nsbe$) would take an
+extra syntactic expression environment argument, creating a
+corresponcence with evaluation that is just as direct as the one that
+SbE enjoys.
+
+$$
+\nsbe : \type{A} \marr \enve \marr \dtype{A}
+$$
+
 
 \section{Intrinsic Big-Step Semantics}
 \label{sec:emod}
@@ -1018,12 +1104,6 @@ x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 %%           \ar[d]^{\large{\fun{reify}}}
 %% \\      & \dtypv{A} }
 %% \end{displaymath}
-
-\subsection{Definition of Environment}
-
-\todo[inline]{environment definition}
-\todo[inline]{reflects: reflection of a neutral variable can result in
-  model functions!}
 
 \subsection{Identity Environment}
 
