@@ -105,9 +105,9 @@
 
 \def\reify{\fun{reify}}
 
-\def\reflectn{\fun{reflect}^\con{N}}
+\def\reflectn{\fun{reflect}}
 \def\reflect{\reflectn}
-\def\reflecte{\fun{reflect}^\con{E}}
+\def\reflecte{\fun{reflects}}
 
 \def\mono{\fun{mono}}
 \def\monos{\fun{monos}}
@@ -710,7 +710,7 @@ to a model value. It will not come across $\beta$-redexes in the input
 syntactic value, but replacing variables with model values (from
 $\sigma$) may \textit{introduce} $\beta$-redexes that need to be
 immediately reduced. Finally, the syntactic environment argument of
-SbE is reflected as a model environment, and is used as the model
+SbE is reflected ($\reflecte$) as a model environment, and is used as the model
 environment argument of canonical evaluation.
 
 \begin{theorem}[Hereditary Substitution by Canonical Evaluation]
@@ -1081,7 +1081,7 @@ n  &: \typv{\nat} && \bydef
 \begin{align*}
 f &: \typm{A \arr B} && \byass\\
 f &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
-a &: \gatypm{A} && \ih{\fun{reflect}~(\con{var here})}\\
+a &: \gatypm{A} && \ih{\reflect~(\con{var here})}\\
 b &: \gatypm{B} && \by{f~(\emp, A)~a}\\
 b' &: \gatypv{B} && \ih{\fun{reify}~b}\\
 f' &: \typv{A \arr B} && \by{\lam b'}
@@ -1098,10 +1098,10 @@ environment (\refdef{menv}) as an additional parameter that neutral reflection d
 not need. The proof of reflection is straightforward and given explicitly
 below. 
 
-\begin{sublemma}[Value Reflection]
+\begin{sublemma}[Neutral Reflection]
 \label{lem:reflect}
 $$
-\fun{reflect} : \typn{A} \marr \typm{A}
+\reflect : \typn{A} \marr \typm{A}
 $$
 
 \begin{proof}
@@ -1123,7 +1123,7 @@ f &: \typn{A \arr B} && \byass\\
 a  &: \gdtypm{A} && \byass\\
 f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
 a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
-b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
+b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 \end{align*}
 \end{slcase}
 
