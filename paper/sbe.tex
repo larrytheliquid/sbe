@@ -770,331 +770,7 @@ $$
 $$
 
 
-\section{Intrinsic Big-Step Semantics}
-\label{sec:emod}
-
-%% In the remainder of this section we prove the arrows of
-%% the diagram above, and explain the definitions involved, in the following order:
-
-%% \begin{itemize}
-%% \item{\bf{\refsec{emod:reify}}} Reification
-%% \item{\bf{\refsec{emod:eval}}} Evaluation
-%% \item{\bf{\refsec{emod:nbe}}} Normalization
-%% \end{itemize}
-
-\subsection{Reification}
-
-Reification (\refthm{mod:reify}) is the process of turning a model value into a theory
-model. The model of natural numbers is the theory value, so their
-reification is immediate. The interesting case is the reification of
-functions. We need to somehow go from a higher-order model function to
-a first-order theory value of function type. The model of functions
-was specifically engineered to make it possible to weaken the domain
-and codomain by an arbitrary $\Delta$ for exactly this case! A
-function is reified by weakening by the type expected in the domain,
-passing in a free variable of De Bruijn zero, then constructing a
-lambda value from the reification of the result. However, the domain
-of the model function a model value, so we must translate the variable
-to an element of the model. Luckily, it is possible to
-reflect (\reflem{mod:reflect}) any neutral term (including variables),
-so we must prove reflection mutually with reification.
-
-\begin{theorem}[Model Reification]
-\label{thm:mod:reify}
-$$
-\fun{reify} : \typm{A} \marr \typv{A}
-$$
-
-\begin{proof}
-
-By induction on the type $A$.
-
-\begin{scase}[Natural numbers]
-\begin{align*}
-n  &: \typm{\nat} && \byass\\
-n  &: \typv{\nat} && \bydef
-\end{align*}
-\end{scase}
-
-\begin{scase}[Functions]
-\begin{align*}
-f &: \typm{A \arr B} && \byass\\
-f &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
-a &: \gatypm{A} && \ih{\fun{reflect}~(\con{var here})}\\
-b &: \gatypm{B} && \by{f~(\emp, A)~a}\\
-b' &: \gatypv{B} && \ih{\fun{reify}~b}\\
-f' &: \typv{A \arr B} && \by{\lam b'}
-\end{align*}
-\end{scase}
-
-\end{proof}
-
-\end{theorem}
-
-Note that we can only reflect neutrals. Values must instead be
-evaluated (\refthm{mod:eval}), which requires a model of an
-environment (\refdef{menv}) as an additional parameter that neutral reflection does
-not need. The proof of reflection is straightforward and given explicitly
-below. 
-
-\begin{sublemma}[Model Reflection]
-\label{lem:mod:reflect}
-$$
-\fun{reflect} : \typn{A} \marr \typm{A}
-$$
-
-\begin{proof}
-
-By induction on the type $A$.
-
-\begin{slcase}[Natural numbers]
-\begin{align*}
-n  &: \typn{\nat} && \byass\\
-n' &: \typv{\nat} && \by{\con{neut}~n}\\
-n' &: \typm{\nat} && \bydef
-\end{align*}
-\end{slcase}
-
-\begin{slcase}[Functions]
-\begin{align*}
-f &: \typn{A \arr B} && \byass\\
-\Delta& && \byass\\
-a  &: \gdtypm{A} && \byass\\
-f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
-a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
-b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
-\end{align*}
-\end{slcase}
-
-\end{proof}
-
-\end{sublemma}
-
-\subsection{Evaluation}
-
-Evaluation (\refthm{mod:eval}) is a type-preserving translation from
-an expression of the theory in some initial context, to a model value
-in some terminal context. In addition to the expression parameter,
-evaluation also requires an environment of model values
-(\refdef{menv}). Each model value must be in the terminal context, and
-a model value is required for each type in the initial context.
-The interesting cases include the evaluation of the following terms:
-
-\paragraph{Application} The whole point of the value model
-(\refdef{mval}) is to make this case easy to define. Evaluating the
-applied function results in a metalanguage function, which we can
-apply to an empty context extension ($\emp$) and the result of
-evaluating the argument of the function application.
-
-\paragraph{Function} When evaluating a function (a $\lam$ term),
-return type of evaluation is a model-level function. This means that
-we get a model value from the domain of the model function, which we
-can subsequently extend the model environment with. Lucky for us, as
-the recursive evaluation of the $\lam$ body requires a context extended
-with just the type we need! Of course this is no coincidence, as it is
-the reason why evaluation requires an environment model parameter in
-the first place. The more interesting part of evaluating the function
-is that the value we get (to extend the environment with) has been
-weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
-model environment, by appealing to the monotonicity lemma for
-environments (\reflem{mod:monos}).
-
-\paragraph{Primitive recursion} When an expression for primitive
-recursion ($\rec$), we can get inductive hypotheses for all the
-arguments to the primitive recursion, but we must perform a version of
-primitive recursion in the model using \reflem{mod:rec}.
-
-\begin{theorem}[Evaluation into Model]
-\label{thm:mod:eval}
-$$
-\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
-$$
-
-\begin{proof}
-
-By induction on the expression $\type{A}$. This proof is standard and
-we do not repeat it here for space reasons. However, part of the
-insight of this paper is that is that what we call
-\textit{canonical evaluation} (\refthm{mod:cevalv}), the intrinsic hereditary substitution
-semantics, is essentially the same thing! To recover this proof,
-replace instances of values and neutrals with expressions in the proof
-of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
-
-\end{proof}
-
-\end{theorem}
-
-As mentioned above, we need environment model monotonicity
-to define the $\lam$ case of \refthm{mod:eval}. Environment model
-monotonicity is essentially a mapping of a value model
-monotonicity (\reflem{mod:mono}) across all inhabitants of the
-environment model.
-
-\begin{lemma}[Environment Model Monotonicity]
-\label{lem:mod:monos}
-$$
-\monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
-$$
-
-\begin{proof}
-By induction on the context $\Gamma$.
-
-\begin{lcase}[Empty Context]
-\begin{align*}
-\Delta& && \byass\\
-u &: \top && \byass\\
-u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
-\end{align*}
-\end{lcase}
-
-\begin{lcase}[Context extension]
-\begin{align*}
-\Delta& && \byass\\
-\sigma &: \gmenv{\Xi} && \byass\\
-x    &: \xtypm{A} && \byass\\
-\sigma'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~\sigma}\\
-x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
-\sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
-\end{align*}
-\end{lcase}
-
-\end{proof}
-
-\end{lemma}
-
-The model monotonicity lemma is basically a version of weakening (of
-theory values) lifted to values in the model. 
-
-\begin{lemma}[Model Monotonicity]
-\label{lem:mod:mono}
-$$
-\mono : \all{\Delta} \typm{A} \marr \gdtypm{A}
-$$
-
-\begin{proof}
-
-By case analysis of the type $A$.
-
-\begin{scase}[Natural numbers]
-\begin{align*}
-\Delta& && \byass\\
-n  &: \typm{\nat} && \byass\\
-n  &: \typv{\nat} && \bydef\\
-n' &: \gdtypv{\nat} && \by{\wknv{n}}\\
-n' &: \gdtypm{\nat} && \bydef
-\end{align*}
-\end{scase}
-
-\begin{scase}[Functions]
-\begin{align*}
-\Delta& && \byass\\
-f  &: \typm{A \arr B} && \byass\\
-\Xi& && \byass\\
-a  &: \el{(\Gamma, \Delta), \Xi \vdash A} && \byass\\
-a  &: \el{\Gamma, (\Delta, \Xi) \vdash A} && \by{associativity}\\
-f  &: \all{\Phi} \gftypm{A} \marr \gftypm{B} && \bydef\\
-b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a}\\
-b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
-\end{align*}
-\end{scase}
-
-\end{proof}
-
-\end{lemma}
-
-Because the model of natural numbers is just a natural number value,
-the model of primitive recursion works basically the same way that
-normalization of primitive recursion would work in the theory. The
-main difference is that the arguments and return type are really
-elements of the model. In particular, the successor branch for the
-primitive recursion is a model function that we may simply apply to
-other model values (i.e. the induction hypothesis).
-
-\begin{lemma}[Model of Primitive Recursion]
-\label{lem:mod:rec}
-$$
-\el{\fun{rec}} : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
-$$
-
-\begin{proof}
-
-By induction on the natural number model value $\typm{\nat}$.
-Definitionally, this reduces to induction on the natural number theory
-value $\typv{\nat}$.
-
-\begin{scase}[Zero]
-\begin{align*}
-c_z  &: \typm{C} && \byass
-\end{align*}
-\end{scase}
-
-\begin{scase}[Successor]
-\begin{align*}
-c_z  &: \typm{C} && \byass\\
-c_s  &: \typm{C \arr C} && \byass\\
-n    &: \typv{\nat} && \byass\\
-n    &: \typm{\nat} && \bydef\\
-c    &: \typm{C} && \ih{\el{\fun{rec}}~c_z~c_s~n}\\
-c_s  &: \all{\Delta} \gdtypm{C} \marr \gdtypm{C} && \bydef\\
-c'   &: \typm{C} && \by{c_s~\emp~c}
-\end{align*}
-\end{scase}
-
-\begin{scase}[Neutral]
-\begin{align*}
-c_z  &: \typm{C} && \byass\\
-c_s  &: \typm{C \arr C} && \byass\\
-n    &: \typn{\nat} && \byass\\
-c_z' &: \typv{C} && \by{\fun{reify}~c_z}\\
-c_s' &: \typv{C \arr C} && \by{\fun{reify}~c_s}\\
-c'   &: \typn{C} && \by{\fun{rec}~c_z'~c_s'~n}\\
-c''  &: \typm{C} && \by{\fun{reflect}~c'}
-\end{align*}
-\end{scase}
-
-\end{proof}
-
-\end{lemma}
-
-
-The identity model environment is a mapping from each variable in a
-context, to the same variable but as a model value. Essentially, the
-proof reflects each variable of the context, but it must also appeal
-to model environment monotonicity (\reflem{mod:monos}) to weaken the
-previously built identity model environment.
-
-\begin{lemma}[Identity Model Environment]
-\label{lem:mod:midenv}
-$$
-\midenv : \all{\Gamma} \gmenv{\Gamma}
-$$
-
-\begin{proof}
-By induction on the context $\Gamma$.
-
-\begin{lcase}[Empty Context]
-\begin{align*}
-u &: \top && \bytri\\
-u &: \cmenv{\emp}{\emp} && \bydef
-\end{align*}
-\end{lcase}
-
-\begin{lcase}[Context extension]
-\begin{align*}
-\Gamma& && \byass\\
-A& && \byass\\
-\sigma  &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
-\sigma' &: \cmenv{\Gamma}{(\Gamma, A)} && \by{\monos~(\emp, A)~\sigma}\\
-x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
-\sigma'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{\sigma', x}
-\end{align*}
-\end{lcase}
-
-\end{proof}
-
-\end{lemma}
-
-\section{Intrinsic Hereditary Substitution Semantics}
+\section{Canonical Evaluation}
 \label{sec:vmod}
 
 %% \begin{displaymath}
@@ -1106,12 +782,6 @@ x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 %%           \ar[d]^{\large{\fun{reify}}}
 %% \\      & \dtypv{A} }
 %% \end{displaymath}
-
-\subsection{Identity Environment}
-
-\todo[inline]{description and proof}
-
-\subsection{Model Canonical Evaluation}
 
 \begin{theorem}[Canonical Evaluation (of values) into Model]
 \label{thm:mod:cevalv}
@@ -1211,63 +881,12 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 
 \end{proof}
 
-
-
 \end{subtheorem}
 
-\subsection{Normalization}
 
-\begin{theorem}[Application by Hereditary Substitution]
-\label{thm:mod:abs}
-$$
-\abs : \typv{A \arr B} \marr \typv{A} \marr \typv{B}
-$$
+\section{Environment Reflection}
 
-\begin{proof}
-\begin{align*}
-&\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv~\Gamma, a)\\
-&\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
-\end{align*}
-\end{proof}
-
-\end{theorem}
-
-\begin{theorem}[Primitive Recursion by Hereditary Substitution]
-\label{thm:mod:rbs}
-$$
-\rbs : \typv{C} \marr \typv{C \arr C} \marr \typv{\nat} \marr \typv{C}
-$$
-
-\begin{proof}
-\begin{align*}
-&\rbs ~ c_z ~ c_s ~ \zero &&\dfn&& c_z\\
-&\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfn&& \abs~c_s~(\rbs~c_z~c_s~n)\\
-&\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfn&& \neut~(\rec~c_z~c_s~n)
-\end{align*}
-\end{proof}
-
-\end{theorem}
-
-\begin{theorem}[Normalization by Hereditary Substitution]
-\label{thm:mod:nbs}
-$$
-\nbs : \type{A} \marr \typv{A}
-$$
-
-\begin{proof}
-\begin{align*}
-&\nbs ~ \zero &&\dfn&& \zero\\
-&\nbs ~ (\suc~n) &&\dfn&& \suc ~ (\nbs~n)\\
-&\nbs ~ (\lam b) &&\dfn&& \lam (\nbs~b)\\
-&\nbs ~ (\var~i) &&\dfn&& \neut ~ (\var~i)\\
-&\nbs ~ (f~\app~a) &&\dfn&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
-&\nbs ~ (\rec~c_z~c_s~n) &&\dfn&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
-\end{align*}
-\end{proof}
-
-
-
-\end{theorem}
+\todo[inline]{description and proof}
 
 
 %% \begin{align*}
@@ -1313,9 +932,378 @@ model (rather than HA or CCC).
 \bibliographystyle{abbrvnat}
 \bibliography{sbe}
 
+\section*{\appendixname}
 \appendix
 
-\section{Test}
+\section{Evaluation}
+
+Evaluation (\refthm{mod:eval}) is a type-preserving translation from
+an expression of the theory in some initial context, to a model value
+in some terminal context. In addition to the expression parameter,
+evaluation also requires an environment of model values
+(\refdef{menv}). Each model value must be in the terminal context, and
+a model value is required for each type in the initial context.
+The interesting cases include the evaluation of the following terms:
+
+\paragraph{Application} The whole point of the value model
+(\refdef{mval}) is to make this case easy to define. Evaluating the
+applied function results in a metalanguage function, which we can
+apply to an empty context extension ($\emp$) and the result of
+evaluating the argument of the function application.
+
+\paragraph{Function} When evaluating a function (a $\lam$ term),
+return type of evaluation is a model-level function. This means that
+we get a model value from the domain of the model function, which we
+can subsequently extend the model environment with. Lucky for us, as
+the recursive evaluation of the $\lam$ body requires a context extended
+with just the type we need! Of course this is no coincidence, as it is
+the reason why evaluation requires an environment model parameter in
+the first place. The more interesting part of evaluating the function
+is that the value we get (to extend the environment with) has been
+weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
+model environment, by appealing to the monotonicity lemma for
+environments (\reflem{mod:monos}).
+
+\paragraph{Primitive recursion} When an expression for primitive
+recursion ($\rec$), we can get inductive hypotheses for all the
+arguments to the primitive recursion, but we must perform a version of
+primitive recursion in the model using \reflem{mod:rec}.
+
+\begin{theorem}[Evaluation]
+\label{thm:eval}
+$$
+\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
+$$
+
+\begin{proof}
+
+By induction on the expression $\type{A}$. This proof is standard and
+we do not repeat it here for space reasons. However, part of the
+insight of this paper is that is that what we call
+\textit{canonical evaluation} (\refthm{mod:cevalv}), the intrinsic hereditary substitution
+semantics, is essentially the same thing! To recover this proof,
+replace instances of values and neutrals with expressions in the proof
+of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
+
+\end{proof}
+
+\end{theorem}
+
+Because the model of natural numbers is just a natural number value,
+the model of primitive recursion works basically the same way that
+normalization of primitive recursion would work in the theory. The
+main difference is that the arguments and return type are really
+elements of the model. In particular, the successor branch for the
+primitive recursion is a model function that we may simply apply to
+other model values (i.e. the induction hypothesis).
+
+\begin{lemma}[Model of Primitive Recursion]
+\label{lem:mod:rec}
+$$
+\el{\fun{rec}} : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
+$$
+
+\begin{proof}
+
+By induction on the natural number model value $\typm{\nat}$.
+Definitionally, this reduces to induction on the natural number theory
+value $\typv{\nat}$.
+
+\begin{scase}[Zero]
+\begin{align*}
+c_z  &: \typm{C} && \byass
+\end{align*}
+\end{scase}
+
+\begin{scase}[Successor]
+\begin{align*}
+c_z  &: \typm{C} && \byass\\
+c_s  &: \typm{C \arr C} && \byass\\
+n    &: \typv{\nat} && \byass\\
+n    &: \typm{\nat} && \bydef\\
+c    &: \typm{C} && \ih{\el{\fun{rec}}~c_z~c_s~n}\\
+c_s  &: \all{\Delta} \gdtypm{C} \marr \gdtypm{C} && \bydef\\
+c'   &: \typm{C} && \by{c_s~\emp~c}
+\end{align*}
+\end{scase}
+
+\begin{scase}[Neutral]
+\begin{align*}
+c_z  &: \typm{C} && \byass\\
+c_s  &: \typm{C \arr C} && \byass\\
+n    &: \typn{\nat} && \byass\\
+c_z' &: \typv{C} && \by{\fun{reify}~c_z}\\
+c_s' &: \typv{C \arr C} && \by{\fun{reify}~c_s}\\
+c'   &: \typn{C} && \by{\fun{rec}~c_z'~c_s'~n}\\
+c''  &: \typm{C} && \by{\fun{reflect}~c'}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+\end{lemma}
+
+\section{Reification}
+
+Reification (\refthm{reify}) is the process of turning a model value into a theory
+model. The model of natural numbers is the theory value, so their
+reification is immediate. The interesting case is the reification of
+functions. We need to somehow go from a higher-order model function to
+a first-order theory value of function type. The model of functions
+was specifically engineered to make it possible to weaken the domain
+and codomain by an arbitrary $\Delta$ for exactly this case! A
+function is reified by weakening by the type expected in the domain,
+passing in a free variable of De Bruijn zero, then constructing a
+lambda value from the reification of the result. However, the domain
+of the model function a model value, so we must translate the variable
+to an element of the model. Luckily, it is possible to
+reflect (\reflem{reflect}) any neutral term (including variables),
+so we must prove reflection mutually with reification.
+
+\begin{theorem}[Reification]
+\label{thm:reify}
+$$
+\fun{reify} : \typm{A} \marr \typv{A}
+$$
+
+\begin{proof}
+
+By induction on the type $A$.
+
+\begin{scase}[Natural numbers]
+\begin{align*}
+n  &: \typm{\nat} && \byass\\
+n  &: \typv{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Functions]
+\begin{align*}
+f &: \typm{A \arr B} && \byass\\
+f &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
+a &: \gatypm{A} && \ih{\fun{reflect}~(\con{var here})}\\
+b &: \gatypm{B} && \by{f~(\emp, A)~a}\\
+b' &: \gatypv{B} && \ih{\fun{reify}~b}\\
+f' &: \typv{A \arr B} && \by{\lam b'}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+\end{theorem}
+
+Note that we can only reflect neutrals. Values must instead be
+evaluated (\refthm{mod:eval}), which requires a model of an
+environment (\refdef{menv}) as an additional parameter that neutral reflection does
+not need. The proof of reflection is straightforward and given explicitly
+below. 
+
+\begin{sublemma}[Value Reflection]
+\label{lem:reflect}
+$$
+\fun{reflect} : \typn{A} \marr \typm{A}
+$$
+
+\begin{proof}
+
+By induction on the type $A$.
+
+\begin{slcase}[Natural numbers]
+\begin{align*}
+n  &: \typn{\nat} && \byass\\
+n' &: \typv{\nat} && \by{\con{neut}~n}\\
+n' &: \typm{\nat} && \bydef
+\end{align*}
+\end{slcase}
+
+\begin{slcase}[Functions]
+\begin{align*}
+f &: \typn{A \arr B} && \byass\\
+\Delta& && \byass\\
+a  &: \gdtypm{A} && \byass\\
+f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
+a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
+b  &: \gdtypm{B} && \ih{\fun{reflect}~(f' \cdot a')}
+\end{align*}
+\end{slcase}
+
+\end{proof}
+
+\end{sublemma}
+
+
+\section{Identity Model Environment}
+
+The identity model environment is a mapping from each variable in a
+context, to the same variable but as a model value. Essentially, the
+proof reflects each variable of the context, but it must also appeal
+to model environment monotonicity (\reflem{mod:monos}) to weaken the
+previously built identity model environment.
+
+\begin{theorem}[Identity Model Environment]
+\label{thm:midenv}
+$$
+\midenv : \all{\Gamma} \gmenv{\Gamma}
+$$
+
+\begin{proof}
+By induction on the context $\Gamma$.
+
+\begin{scase}[Empty Context]
+\begin{align*}
+u &: \top && \bytri\\
+u &: \cmenv{\emp}{\emp} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Context extension]
+\begin{align*}
+\Gamma& && \byass\\
+A& && \byass\\
+\sigma  &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
+\sigma' &: \cmenv{\Gamma}{(\Gamma, A)} && \by{\monos~(\emp, A)~\sigma}\\
+x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
+\sigma'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{\sigma', x}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+\end{theorem}
+
+
+As mentioned above, we need environment model monotonicity
+to define the $\lam$ case of \refthm{mod:eval}. Environment model
+monotonicity is essentially a mapping of a value model
+monotonicity (\reflem{mod:mono}) across all inhabitants of the
+environment model.
+
+\begin{lemma}[Environment Model Monotonicity]
+\label{lem:mod:monos}
+$$
+\monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
+$$
+
+\begin{proof}
+By induction on the context $\Gamma$.
+
+\begin{lcase}[Empty Context]
+\begin{align*}
+\Delta& && \byass\\
+u &: \top && \byass\\
+u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
+\end{align*}
+\end{lcase}
+
+\begin{lcase}[Context extension]
+\begin{align*}
+\Delta& && \byass\\
+\sigma &: \gmenv{\Xi} && \byass\\
+x    &: \xtypm{A} && \byass\\
+\sigma'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~\sigma}\\
+x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
+\sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
+\end{align*}
+\end{lcase}
+
+\end{proof}
+
+\end{lemma}
+
+The model monotonicity lemma is basically a version of weakening (of
+theory values) lifted to values in the model. 
+
+\begin{lemma}[Value Model Monotonicity]
+\label{lem:mod:mono}
+$$
+\mono : \all{\Delta} \typm{A} \marr \gdtypm{A}
+$$
+
+\begin{proof}
+
+By case analysis of the type $A$.
+
+\begin{scase}[Natural numbers]
+\begin{align*}
+\Delta& && \byass\\
+n  &: \typm{\nat} && \byass\\
+n  &: \typv{\nat} && \bydef\\
+n' &: \gdtypv{\nat} && \by{\wknv{n}}\\
+n' &: \gdtypm{\nat} && \bydef
+\end{align*}
+\end{scase}
+
+\begin{scase}[Functions]
+\begin{align*}
+\Delta& && \byass\\
+f  &: \typm{A \arr B} && \byass\\
+\Xi& && \byass\\
+a  &: \el{(\Gamma, \Delta), \Xi \vdash A} && \byass\\
+a  &: \el{\Gamma, (\Delta, \Xi) \vdash A} && \by{associativity}\\
+f  &: \all{\Phi} \gftypm{A} \marr \gftypm{B} && \bydef\\
+b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a}\\
+b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
+\end{align*}
+\end{scase}
+
+\end{proof}
+
+\end{lemma}
+
+\section{Normalization by Hereditary Substitution}
+
+\begin{theorem}[Normalization by Hereditary Substitution]
+\label{thm:mod:nbs}
+$$
+\nbs : \type{A} \marr \typv{A}
+$$
+
+\begin{proof}
+\begin{align*}
+&\nbs ~ \zero &&\dfn&& \zero\\
+&\nbs ~ (\suc~n) &&\dfn&& \suc ~ (\nbs~n)\\
+&\nbs ~ (\lam b) &&\dfn&& \lam (\nbs~b)\\
+&\nbs ~ (\var~i) &&\dfn&& \neut ~ (\var~i)\\
+&\nbs ~ (f~\app~a) &&\dfn&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
+&\nbs ~ (\rec~c_z~c_s~n) &&\dfn&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
+\end{align*}
+\end{proof}
+
+\end{theorem}
+
+\begin{lemma}[Application by Hereditary Substitution]
+\label{thm:mod:abs}
+$$
+\abs : \typv{A \arr B} \marr \typv{A} \marr \typv{B}
+$$
+
+\begin{proof}
+\begin{align*}
+&\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv~\Gamma, a)\\
+&\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
+\end{align*}
+\end{proof}
+
+\end{lemma}
+
+\todo[inline]{Identity Environment description and proof}
+
+\begin{lemma}[Primitive Recursion by Hereditary Substitution]
+\label{thm:mod:rbs}
+$$
+\rbs : \typv{C} \marr \typv{C \arr C} \marr \typv{\nat} \marr \typv{C}
+$$
+
+\begin{proof}
+\begin{align*}
+&\rbs ~ c_z ~ c_s ~ \zero &&\dfn&& c_z\\
+&\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfn&& \abs~c_s~(\rbs~c_z~c_s~n)\\
+&\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfn&& \neut~(\rec~c_z~c_s~n)
+\end{align*}
+\end{proof}
+
+\end{lemma}
+
 
 \clearpage
 
