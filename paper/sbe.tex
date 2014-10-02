@@ -99,6 +99,7 @@
 \def\suc{\con{suc}}
 \def\neut{\con{neut}}
 
+\def\mrec{\el{\rec}}
 \def\rec{\fun{rec}}
 \def\rbs{\fun{rbs}}
 \def\abs{\fun{abs}}
@@ -662,6 +663,16 @@ x'' &: \typv{A} && \by{\reify~x'}
 
 \end{theorem}
 
+%% \begin{displaymath}
+%%     \xymatrix{
+%%           {\typv{A} \cross \env} 
+%%           \ar[dr]_{\fun{sbe}}
+%%           \ar[r]^{\fun{ceval}}
+%%         & {\dtypm{A}}
+%%           \ar[d]^{\large{\fun{reify}}}
+%% \\      & \dtypv{A} }
+%% \end{displaymath}
+
 \subsection{Hereditary Substitution by Canonical Evaluation}
 
 $$
@@ -773,18 +784,54 @@ $$
 \section{Canonical Evaluation}
 \label{sec:vmod}
 
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\typv{A} \cross \env} 
-%%           \ar[dr]_{\fun{sbe}}
-%%           \ar[r]^{\fun{ceval}}
-%%         & {\dtypm{A}}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & \dtypv{A} }
-%% \end{displaymath}
+$$
+\cevalv : \typv{A} \marr \menv \marr \dtypm{A}
+$$
+
+\hfill \break
+\begin{tabularx}{\textwidth}{ |c|c|c|X| }
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\typn{A} \marr \menv \marr \dtypm{A}$ \\
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\monos$ & $\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}$ \\
+  \hline
+\end{tabularx}
+\hfill \break
+
+Evaluation (\refthm{mod:eval}) is a type-preserving translation from
+an expression of the theory in some initial context, to a model value
+in some terminal context. In addition to the expression parameter,
+evaluation also requires an environment of model values
+(\refdef{menv}). Each model value must be in the terminal context, and
+a model value is required for each type in the initial context.
+The interesting cases include the evaluation of the following terms:
+
+\paragraph{Application} The whole point of the value model
+(\refdef{mval}) is to make this case easy to define. Evaluating the
+applied function results in a metalanguage function, which we can
+apply to an empty context extension ($\emp$) and the result of
+evaluating the argument of the function application.
+
+\paragraph{Function} When evaluating a function (a $\lam$ term),
+return type of evaluation is a model-level function. This means that
+we get a model value from the domain of the model function, which we
+can subsequently extend the model environment with. Lucky for us, as
+the recursive evaluation of the $\lam$ body requires a context extended
+with just the type we need! Of course this is no coincidence, as it is
+the reason why evaluation requires an environment model parameter in
+the first place. The more interesting part of evaluating the function
+is that the value we get (to extend the environment with) has been
+weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
+model environment, by appealing to the monotonicity lemma for
+environments (\reflem{monos}).
+
+\paragraph{Primitive recursion} When an expression for primitive
+recursion ($\rec$), we can get inductive hypotheses for all the
+arguments to the primitive recursion, but we must perform a version of
+primitive recursion in the model using \reflem{mod:rec}.
 
 \begin{theorem}[Canonical Evaluation of Values]
-\label{thm:mod:cevalv}
+\label{thm:cevalv}
 $$
 \cevalv : \typv{A} \marr \menv \marr \dtypm{A}
 $$
@@ -834,10 +881,24 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 
 \end{proof}
 
+\subsection{Canonical Evaluation of Neutrals}
 
+$$
+\cevaln : \typn{A} \marr \menv \marr \dtypm{A}
+$$
+
+\hfill \break
+\begin{tabularx}{\textwidth}{ |c|c|c|X| }
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
+  \hline
+  \refsec{TODO} & \refthm{TODO} & $\mrec$ & $\typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}$ \\
+  \hline
+\end{tabularx}
+\hfill \break
 
 \begin{subtheorem}[Canonical Evaluation of Neutrals]
-\label{thm:mod:cevaln}
+\label{thm:cevaln}
 $$
 \cevaln : \typn{A} \marr \menv \marr \dtypm{A}
 $$
@@ -939,38 +1000,6 @@ model (rather than HA or CCC).
 
 \section{Evaluation}
 
-Evaluation (\refthm{mod:eval}) is a type-preserving translation from
-an expression of the theory in some initial context, to a model value
-in some terminal context. In addition to the expression parameter,
-evaluation also requires an environment of model values
-(\refdef{menv}). Each model value must be in the terminal context, and
-a model value is required for each type in the initial context.
-The interesting cases include the evaluation of the following terms:
-
-\paragraph{Application} The whole point of the value model
-(\refdef{mval}) is to make this case easy to define. Evaluating the
-applied function results in a metalanguage function, which we can
-apply to an empty context extension ($\emp$) and the result of
-evaluating the argument of the function application.
-
-\paragraph{Function} When evaluating a function (a $\lam$ term),
-return type of evaluation is a model-level function. This means that
-we get a model value from the domain of the model function, which we
-can subsequently extend the model environment with. Lucky for us, as
-the recursive evaluation of the $\lam$ body requires a context extended
-with just the type we need! Of course this is no coincidence, as it is
-the reason why evaluation requires an environment model parameter in
-the first place. The more interesting part of evaluating the function
-is that the value we get (to extend the environment with) has been
-weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
-model environment, by appealing to the monotonicity lemma for
-environments (\reflem{mod:monos}).
-
-\paragraph{Primitive recursion} When an expression for primitive
-recursion ($\rec$), we can get inductive hypotheses for all the
-arguments to the primitive recursion, but we must perform a version of
-primitive recursion in the model using \reflem{mod:rec}.
-
 \begin{theorem}[Evaluation]
 \label{thm:eval}
 $$
@@ -1002,7 +1031,7 @@ other model values (i.e. the induction hypothesis).
 \begin{lemma}[Model of Primitive Recursion]
 \label{lem:mod:rec}
 $$
-\el{\fun{rec}} : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
+\mrec : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
 $$
 
 \begin{proof}
@@ -1181,7 +1210,7 @@ monotonicity (\reflem{mod:mono}) across all inhabitants of the
 environment model.
 
 \begin{lemma}[Environment Model Monotonicity]
-\label{lem:mod:monos}
+\label{lem:monos}
 $$
 \monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
 $$
