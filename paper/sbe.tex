@@ -250,8 +250,8 @@ Kripke model value, and then reifying the result to a syntactic value
 \begin{displaymath}
     \xymatrix{
           {\forall (e : A)} 
-          \ar[dr]_{\fun{normalize}}
-          \ar[r]^{\fun{evaluate}}
+          \ar[dr]_{\fun{norm}}
+          \ar[r]^{\fun{eval}}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
 \\      & \exists (v : A) }
@@ -441,12 +441,12 @@ $$
 }
 $$
 
-\section{Roadmap of NbE and SbE}
-\label{sec:road}
+\section{Overview of NbE and SbE}
+\label{sec:overview}
 
 First we review why proving termination of naive definitions of
 normalization and hereditary substitution fails, and then we provide a
-high-level roadmap of theorems and definitions necessary to define NbE
+high-level overview of theorems and definitions necessary to define NbE
 and SbE (which provably terminate, unlike the naive definitions).
 Finally, we discuss the similarities and differences between NbE and
 SbE.
@@ -783,7 +783,7 @@ $$
 %% \\      & \dtypv{A} }
 %% \end{displaymath}
 
-\begin{theorem}[Canonical Evaluation (of values) into Model]
+\begin{theorem}[Canonical Evaluation of Values]
 \label{thm:mod:cevalv}
 $$
 \cevalv : \typv{A} \marr \menv \marr \dtypm{A}
@@ -836,7 +836,7 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 
 
 
-\begin{subtheorem}[Canonical Evaluation (of neutrals) into Model]
+\begin{subtheorem}[Canonical Evaluation of Neutrals]
 \label{thm:mod:cevaln}
 $$
 \cevaln : \typn{A} \marr \menv \marr \dtypm{A}
@@ -931,6 +931,8 @@ model (rather than HA or CCC).
 
 \bibliographystyle{abbrvnat}
 \bibliography{sbe}
+
+\clearpage
 
 \section*{\appendixname}
 \appendix
