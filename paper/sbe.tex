@@ -64,10 +64,12 @@
 { \begin{mytheorem'}[#1] \label{thm:#2}
   $$#3$$
 
+  \begingroup \small
   \begin{tabularx}{\textwidth}{ |c|c|c|X| }
     \hline #4 \hline
   \end{tabularx}
   \hfill \break  
+  \endgroup
 }
 { \end{mytheorem'} }
 
@@ -620,20 +622,20 @@ $\Delta$.
 \todo[inline]{Should we explain extending the env when evaluating the
   lambda case?}
 
-\begin{defin}[Model of Environments]
-\label{def:menv}
-$ $\\
+\begin{mydefinition}{Model of Environments}{menv}
+{
 The model of environments $\menv$ is defined inductively on the structure
 of the first context argument ($\Gamma$).
+}
 
-\begin{subdefin}[Empty context]
+\begin{mycase}[Empty context]
 $$
 \dmenv{\emp} \dfn \top
 $$
 The empty context is trivially inhabited in the environment model.
-\end{subdefin}
+\end{mycase}
 
-\begin{subdefin}[Context extension]
+\begin{mycase}[Context extension]
 $$
 \dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
 $$
@@ -644,9 +646,9 @@ is the environment model of the context being extended ($\Gamma$). The second pa
 is a model value in the terminal context ($\Delta$),
 whose type is the type of the context extension ($A$).
 
-\end{subdefin}
+\end{mycase}
 
-\end{defin}
+\end{mydefinition}
 
 \subsection{Normalization by Evaluation}
 
@@ -871,25 +873,29 @@ recursion ($\rec$), we can get inductive hypotheses for all the
 arguments to the primitive recursion, but we must perform a version of
 primitive recursion in the model using \reflem{mod:rec}.
 
-\begin{theorem}[Canonical Evaluation of Values]
-\label{thm:cevalv}
-$$
+\begin{mytheorem}{Canonical Evaluation of Values}{cevalv}
+{
 \cevalv : \typv{A} \marr \menv \marr \dtypm{A}
-$$
-\end{theorem}
+}
+{
+\refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\typn{A} \marr \menv \marr \dtypm{A}$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\monos$ & $\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}$ \\
+}
 
-\begin{proof}
-
+\begin{myproof}
+{
 By induction on the value $\typv{A}$.
+}
 
-\begin{scase}[Zero]
+\begin{mycase}[Zero]
 \begin{align*}
 n  &: \dtypv{\nat} && \by{\zero}\\
 n  &: \dtypm{\nat} && \bydef
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Successor]
+\begin{mycase}[Successor]
 \begin{align*}
 n   &: \typv{\nat} && \byass\\
 \sigma  &: \menv && \byass\\
@@ -898,9 +904,9 @@ n'  &: \dtypv{\nat} && \bydef\\
 m   &: \dtypv{\nat} && \by{\suc~n'}\\
 m'  &: \dtypm{\nat} && \bydef
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Function]
+\begin{mycase}[Function]
 \begin{align*}
 b   &: \gatypv{B} && \byass\\
 \sigma  &: \menv && \byass\\
@@ -909,18 +915,20 @@ a   &: \el{\Delta, \Xi \vdash A} && \byass\\
 \sigma'  &: \gmenv{(\Delta, \Xi)} && \by{\monos~\Xi~\sigma}\\
 b'  &: \dtypm{B} && \ih{\cevalv~b~(\sigma', a)}\\
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Neutral]
+\begin{mycase}[Neutral]
 \begin{align*}
 a   &: \typn{A} && \byass\\
 \sigma  &: \menv && \byass\\
 a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 \end{align*}
-\end{scase}
+\end{mycase}
 
 
-\end{proof}
+\end{myproof}
+
+\end{mytheorem}
 
 \subsection{Canonical Evaluation of Neutrals}
 
