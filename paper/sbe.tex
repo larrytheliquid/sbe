@@ -148,32 +148,51 @@
 \def\neut{\con{neut}}
 
 \def\mrec{\el{\rec}}
+\def\mrecT{\typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}}
+
 \def\rec{\fun{rec}}
 \def\rbs{\fun{rbs}}
 \def\abs{\fun{abs}}
 
 \def\reify{\fun{reify}}
+\def\reifyT{\typm{A} \marr \typv{A}}
 
 \def\reflectn{\fun{reflect}}
+\def\reflectnT{\typn{A} \marr \typm{A}}
 \def\reflect{\reflectn}
+
 \def\reflecte{\fun{reflects}}
+\def\reflecteT{\env \marr \menv}
 
 \def\mono{\fun{mono}}
 \def\monos{\fun{monos}}
+\def\monosT{\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}}
 
 \def\eval{\fun{eval}}
+\def\evalT{\type{A} \marr \menv \marr \dtypm{A}}
+
 \def\cevalv{\fun{ceval}}
+\def\cevalvT{\typv{A} \marr \menv \marr \dtypm{A}}
+
 \def\cevaln{\fun{ceval}^\con{N}}
+\def\cevalnT{\typn{A} \marr \menv \marr \dtypm{A}}
 
 \def\lookup{\fun{lookup}}
 
+\def\nbe{\fun{nbe}}
+\def\nbeT{\type{A} \marr \typv{A}}
+
 \def\sbe{\fun{sbe}}
+\def\sbeT{\typv{A} \marr \env \marr \dtypv{A}}
+
+
 \def\nsbe{\fun{nsbe}}
 
 \def\nbs{\fun{nbs}}
 
 \def\idenv{\fun{idEnv}}
 \def\midenv{\el{\fun{idEnv}}}
+\def\midenvT{\all{\Gamma} \gmenv{\Gamma}}
 
 \def\bydef{(\textit{definition})}
 \def\byass{(\textit{assumption})}
@@ -669,14 +688,14 @@ normalization?
 
 \begin{mytheorem}{Normalization by Evaluation}{nbe}
 {
-\fun{nbe} : \type{A} \marr \typv{A}
+\nbe : \nbeT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\eval$ & $\type{A} \marr \menv \marr \dtypm{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\eval$ & $\evalT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\midenv$ & $\all{\Gamma} \gmenv{\Gamma}$ \\
+\refsec{TODO} & \refthm{TODO} & $\midenv$ & $\midenvT$ \\
 }
 
 The high-level plan of NbE is to define
@@ -729,14 +748,14 @@ instead of model values.
 
 \begin{mytheorem}{Hereditary Substitution by Canonical Evaluation}{sbe}
 {
-\sbe : \typv{A} \marr \env \marr \dtypv{A}
+\sbe : \sbeT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\cevalvT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reflecte$ & $\env \marr \menv$ \\
+\refsec{TODO} & \refthm{TODO} & $\reflecte$ & $\reflecteT$ \\
 }
 
 Above are the theorems we need for SbE. In particular, notice that we
@@ -812,15 +831,15 @@ $$
 \label{sec:vmod}
 
 $$
-\cevalv : \typv{A} \marr \menv \marr \dtypm{A}
+\cevalv : \cevalvT
 $$
 
 \hfill \break
 \begin{tabularx}{\textwidth}{ |c|c|c|X| }
   \hline
-  \refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\typn{A} \marr \menv \marr \dtypm{A}$ \\
+  \refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\cevalnT$ \\
   \hline
-  \refsec{TODO} & \refthm{TODO} & $\monos$ & $\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}$ \\
+  \refsec{TODO} & \refthm{TODO} & $\monos$ & $\monosT$ \\
   \hline
 \end{tabularx}
 \hfill \break
@@ -859,12 +878,12 @@ primitive recursion in the model using \reflem{mod:rec}.
 
 \begin{mytheorem}{Canonical Evaluation of Values}{cevalv}
 {
-\cevalv : \typv{A} \marr \menv \marr \dtypm{A}
+\cevalv : \cevalvT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\typn{A} \marr \menv \marr \dtypm{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\cevalnT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\monos$ & $\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}$ \\
+\refsec{TODO} & \refthm{TODO} & $\monos$ & $\monosT$ \\
 }
 
 \begin{myproof}
@@ -918,12 +937,12 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 
 \begin{mytheorem}{Canonical Evaluation of Neutrals}{cevaln}
 {
-\cevaln : \typn{A} \marr \menv \marr \dtypm{A}
+\cevaln : \cevalnT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\cevalvT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\mrec$ & $\typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}$ \\
+\refsec{TODO} & \refthm{TODO} & $\mrec$ & $\mrecT$ \\
 }
 %% \begin{tabularx}{\textwidth}{ |c|c|c|X| }
 %%   \hline
@@ -1064,12 +1083,12 @@ of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
 
 \begin{mylemma}{Model of Primitive Recursion}{mrec}
 {
-\mrec : \typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}
+\mrec : \mrecT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reflect$ & $\typn{A} \marr \typm{A}$ \\
+\refsec{TODO} & \refthm{TODO} & $\reflectn$ & $\reflectnT$ \\
 }
 
 Because the model of natural numbers is just a natural number value,
@@ -1087,13 +1106,13 @@ Definitionally, this reduces to induction on the natural number theory
 value $\typv{\nat}$.
 }
 
-\begin{mycase}{Zero}
+\begin{mycase}[Zero]
 \begin{align*}
 c_z  &: \typm{C} && \byass
 \end{align*}
 \end{mycase}
 
-\begin{mycase}{Successor}
+\begin{mycase}[Successor]
 \begin{align*}
 c_z  &: \typm{C} && \byass\\
 c_s  &: \typm{C \arr C} && \byass\\
@@ -1105,7 +1124,7 @@ c'   &: \typm{C} && \by{c_s~\emp~c}
 \end{align*}
 \end{mycase}
 
-\begin{mycase}{Neutral}
+\begin{mycase}[Neutral]
 \begin{align*}
 c_z  &: \typm{C} && \byass\\
 c_s  &: \typm{C \arr C} && \byass\\
@@ -1124,7 +1143,17 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 \section{Reification}
 
 Reification (\refthm{reify}) is the process of turning a model value into a theory
-model. The model of natural numbers is the theory value, so their
+model.
+
+\begin{mytheorem}{Reification}{reify}
+{
+\reify : \reifyT
+}
+{
+\refsec{TODO} & \refthm{TODO} & $\reflectn$ & $\reflectnT$ \\
+}
+
+The model of natural numbers is the theory value, so their
 reification is immediate. The interesting case is the reification of
 functions. We need to somehow go from a higher-order model function to
 a first-order theory value of function type. The model of functions
@@ -1138,24 +1167,19 @@ to an element of the model. Luckily, it is possible to
 reflect (\reflem{reflect}) any neutral term (including variables),
 so we must prove reflection mutually with reification.
 
-\begin{theorem}[Reification]
-\label{thm:reify}
-$$
-\fun{reify} : \typm{A} \marr \typv{A}
-$$
-
-\begin{proof}
-
+\begin{myproof}
+{
 By induction on the type $A$.
+}
 
-\begin{scase}[Natural numbers]
+\begin{mycase}[Natural numbers]
 \begin{align*}
 n  &: \typm{\nat} && \byass\\
 n  &: \typv{\nat} && \bydef
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Functions]
+\begin{mycase}[Functions]
 \begin{align*}
 f &: \typm{A \arr B} && \byass\\
 f &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
@@ -1164,11 +1188,19 @@ b &: \gatypm{B} && \by{f~(\emp, A)~a}\\
 b' &: \gatypv{B} && \ih{\fun{reify}~b}\\
 f' &: \typv{A \arr B} && \by{\lam b'}
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\end{proof}
+\end{myproof}
 
-\end{theorem}
+\end{mytheorem}
+
+\begin{mylemma}{Neutral Reflection}{reflectn}
+{
+\reflectn : \reflectnT
+}
+{
+\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
+}
 
 Note that we can only reflect neutrals. Values must instead be
 evaluated (\refthm{mod:eval}), which requires a model of an
@@ -1176,25 +1208,20 @@ environment (\refdef{menv}) as an additional parameter that neutral reflection d
 not need. The proof of reflection is straightforward and given explicitly
 below. 
 
-\begin{sublemma}[Neutral Reflection]
-\label{lem:reflect}
-$$
-\reflect : \typn{A} \marr \typm{A}
-$$
-
-\begin{proof}
-
+\begin{myproof}
+{
 By induction on the type $A$.
+}
 
-\begin{slcase}[Natural numbers]
+\begin{mycase}[Natural numbers]
 \begin{align*}
 n  &: \typn{\nat} && \byass\\
 n' &: \typv{\nat} && \by{\con{neut}~n}\\
 n' &: \typm{\nat} && \bydef
 \end{align*}
-\end{slcase}
+\end{mycase}
 
-\begin{slcase}[Functions]
+\begin{mycase}[Functions]
 \begin{align*}
 f &: \typn{A \arr B} && \byass\\
 \Delta& && \byass\\
@@ -1203,11 +1230,11 @@ f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
 a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
 b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 \end{align*}
-\end{slcase}
+\end{mycase}
 
-\end{proof}
+\end{myproof}
 
-\end{sublemma}
+\end{mylemma}
 
 
 \section{Identity Model Environment}
