@@ -43,6 +43,43 @@
 \usepackage[labelfont=bf]{caption}
 
 \newtheorem{defin}{Definition}
+
+\spnewtheorem{mydefinition'}{Definition}{\bfseries}{\itshape}
+\spnewtheorem{mytheorem'}{Theorem}{\bfseries}{\rmfamily}
+\spnewtheorem*{mycase}{Case}{\bfseries}{\rmfamily}
+\spnewtheorem*{myproof'}{Proof}{\itshape}{\rmfamily}
+
+\newenvironment{mydefinition}[3]
+{ \begin{mydefinition'}[#1] \label{def:#2}
+  \hfill\break
+  #3
+}
+{ \end{mydefinition'} }
+
+\newenvironment{myproof}[1]
+{ \begin{myproof'} \textit{#1} }
+{ \myqed \end{myproof'} }
+
+\newenvironment{mytheorem}[4]
+{ \begin{mytheorem'}[#1] \label{thm:#2}
+  $$#3$$
+
+  \begin{tabularx}{\textwidth}{ |c|c|c|X| }
+    \hline #4 \hline
+  \end{tabularx}
+  \hfill \break  
+}
+{ \end{mytheorem'} }
+
+%% \newcommand{\thmdeps}[2]{
+%% $$#1$$
+
+%% \begin{tabularx}{\textwidth}{ |c|c|c|X| }
+%%   \hline #2 \hline
+%% \end{tabularx}
+%% \hfill \break
+%% }
+
 \newtheorem{subdefin}{Case}
 %% \numberwithin{subdefin}{defin}
 
@@ -80,6 +117,10 @@
 \newcommand{\refsec}[1]{Section \ref{sec:#1}}
 \newcommand{\refparte}[1]{Part$_E$ \ref{parte:#1}}
 \newcommand{\refparti}[1]{Part$_I$ \ref{parti:#1}}
+
+\def\myqed{\nobreak\hfil
+\penalty50\hskip1em\null\nobreak\hfil\squareforqed
+\parfillskip=0pt\finalhyphendemerits=0\endgraf}
 
 \def\cross{\times}
 \def\dfn{\mapsto}
@@ -528,22 +569,22 @@ So how can we define the model in a way that makes termination of the
 application case of evaluation no longer problematic? How about the
 Kripke model below?
 
-\begin{defin}[Model of Values]
-\label{def:mval}
-$ $\\
+\begin{mydefinition}{Model of Values}{mval}
+{
 The model of values $\typm{A}$ denotes a set (a type in the
 metalanguage), and it is defined inductively on the structure
 of (object language) types ($A$).
+}
 
-\begin{subdefin}[Natural numbers]
+\begin{mycase}[Natural numbers]
 $$
 \typm{\nat} \dfn \typv{\nat}
 $$
 Syntactic natural number values are also natural numbers values in the
 model.
-\end{subdefin}
+\end{mycase}
 
-\begin{subdefin}[Functions]
+\begin{mycase}[Functions]
 $$
 \typm{A \arr B} \dfn \all{\Delta} \gdtypm{A} \marr \gdtypm{B}
 $$
@@ -554,9 +595,9 @@ the domain of the function) as an argument, and produces a
 weakened element of the model (whose type is the codomain of the
 function). Both the input and output values of the model function are
 weakened by some arbitrary context $\Delta$, which can be empty.
-\end{subdefin}
+\end{mycase}
 
-\end{defin}
+\end{mydefinition}
 
 So how does this model help us to define the application case of
 evaluation? Well, the result of evaluation (rather than
@@ -883,39 +924,48 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 
 \subsection{Canonical Evaluation of Neutrals}
 
-$$
+\begin{mytheorem}{Canonical Evaluation of Neutrals}{cevaln}
+{
 \cevaln : \typn{A} \marr \menv \marr \dtypm{A}
-$$
+}
+{
+\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\mrec$ & $\typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}$ \\
+}
+%% \begin{tabularx}{\textwidth}{ |c|c|c|X| }
+%%   \hline
+%%   \hline
+%% \end{tabularx}
+%% \hfill \break
 
-\hfill \break
-\begin{tabularx}{\textwidth}{ |c|c|c|X| }
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\mrec$ & $\typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}$ \\
-  \hline
-\end{tabularx}
-\hfill \break
+When evaluating a function (a $\lam$ term),
+return type of evaluation is a model-level function. This means that
+we get a model value from the domain of the model function, which we
+can subsequently extend the model environment with. Lucky for us, as
+the recursive evaluation of the $\lam$ body requires a context extended
+with just the type we need! Of course this is no coincidence, as it is
+the reason why evaluation requires an environment model parameter in
+the first place. The more interesting part of evaluating the function
+is that the value we get (to extend the environment with) has been
+weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
+model environment, by appealing to the monotonicity lemma for
+environments (\reflem{monos}).
 
-\begin{subtheorem}[Canonical Evaluation of Neutrals]
-\label{thm:cevaln}
-$$
-\cevaln : \typn{A} \marr \menv \marr \dtypm{A}
-$$
 
-\begin{proof}
-
+\begin{myproof}{
 By induction on the neutral $\typn{A}$.
+}
 
-\begin{scase}[Variable]
+\begin{mycase}[Variable]
 \begin{align*}
 i   &: \typr{A} && \byass\\
 \sigma  &: \menv && \byass\\
 a  &: \dtypm{A} && \by{\lookup~\sigma~i}
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Application]
+\begin{mycase}[Application]
 \begin{align*}
 f   &: \typn{A \arr B} && \byass\\
 a   &: \typv{A} && \byass\\
@@ -925,9 +975,9 @@ f'  &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
 a'  &: \dtypm{A} && \ih{\cevalv~a~\sigma}\\
 b   &: \dtypm{B} && \by{f~\emp~a'}
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Primitive Recursion]
+\begin{mycase}[Primitive Recursion]
 \begin{align*}
 c_z  &: \typv{C} && \byass\\
 c_s  &: \typv{C \arr C} && \byass\\
@@ -938,11 +988,11 @@ c_s' &: \dtypm{C \arr C} && \ih{\cevalv~c_s~\sigma}\\
 n'   &: \dtypm{\nat} && \ih{\cevaln~n~\sigma}\\
 c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\end{proof}
+\end{myproof}
 
-\end{subtheorem}
+\end{mytheorem}
 
 
 \section{Environment Reflection}
