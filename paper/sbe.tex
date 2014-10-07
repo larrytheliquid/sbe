@@ -652,10 +652,6 @@ whose type is the type of the context extension ($A$).
 
 \subsection{Normalization by Evaluation}
 
-$$
-\fun{nbe} : \type{A} \marr \typv{A}
-$$
-
 So far we have seen the model of values and environments, and the
 intuition behind the model enabling a terminating definition of evaluation.
 Now let's take a closer look at how exactly to define normalization in
@@ -666,17 +662,17 @@ related ``definitions'' as \textit{theorems} and \textit{lemmas}.}
 do we need, and how do we instantiate these theorems in the proof of
 normalization?
 
-\hfill \break
-\begin{tabularx}{\textwidth}{ |c|c|c|X| }
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\eval$ & $\type{A} \marr \menv \marr \dtypm{A}$ \\
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\midenv$ & $\all{\Gamma} \gmenv{\Gamma}$ \\
-  \hline
-\end{tabularx}
-\hfill \break
+\begin{mytheorem}{Normalization by Evaluation}{nbe}
+{
+\fun{nbe} : \type{A} \marr \typv{A}
+}
+{
+\refsec{TODO} & \refthm{TODO} & $\eval$ & $\type{A} \marr \menv \marr \dtypm{A}$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\midenv$ & $\all{\Gamma} \gmenv{\Gamma}$ \\
+}
 
 The high-level plan of NbE is to define
 normalization as the composition of evaluation ($\eval$) of an expression to a
@@ -689,22 +685,16 @@ evaluation? We can create an identity model environment ($\midenv$)
 for any context ($\Gamma$). The identity model environment maps
 syntactic variables in $\Gamma$ to model values of the same variables in $\Gamma$.
 
-\begin{theorem}[Normalization by Evaluation]
-\label{thm:mod:nbe}
-$$
-\fun{nbe} : \type{A} \marr \typv{A}
-$$
-
-\begin{proof}
+\begin{myproof}{}
 \begin{align*}
 x    &: \type{A} && \byass\\
 \sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
 x'  &: \typm{A} && \by{\eval~x~\sigma}\\
 x'' &: \typv{A} && \by{\reify~x'}
 \end{align*}
-\end{proof}
+\end{myproof}
 
-\end{theorem}
+\end{mytheorem}
 
 %% \begin{displaymath}
 %%     \xymatrix{
@@ -718,39 +708,34 @@ x'' &: \typv{A} && \by{\reify~x'}
 
 \subsection{Hereditary Substitution by Canonical Evaluation}
 
-$$
-\sbe : \typv{A} \marr \env \marr \dtypv{A}
-$$
-
 How is the type of hereditary substitution different from that of
 normalization? First, we are substituting into a \textit{value} rather
 than normalizing an \textit{expression}. Second, hereditary
 substitution also takes a \textit{syntactic} environment, a mapping of
 variables to syntactic values, as an additional argument.
 
-\begin{defin}[Syntax of Environments]
-\label{def:senv}
-$ $\\
+\begin{mydefinition}{Syntax of Environments}{senv}
+{
 The syntax of environments $\env$ is defined exactly like the model of
 environments (\refdef{menv}, $\menv$), except it contains syntactic values
 instead of model values.
-\end{defin}
+}
+\end{mydefinition}
 
-Below are the theorems we need for SbE. In particular, notice that we
+\begin{mytheorem}{Hereditary Substitution by Canonical Evaluation}{sbe}
+{
+\sbe : \typv{A} \marr \env \marr \dtypv{A}
+}
+{
+\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\reflecte$ & $\env \marr \menv$ \\
+}
+
+Above are the theorems we need for SbE. In particular, notice that we
 get to reuse $\reify$ from NbE.
-
-\hfill \break
-\begin{tabularx}{\textwidth}{ |c|c|c|X| }
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\typv{A} \marr \menv \marr \dtypm{A}$ \\
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\reify$ & $\typm{A} \marr \typv{A}$ \\
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\reflecte$ & $\env \marr \menv$ \\
-  \hline
-\end{tabularx}
-\hfill \break
-
 The high-level plan of SbE is to define
 hereditary substitution as the composition of
 canonical evaluation ($\cevalv$) of a syntactic value to a
@@ -767,13 +752,7 @@ immediately reduced. Finally, the syntactic environment argument of
 SbE is reflected ($\reflecte$) as a model environment, and is used as the model
 environment argument of canonical evaluation.
 
-\begin{theorem}[Hereditary Substitution by Canonical Evaluation]
-\label{thm:mod:vhsub}
-$$
-\sbe : \typv{A} \marr \env \marr \dtypv{A}
-$$
-
-\begin{proof}
+\begin{myproof}{}
 \begin{align*}
 a    &: \typv{A} && \byass\\
 \sigma   &: \env && \byass\\
@@ -781,9 +760,9 @@ a    &: \typv{A} && \byass\\
 a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
 a''  &: \dtypv{A} && \by{\reify~A~a'}
 \end{align*}
-\end{proof}
+\end{myproof}
 
-\end{theorem}
+\end{mytheorem}
 
 \subsection{NbE versus SbE}
 
