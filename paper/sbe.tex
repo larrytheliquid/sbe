@@ -165,6 +165,8 @@
 \def\reflecteT{\env \marr \menv}
 
 \def\mono{\fun{mono}}
+\def\monoT{\all{\Delta} \typm{A} \marr \gdtypm{A}}
+
 \def\monos{\fun{monos}}
 \def\monosT{\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}}
 
@@ -212,9 +214,16 @@
 
 \newcommand{\el}[1]{\llbracket ~ #1 ~ \rrbracket}
 
-\newcommand{\wkne}[1]{\fun{wkn}^\con{E} ~ \Delta ~ #1}
-\newcommand{\wknv}[1]{\fun{wkn}^\con{V} ~ \Delta ~ #1}
-\newcommand{\wknn}[1]{\fun{wkn}^\con{N} ~ \Delta ~ #1}
+\def\wknet{\fun{wkn}^\con{E}}
+\newcommand{\wkne}[1]{\wknet ~ \Delta ~ #1}
+
+\def\wknvt{\fun{wkn}^\con{V}}
+\def\wknvT{\all{\Delta} \typv{A} \marr \gdtypv{A}}
+\newcommand{\wknv}[1]{\wknvt ~ \Delta ~ #1}
+
+\def\wknnt{\fun{wkn}^\con{N}}
+\def\wknnT{\all{\Delta} \typn{A} \marr \gdtypn{A}}
+\newcommand{\wknn}[1]{\wknnt ~ \Delta ~ #1}
 
 \newcommand{\con}[1]{\textmd{#1}}
 \newcommand{\fun}[1]{\textmd{#1}}
@@ -936,9 +945,7 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 \subsection{Canonical Evaluation of Neutrals}
 
 \begin{mytheorem}{Canonical Evaluation of Neutrals}{cevaln}
-{
-\cevaln : \cevalnT
-}
+{ \cevaln : \cevalnT }
 {
 \refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\cevalvT$ \\
 \hline
@@ -1200,6 +1207,8 @@ f' &: \typv{A \arr B} && \by{\lam b'}
 }
 {
 \refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\wknnt$ & $\wknnT$ \\
 }
 
 Note that we can only reflect neutrals. Values must instead be
@@ -1239,29 +1248,33 @@ b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 
 \section{Identity Model Environment}
 
+\begin{mytheorem}{Identity Model Environment}{midenv}
+{ \midenv : \midenvT }
+{
+\refsec{TODO} & \refthm{TODO} & $\reflectn$ & $\reflectnT$ \\
+\hline
+\refsec{TODO} & \refthm{TODO} & $\monos$ & $\monosT$ \\
+}
+
 The identity model environment is a mapping from each variable in a
 context, to the same variable but as a model value. Essentially, the
 proof reflects each variable of the context, but it must also appeal
 to model environment monotonicity (\reflem{mod:monos}) to weaken the
 previously built identity model environment.
 
-\begin{theorem}[Identity Model Environment]
-\label{thm:midenv}
-$$
-\midenv : \all{\Gamma} \gmenv{\Gamma}
-$$
-
-\begin{proof}
+\begin{myproof}
+{
 By induction on the context $\Gamma$.
+}
 
-\begin{scase}[Empty Context]
+\begin{mycase}[Empty Context]
 \begin{align*}
 u &: \top && \bytri\\
 u &: \cmenv{\emp}{\emp} && \bydef
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Context extension]
+\begin{mycase}[Context extension]
 \begin{align*}
 \Gamma& && \byass\\
 A& && \byass\\
@@ -1270,12 +1283,17 @@ A& && \byass\\
 x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 \sigma'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{\sigma', x}
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\end{proof}
+\end{myproof}
 
-\end{theorem}
+\end{mytheorem}
 
+\begin{mylemma}{Environment Model Monotonicity}{monos}
+{ \monos : \monosT }
+{
+\refsec{TODO} & \refthm{TODO} & $\mono$ & $\monoT$ \\
+}
 
 As mentioned above, we need environment model monotonicity
 to define the $\lam$ case of \refthm{mod:eval}. Environment model
@@ -1283,24 +1301,20 @@ monotonicity is essentially a mapping of a value model
 monotonicity (\reflem{mod:mono}) across all inhabitants of the
 environment model.
 
-\begin{lemma}[Environment Model Monotonicity]
-\label{lem:monos}
-$$
-\monos : \all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}
-$$
-
-\begin{proof}
+\begin{myproof}
+{
 By induction on the context $\Gamma$.
+}
 
-\begin{lcase}[Empty Context]
+\begin{mycase}[Empty Context]
 \begin{align*}
 \Delta& && \byass\\
 u &: \top && \byass\\
 u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
 \end{align*}
-\end{lcase}
+\end{mycase}
 
-\begin{lcase}[Context extension]
+\begin{mycase}[Context extension]
 \begin{align*}
 \Delta& && \byass\\
 \sigma &: \gmenv{\Xi} && \byass\\
@@ -1309,26 +1323,27 @@ x    &: \xtypm{A} && \byass\\
 x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
 \sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
 \end{align*}
-\end{lcase}
+\end{mycase}
 
-\end{proof}
+\end{myproof}
 
-\end{lemma}
+\end{mylemma}
+
+\begin{mylemma}{Value Model Monotonicity}{mono}
+{ \mono : \monoT }
+{
+\refsec{TODO} & \refthm{TODO} & $\wknvt$ & $\wknvT$ \\
+}
 
 The model monotonicity lemma is basically a version of weakening (of
 theory values) lifted to values in the model. 
 
-\begin{lemma}[Value Model Monotonicity]
-\label{lem:mod:mono}
-$$
-\mono : \all{\Delta} \typm{A} \marr \gdtypm{A}
-$$
-
-\begin{proof}
-
+\begin{myproof}
+{
 By case analysis of the type $A$.
+}
 
-\begin{scase}[Natural numbers]
+\begin{mycase}[Natural numbers]
 \begin{align*}
 \Delta& && \byass\\
 n  &: \typm{\nat} && \byass\\
@@ -1336,9 +1351,9 @@ n  &: \typv{\nat} && \bydef\\
 n' &: \gdtypv{\nat} && \by{\wknv{n}}\\
 n' &: \gdtypm{\nat} && \bydef
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\begin{scase}[Functions]
+\begin{mycase}[Functions]
 \begin{align*}
 \Delta& && \byass\\
 f  &: \typm{A \arr B} && \byass\\
@@ -1349,11 +1364,11 @@ f  &: \all{\Phi} \gftypm{A} \marr \gftypm{B} && \bydef\\
 b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a}\\
 b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 \end{align*}
-\end{scase}
+\end{mycase}
 
-\end{proof}
+\end{myproof}
 
-\end{lemma}
+\end{mylemma}
 
 \section{Normalization by Hereditary Substitution}
 
@@ -1363,7 +1378,7 @@ $$
 \nbs : \type{A} \marr \typv{A}
 $$
 
-\begin{proof}
+\begin{myproof}{}
 \begin{align*}
 &\nbs ~ \zero &&\dfn&& \zero\\
 &\nbs ~ (\suc~n) &&\dfn&& \suc ~ (\nbs~n)\\
@@ -1372,7 +1387,7 @@ $$
 &\nbs ~ (f~\app~a) &&\dfn&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
 &\nbs ~ (\rec~c_z~c_s~n) &&\dfn&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
 \end{align*}
-\end{proof}
+\end{myproof}
 
 \end{theorem}
 
@@ -1382,12 +1397,12 @@ $$
 \abs : \typv{A \arr B} \marr \typv{A} \marr \typv{B}
 $$
 
-\begin{proof}
+\begin{myproof}{}
 \begin{align*}
 &\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv~\Gamma, a)\\
 &\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
 \end{align*}
-\end{proof}
+\end{myproof}
 
 \end{lemma}
 
@@ -1399,13 +1414,13 @@ $$
 \rbs : \typv{C} \marr \typv{C \arr C} \marr \typv{\nat} \marr \typv{C}
 $$
 
-\begin{proof}
+\begin{myproof}{}
 \begin{align*}
 &\rbs ~ c_z ~ c_s ~ \zero &&\dfn&& c_z\\
 &\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfn&& \abs~c_s~(\rbs~c_z~c_s~n)\\
 &\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfn&& \neut~(\rec~c_z~c_s~n)
 \end{align*}
-\end{proof}
+\end{myproof}
 
 \end{lemma}
 
