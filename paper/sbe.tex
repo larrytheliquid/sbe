@@ -970,42 +970,20 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 \hline
 \refsec{TODO} & \refthm{TODO} & $\mrec$ & $\mrecT$ \\
 }
-%% \begin{tabularx}{\textwidth}{ |c|c|c|X| }
-%%   \hline
-%%   \hline
-%% \end{tabularx}
-%% \hfill \break
 
-When evaluating a function (a $\lam$ term),
-return type of evaluation is a model-level function. This means that
-we get a model value from the domain of the model function, which we
-can subsequently extend the model environment with. Lucky for us, as
-the recursive evaluation of the $\lam$ body requires a context extended
-with just the type we need! Of course this is no coincidence, as it is
-the reason why evaluation requires an environment model parameter in
-the first place. The more interesting part of evaluating the function
-is that the value we get (to extend the environment with) has been
-weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
-model environment, by appealing to the monotonicity lemma for
-environments (\reflem{monos}).
-
-\paragraph{Application} The whole point of the value model
-(\refdef{mval}) is to make this case easy to define. Evaluating the
-applied function results in a metalanguage function, which we can
-apply to an empty context extension ($\emp$) and the result of
-evaluating the argument of the function application.
-
-\paragraph{Primitive recursion} When an expression for primitive
-recursion ($\rec$), we can get inductive hypotheses for all the
-arguments to the primitive recursion, but we must perform a version of
-primitive recursion in the model using \reflem{mod:rec}.
-
+Canonical evaluation of neutrals ($\cevaln$) is the restriction of
+canonical evaluation of values ($\cevalv$) to the neutral fragment of
+the grammar of values.
 
 \begin{myproof}{
 By induction on the neutral $\typn{A}$.
 }
 
 \begin{mycase}[Variable]
+{
+Canonically evaluate a variable by looking up its corresponding model
+value in the model environment.
+}
 \begin{align*}
 i   &: \typr{A} && \byass\\
 \sigma  &: \menv && \byass\\
@@ -1014,6 +992,14 @@ a  &: \dtypm{A} && \by{\lookup~\sigma~i}
 \end{mycase}
 
 \begin{mycase}[Application]
+{
+The whole point of the value model
+(\refdef{mval}) is to make this case easy to define. Evaluating the
+applied function (the first inductive hypothesis) results in a metalanguage function, which we can
+apply to an empty context extension ($\emp$) and the result of
+evaluating the argument of the function application (the second
+inductive hypothesis).
+}
 \begin{align*}
 f   &: \typn{A \arr B} && \byass\\
 a   &: \typv{A} && \byass\\
@@ -1026,6 +1012,12 @@ b   &: \dtypm{B} && \by{f~\emp~a'}
 \end{mycase}
 
 \begin{mycase}[Primitive Recursion]
+{
+When canonically evaluating a neutral primitive
+recursion ($\rec$), we can get inductive hypotheses for all the
+arguments to the primitive recursion, but we must perform a version of
+primitive recursion in the model using a lemma ($\mrec$).
+}
 \begin{align*}
 c_z  &: \typv{C} && \byass\\
 c_s  &: \typv{C \arr C} && \byass\\
