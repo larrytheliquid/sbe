@@ -971,11 +971,12 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 \refsec{TODO} & \refthm{TODO} & $\mrec$ & $\mrecT$ \\
 }
 
-Canonical evaluation of neutrals ($\cevaln$) is the restriction of
-canonical evaluation of values ($\cevalv$) to the neutral fragment of
-the grammar of values.
+Canonical evaluation of neutrals ($\cevaln$) handles the canonical
+evaluation of variables and eliminations, and is used as a lemma in
+the mutually defined canonical evaluation of values ($\cevalv$).
 
-\begin{myproof}{
+\begin{myproof}
+{
 By induction on the neutral $\typn{A}$.
 }
 
