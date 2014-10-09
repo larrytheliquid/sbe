@@ -528,10 +528,11 @@ and SbE (which provably terminate, unlike the naive definitions).
 Finally, we discuss the similarities and differences between NbE and
 SbE.
 Henceforth, the development will proceed in a top-down manner.
-Each proof of a theorem first lists the lemmas it depends on, and
-the section where the proof of the lemma can be found. Pre-existing
+Each statement of a theorem immediately lists the lemmas it depends on
+(in the subsequent proof), as well as
+the section where the proof of each lemma can be found. Pre-existing
 proofs that we reuse from the NbE literature can be found in the
-appendices, while novel proofs are in the body of the paper.
+appendices, while novel proofs appear in the body of the paper.
 
 \subsection{Termination Issues with Naive Definitions}
 
@@ -709,7 +710,7 @@ normalization?
 
 The high-level plan of NbE is to define
 normalization as the composition of evaluation ($\eval$) of an expression to a
-model value, and reification ($\reify$) to a syntactic value.
+model value, and reification ($\reify$) back to a syntactic value.
 Normalization takes a syntactic expression to a model value,
 while evaluation takes a syntactic expression \textit{and} a model
 environment to a model value. So what should we use for the model
@@ -839,51 +840,36 @@ $$
 \section{Canonical Evaluation}
 \label{sec:vmod}
 
-$$
-\cevalv : \cevalvT
-$$
+Canonical evaluation ($\cevalv$) is the primary definition in SbE, taking a
+syntactic value and a model environment to a model value. It is
+analogous to evaluation ($\eval$) in NbE. In fact canonical evaluation
+is defined exactly the same way that evaluation is, except by case
+analysis over values instead of expressions!
 
-\hfill \break
-\begin{tabularx}{\textwidth}{ |c|c|c|X| }
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\cevalnT$ \\
-  \hline
-  \refsec{TODO} & \refthm{TODO} & $\monos$ & $\monosT$ \\
-  \hline
-\end{tabularx}
-\hfill \break
+Because the grammar of values is mutually defined with neutrals,
+canonical evaluation of values ($\cevalv$) is mutually defined with canonical
+evaluation of neutrals ($\cevaln$). Recall that values consist of axioms and
+inference rules for all constructors, plus an inference rule for
+injecting neutrals into values. A neutral is a variable, or 
+sequence of eliminations (i.e. applications or primitive recursions)
+that begins with the elimination of a variable.
 
-Evaluation (\refthm{mod:eval}) is a type-preserving translation from
-an expression of the theory in some initial context, to a model value
-in some terminal context. In addition to the expression parameter,
-evaluation also requires an environment of model values
-(\refdef{menv}). Each model value must be in the terminal context, and
-a model value is required for each type in the initial context.
-The interesting cases include the evaluation of the following terms:
+Expressions and values are quite different, as the former
+may contain $\beta$-redexes. However, if you compare
+canonical evaluation (\refthm{cevalv} \& \refthm{cevaln}) with
+evaluation (\refthm{eval}) you will notice that they are identical,
+modulo the former being defined over a split grammar. Why is that?
+Even though an expression may already be a syntactic $\beta$-redex, an
+expression or a value may become a semantic $\beta$-redex (a
+$\beta$-redex of the metalanguage) after replacing syntactic variables
+with values from the model environment. 
 
-\paragraph{Application} The whole point of the value model
-(\refdef{mval}) is to make this case easy to define. Evaluating the
-applied function results in a metalanguage function, which we can
-apply to an empty context extension ($\emp$) and the result of
-evaluating the argument of the function application.
-
-\paragraph{Function} When evaluating a function (a $\lam$ term),
-return type of evaluation is a model-level function. This means that
-we get a model value from the domain of the model function, which we
-can subsequently extend the model environment with. Lucky for us, as
-the recursive evaluation of the $\lam$ body requires a context extended
-with just the type we need! Of course this is no coincidence, as it is
-the reason why evaluation requires an environment model parameter in
-the first place. The more interesting part of evaluating the function
-is that the value we get (to extend the environment with) has been
-weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
-model environment, by appealing to the monotonicity lemma for
-environments (\reflem{monos}).
-
-\paragraph{Primitive recursion} When an expression for primitive
-recursion ($\rec$), we can get inductive hypotheses for all the
-arguments to the primitive recursion, but we must perform a version of
-primitive recursion in the model using \reflem{mod:rec}.
+Essentially, evaluation and canonical evaluation are similar because
+they operate on variables the same way, replacing them with model
+values from the model environment. In constrast,
+normalization leaves variables unchanged, while hereditary
+substitution replaces variables with values from the value
+environment. 
 
 \begin{mytheorem}{Canonical Evaluation of Values}{cevalv}
 {
@@ -895,12 +881,25 @@ primitive recursion in the model using \reflem{mod:rec}.
 \refsec{TODO} & \refthm{TODO} & $\monos$ & $\monosT$ \\
 }
 
+Canonical evaluation ($\cevalv$) is a type-preserving
+translation from a syntactic value in some initial context
+($\Gamma$), to a model value
+in some terminal context ($\Delta$). In addition to the value parameter,
+canonical evaluation also requires an environment of model values
+($\menv$). Each model value must be in the terminal context ($\Delta$), and
+a model value is required for each type in the initial context
+($\Gamma$).
+
 \begin{myproof}
 {
 By induction on the value $\typv{A}$.
 }
 
+
 \begin{mycase}[Zero]
+{
+The zero case is immediate.
+}
 \begin{align*}
 n  &: \dtypv{\nat} && \by{\zero}\\
 n  &: \dtypm{\nat} && \bydef
@@ -908,6 +907,9 @@ n  &: \dtypm{\nat} && \bydef
 \end{mycase}
 
 \begin{mycase}[Successor]
+{
+The successor case is a congruence.
+}
 \begin{align*}
 n   &: \typv{\nat} && \byass\\
 \sigma  &: \menv && \byass\\
@@ -919,6 +921,21 @@ m'  &: \dtypm{\nat} && \bydef
 \end{mycase}
 
 \begin{mycase}[Function]
+{
+When canonically evaluating a function (a $\lam$ term),
+the return type is a model-level function. This means that
+we get a model value from the domain of the model function as an
+additional parameter, which we
+can subsequently extend the model environment with. Lucky for us, because
+the recursive evaluation of the $\lam$ body requires a context extended
+with just the type we need! Of course this is no coincidence, it is
+the reason why canonical evaluation requires an environment model parameter in
+the first place. The more interesting part of canonically evaluating the function
+is that the value we get (to extend the environment with) has been
+weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
+model environment, by appealing to the monotonicity lemma for
+environments ($\monos$).
+}
 \begin{align*}
 b   &: \gatypv{B} && \byass\\
 \sigma  &: \menv && \byass\\
@@ -930,6 +947,10 @@ b'  &: \dtypm{B} && \ih{\cevalv~b~(\sigma', a)}\\
 \end{mycase}
 
 \begin{mycase}[Neutral]
+{
+Canonical evaluation of neutrals is delegated to a mutually defined
+theorem ($\cevaln$).
+}
 \begin{align*}
 a   &: \typn{A} && \byass\\
 \sigma  &: \menv && \byass\\
@@ -941,8 +962,6 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 \end{myproof}
 
 \end{mytheorem}
-
-\subsection{Canonical Evaluation of Neutrals}
 
 \begin{mytheorem}{Canonical Evaluation of Neutrals}{cevaln}
 { \cevaln : \cevalnT }
@@ -969,6 +988,17 @@ is that the value we get (to extend the environment with) has been
 weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
 model environment, by appealing to the monotonicity lemma for
 environments (\reflem{monos}).
+
+\paragraph{Application} The whole point of the value model
+(\refdef{mval}) is to make this case easy to define. Evaluating the
+applied function results in a metalanguage function, which we can
+apply to an empty context extension ($\emp$) and the result of
+evaluating the argument of the function application.
+
+\paragraph{Primitive recursion} When an expression for primitive
+recursion ($\rec$), we can get inductive hypotheses for all the
+arguments to the primitive recursion, but we must perform a version of
+primitive recursion in the model using \reflem{mod:rec}.
 
 
 \begin{myproof}{
@@ -1068,14 +1098,14 @@ model (rather than HA or CCC).
 
 \section{Evaluation}
 
-\begin{theorem}[Evaluation]
+\begin{mytheorem'}[Evaluation]
 \label{thm:eval}
 $$
 \fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
 $$
 
-\begin{proof}
-
+\begin{myproof}
+{
 By induction on the expression $\type{A}$. This proof is standard and
 we do not repeat it here for space reasons. However, part of the
 insight of this paper is that is that what we call
@@ -1083,10 +1113,10 @@ insight of this paper is that is that what we call
 semantics, is essentially the same thing! To recover this proof,
 replace instances of values and neutrals with expressions in the proof
 of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
+}
+\end{myproof}
 
-\end{proof}
-
-\end{theorem}
+\end{mytheorem'}
 
 \begin{mylemma}{Model of Primitive Recursion}{mrec}
 {
