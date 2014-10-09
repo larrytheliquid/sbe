@@ -859,7 +859,8 @@ may contain $\beta$-redexes. However, if you compare
 canonical evaluation (\refthm{cevalv} \& \refthm{cevaln}) with
 evaluation (\refthm{eval}) you will notice that they are identical,
 modulo the former being defined over a split grammar. Why is that?
-Even though an expression may already be a syntactic $\beta$-redex, an
+Even though an expression may already be a syntactic $\beta$-redex, a
+syntactic value will never be a syntactic $\beta$-redex. But, both an
 expression or a value may become a semantic $\beta$-redex (a
 $\beta$-redex of the metalanguage) after replacing syntactic variables
 with values from the model environment. 
@@ -882,13 +883,11 @@ environment.
 }
 
 Canonical evaluation ($\cevalv$) is a type-preserving
-translation from a syntactic value in some initial context
-($\Gamma$), to a model value
-in some terminal context ($\Delta$). In addition to the value parameter,
-canonical evaluation also requires an environment of model values
-($\menv$). Each model value must be in the terminal context ($\Delta$), and
-a model value is required for each type in the initial context
-($\Gamma$).
+translation. It takes a syntactic value in some
+initial context ($\typv{A}$) and a model environment ($\menv$), and produces a
+model value in the terminal context ($\dtypm{A}$). The model environment
+has a model value for every type in the initial context, each of which
+must be scoped in the terminal context.
 
 \begin{myproof}
 {
@@ -916,18 +915,25 @@ n   &: \typv{\nat} && \byass\\
 n'  &: \dtypm{\nat} && \ih{\cevalv~n~\sigma}\\
 n'  &: \dtypv{\nat} && \bydef\\
 m   &: \dtypv{\nat} && \by{\suc~n'}\\
-m'  &: \dtypm{\nat} && \bydef
+m  &: \dtypm{\nat} && \bydef
 \end{align*}
 \end{mycase}
 
 \begin{mycase}[Function]
 {
 When canonically evaluating a function (a $\lam$ term),
-the return type is a model-level function. This means that
-we get a model value from the domain of the model function as an
-additional parameter, which we
-can subsequently extend the model environment with. Lucky for us, because
-the recursive evaluation of the $\lam$ body requires a context extended
+the return type is a model function (a metalanguage function).
+We get two normal parameters from the theorem ($b$ and $\sigma$), but
+because we return a metalanguage function we also get two additional
+parameters from its domain ($\Xi$ and $a$). The $\Xi$
+parameter is a context to weaken the result with, and the $a$
+parameter is a model value that has been weakened by $\Xi$. See the
+function case of $\typm{A \arr B}$ in \refdef{mval}.
+
+%% When appealing to the inductive hypothesis for the $\lam$ body, we
+%% need to pass in a
+
+The recursive evaluation of the $\lam$ body requires a context extended
 with just the type we need! Of course this is no coincidence, it is
 the reason why canonical evaluation requires an environment model parameter in
 the first place. The more interesting part of canonically evaluating the function
@@ -1008,7 +1014,7 @@ a   &: \typv{A} && \byass\\
 f'  &: \dtypm{A \arr B} && \ih{\cevaln~f~\sigma}\\
 f'  &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
 a'  &: \dtypm{A} && \ih{\cevalv~a~\sigma}\\
-b   &: \dtypm{B} && \by{f~\emp~a'}
+b   &: \dtypm{B} && \by{f'~\emp~a'}
 \end{align*}
 \end{mycase}
 
@@ -1017,7 +1023,9 @@ b   &: \dtypm{B} && \by{f~\emp~a'}
 When canonically evaluating a neutral primitive
 recursion ($\rec$), we can get inductive hypotheses for all the
 arguments to the primitive recursion, but we must perform a version of
-primitive recursion in the model using a lemma ($\mrec$).
+primitive recursion in the model using a lemma ($\mrec$). The lemma
+$\mrec$ was developed for evaluation in NbE, and is given in
+\refsec{TODO}.
 }
 \begin{align*}
 c_z  &: \typv{C} && \byass\\
