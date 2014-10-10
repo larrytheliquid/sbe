@@ -147,7 +147,7 @@
 \def\suc{\con{suc}}
 \def\neut{\con{neut}}
 
-\def\mrec{\el{\rec}}
+\def\mrec{\el{\fun{rec}}}
 \def\mrecT{\typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}}
 
 \def\rec{\fun{rec}}
@@ -217,7 +217,8 @@
 \newcommand{\all}[1]{\forall#1.~}
 \newcommand{\ex}[1]{\exists#1.~}
 
-\newcommand{\el}[1]{\llbracket ~ #1 ~ \rrbracket}
+\newcommand{\el}[1]{\llbracket #1 \rrbracket}
+\newcommand{\els}[1]{\llbracket ~ #1 ~ \rrbracket}
 
 \def\wknet{\fun{wkn}^\con{E}}
 \newcommand{\wkne}[1]{\wknet ~ \Delta ~ #1}
@@ -233,14 +234,14 @@
 \newcommand{\con}[1]{\textmd{#1}}
 \newcommand{\fun}[1]{\textmd{#1}}
 
-\newcommand{\typm}[1]{\el{\Gamma \vdash #1}}
-\newcommand{\dtypm}[1]{\el{\Delta \vdash #1}}
-\newcommand{\xtypm}[1]{\el{\Xi \vdash #1}}
-\newcommand{\xdtypm}[1]{\el{\Xi, \Delta \vdash #1}}
-\newcommand{\gdtypm}[1]{\el{\Gamma, \Delta \vdash #1}}
-\newcommand{\gftypm}[1]{\el{\Gamma, \Phi \vdash #1}}
-\newcommand{\gatypm}[1]{\el{\Gamma, A \vdash #1}}
-\newcommand{\ctypm}[2]{\el{\Gamma , #1 \vdash #2}}
+\newcommand{\typm}[1]{\els{\Gamma \vdash #1}}
+\newcommand{\dtypm}[1]{\els{\Delta \vdash #1}}
+\newcommand{\xtypm}[1]{\els{\Xi \vdash #1}}
+\newcommand{\xdtypm}[1]{\els{\Xi, \Delta \vdash #1}}
+\newcommand{\gdtypm}[1]{\els{\Gamma, \Delta \vdash #1}}
+\newcommand{\gftypm}[1]{\els{\Gamma, \Phi \vdash #1}}
+\newcommand{\gatypm}[1]{\els{\Gamma, A \vdash #1}}
+\newcommand{\ctypm}[2]{\els{\Gamma , #1 \vdash #2}}
 
 \newcommand{\type}[1]{\Gamma \turn{E} #1}
 \newcommand{\dtype}[1]{\Delta \turn{E} #1}
@@ -1146,7 +1147,7 @@ of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
 
 \end{mytheorem'}
 
-\begin{mylemma}{Model of Primitive Recursion}{mrec}
+\begin{mylemma}{Semantic Primitive Recursion}{mrec}
 {
 \mrec : \mrecT
 }
@@ -1183,7 +1184,7 @@ c_z  &: \typm{C} && \byass\\
 c_s  &: \typm{C \arr C} && \byass\\
 n    &: \typv{\nat} && \byass\\
 n    &: \typm{\nat} && \bydef\\
-c    &: \typm{C} && \ih{\el{\fun{rec}}~c_z~c_s~n}\\
+c    &: \typm{C} && \ih{\mrec~c_z~c_s~n}\\
 c_s  &: \all{\Delta} \gdtypm{C} \marr \gdtypm{C} && \bydef\\
 c'   &: \typm{C} && \by{c_s~\emp~c}
 \end{align*}
