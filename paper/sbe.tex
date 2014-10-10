@@ -173,10 +173,10 @@
 \def\idenv{\fun{idEnv}}
 
 
-\def\mono{\fun{mono}}
+\def\mono{\fun{mono}^\con{V}}
 \def\monoT{\all{\Delta} \typm{A} \marr \gdtypm{A}}
 
-\def\monos{\fun{monos}}
+\def\monos{\fun{mono}^\con{E}}
 \def\monosT{\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}}
 
 \def\eval{\fun{eval}}
@@ -769,6 +769,8 @@ it is less ambiguous to refer to its ``substitution'' argument as a
 ``syntactic environment''.
 }
 
+\todo[inline]{talk about the beta redexes in syntactic hsub}
+
 \begin{mydefinition}{Syntax of Environments}{senv}
 {
 Syntactic environments $\env$ are defined exactly like semantic
@@ -789,23 +791,25 @@ instead of semantic values.
 \refsec{TODO} & \refthm{TODO} & $\reflecte$ & $\reflecteT$ \\
 }
 
+\todo[inline]{ceval is not just composition bc of extra env argument}
+
 Above are the theorems we need for SbE. In particular, notice that we
 get to reuse $\reify$ from NbE.
 The high-level plan of SbE is to define
 hereditary substitution as the composition of
 canonical evaluation ($\cevalv$) of a syntactic value to a
-model value, and reification ($\reify$) back to a syntactic value.
+semantic value, and reification ($\reify$) back to a syntactic value.
 What exactly is canonical evaluation? Recall that evaluation of
-expressions turned syntactic expressions into model values, reducing
+expressions turned syntactic expressions into semantic values, reducing
 $\beta$-redexes and replacing variables with their definition in the
-model environment ($\sigma$) along the way. On the other hand,
-canonical evaluation takes a syntactic value and a model environment
-to a model value. It will not come across $\beta$-redexes in the input
-syntactic value, but replacing variables with model values (from
+semantic environment ($\sigma$) along the way. On the other hand,
+canonical evaluation takes a syntactic value and a semantic environment
+to a semantic value. It will not come across $\beta$-redexes in the input
+syntactic value, but replacing variables with semantic values (from
 $\sigma$) may \textit{introduce} $\beta$-redexes that need to be
-immediately reduced. Finally, the syntactic environment argument of
-SbE is reflected ($\reflecte$) as a model environment, and is used as the model
-environment argument of canonical evaluation.
+immediately reduced. Finally, the syntactic environment argument ($\sigma$) of
+SbE is reflected ($\reflecte$) as a semantic environment, and is used
+as the semantic environment argument of canonical evaluation.
 
 \begin{myproof}{}
 \begin{align*}
@@ -826,21 +830,21 @@ evaluation takes an additional argument (the model environment) compared
 to normalization, which only takes the expression to reduce. But, in
 the world of values hereditary substitution and canonical evaluation
 both take a value, an environment, and produce a value. The only
-difference is that canonical evaluation takes a model environment and
-produces a model value. 
+difference is that canonical evaluation takes a semantic environment and
+produces a semantic value. 
 In other words, canonical evaluation \textit{is}
 a model-theoretic hereditary substitution, compared to the typical
 proof-theoretic hereditary substitution.
 What a beautiful coincidence!
 
-A consequence of this is that normalization (which does not already
-have a syntactic environment argument) must invent a model
-environment to pass to evaluation. Because normalization does not
-change the value of free variables, the identity model environment
-($\midenv$) is used. In contrast, hereditary substitution already has
+A consequence of this is that normalization must invent a semantic
+environment to pass to evaluation, because it does not already
+have a syntactic environment argument to reflect. Because normalization does not
+change the value of free variables, the identity semantic environment
+($\midenv$) can be used by reflecting the context. In contrast, hereditary substitution already has
 a syntactic environment (that is used to look up the values of any free
 variables), so canonical evaluation takes the 
-reflection ($\reflecte$) of the syntactic environment as its model
+reflection ($\reflecte$) of the syntactic environment as its semantic
 environment argument.
 
 Although there is a more direct correspondence between SbE and canonical
@@ -859,10 +863,10 @@ $$
 
 
 \section{Canonical Evaluation}
-\label{sec:vmod}
+\label{sec:ceval}
 
 Canonical evaluation ($\cevalv$) is the primary definition in SbE, taking a
-syntactic value and a model environment to a model value. It is
+syntactic value and a semantic environment to a semantic value. It is
 analogous to evaluation ($\eval$) in NbE. In fact canonical evaluation
 is defined exactly the same way that evaluation is, except by case
 analysis over values instead of expressions!
@@ -884,14 +888,14 @@ Even though an expression may already be a syntactic $\beta$-redex, a
 syntactic value will never be a syntactic $\beta$-redex. But, both an
 expression or a value may become a semantic $\beta$-redex (a
 $\beta$-redex of the metalanguage) after replacing syntactic variables
-with values from the model environment. 
+with values from the semantic environment. 
 
 Essentially, evaluation and canonical evaluation are similar because
-they operate on variables the same way, replacing them with model
-values from the model environment. In constrast,
+they operate on variables the same way, replacing them with semantic
+values from the semantic environment. In constrast,
 normalization leaves variables unchanged, while hereditary
-substitution replaces variables with values from the value
-environment. 
+substitution replaces variables with syntactic values from the
+syntactic environment. 
 
 \begin{mytheorem}{Canonical Evaluation of Values}{cevalv}
 {
@@ -905,9 +909,9 @@ environment.
 
 Canonical evaluation ($\cevalv$) is a type-preserving
 translation. It takes a syntactic value in some
-initial context ($\typv{A}$) and a model environment ($\menv$), and produces a
-model value in the terminal context ($\dtypm{A}$). The model environment
-has a model value for every type in the initial context, each of which
+initial context ($\typv{A}$) and a semantic environment ($\menv$), and produces a
+semantic value in the terminal context ($\dtypm{A}$). The semantic environment
+has a semantic value for every type in the initial context, each of which
 must be scoped in the terminal context.
 
 \begin{myproof}
@@ -948,7 +952,7 @@ We get two normal parameters from the theorem ($b$ and $\sigma$), but
 because we return a metalanguage function we also get two additional
 parameters from its domain ($\Xi$ and $a$). The $\Xi$
 parameter is a context to weaken the result with, and the $a$
-parameter is a model value that has been weakened by $\Xi$. See the
+parameter is a semantic value that has been weakened by $\Xi$. See the
 function case of $\typm{A \arr B}$ in \refdef{mval}.
 
 %% When appealing to the inductive hypothesis for the $\lam$ body, we
@@ -958,11 +962,11 @@ function case of $\typm{A \arr B}$ in \refdef{mval}.
 
 The recursive evaluation of the $\lam$ body requires a context extended
 with just the type we need! Of course this is no coincidence, it is
-the reason why canonical evaluation requires an environment model parameter in
+the reason why canonical evaluation requires a semantic environment parameter in
 the first place. The more interesting part of canonically evaluating the function
 is that the value we get (to extend the environment with) has been
 weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
-model environment, by appealing to the monotonicity lemma for
+semantic environment, by appealing to the monotonicity lemma for
 environments ($\monos$).
 }
 \begin{align*}
@@ -1011,8 +1015,8 @@ By induction on the neutral $\typn{A}$.
 
 \begin{mycase}[Variable]
 {
-Canonically evaluate a variable by looking up its corresponding model
-value in the model environment.
+Canonically evaluate a variable by looking up its corresponding semantic
+value in the semantic environment.
 }
 \begin{align*}
 i   &: \typr{A} && \byass\\
@@ -1045,8 +1049,8 @@ b   &: \dtypm{B} && \by{f'~\emp~a'}
 {
 When canonically evaluating a neutral primitive
 recursion ($\rec$), we can get inductive hypotheses for all the
-arguments to the primitive recursion, but we must perform a version of
-primitive recursion in the model using a lemma ($\mrec$). The lemma
+arguments to the primitive recursion, but we must perform a semantic version of
+primitive recursion using a lemma ($\mrec$). The lemma
 $\mrec$ was developed for evaluation in NbE, and is given in
 \refsec{TODO}.
 }
@@ -1099,7 +1103,7 @@ model (rather than HA or CCC).
 \todo[inline]{extension polymorphic lists}
 \todo[inline]{correctness wrt contextual equiv on exprs}
 \todo[inline]{Future work: state (via worlds), exceptions (via monad),
-  dependent types}
+  dependent types, continuations}
 \todo[inline]{reference morrison nbe formalization}
 
 %% \acks
@@ -1300,9 +1304,9 @@ b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 \end{mylemma}
 
 
-\section{Identity Model Environment}
+\section{Context Reflection}
 
-\begin{mytheorem}{Identity Model Environment}{midenv}
+\begin{mytheorem}{Context Reflection}{midenv}
 { \midenv : \midenvT }
 {
 \refsec{TODO} & \refthm{TODO} & $\reflectn$ & $\reflectnT$ \\
@@ -1343,7 +1347,7 @@ x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 
 \end{mytheorem}
 
-\begin{mylemma}{Environment Model Monotonicity}{monos}
+\begin{mylemma}{Environment Monotonicity}{monos}
 { \monos : \monosT }
 {
 \refsec{TODO} & \refthm{TODO} & $\mono$ & $\monoT$ \\
@@ -1383,14 +1387,14 @@ x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
 
 \end{mylemma}
 
-\begin{mylemma}{Value Model Monotonicity}{mono}
+\begin{mylemma}{Value Monotonicity}{mono}
 { \mono : \monoT }
 {
 \refsec{TODO} & \refthm{TODO} & $\wknvt$ & $\wknvT$ \\
 }
 
-The model monotonicity lemma is basically a version of weakening (of
-theory values) lifted to values in the model. 
+The value monotonicity lemma is basically a version of weakening (of
+syntactic values) lifted to semantic values.
 
 \begin{myproof}
 {
