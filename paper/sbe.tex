@@ -177,7 +177,7 @@
 \def\monoT{\all{\Delta} \typm{A} \marr \gdtypm{A}}
 
 \def\monos{\fun{mono}^\con{E}}
-\def\monosT{\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}}
+\def\monosT{\all{\Delta} \gmenv{\Xi} \marr \gmenv{\Xi, \Delta}}
 
 \def\eval{\fun{eval}^\con{E}}
 \def\evalT{\type{A} \marr \menv \marr \dtypm{A}}
@@ -264,15 +264,15 @@
 \newcommand{\dtypr}[1]{\Delta \turn{R} #1}
 \newcommand{\ctypr}[2]{\Gamma , #1 \turn{R} #2}
 
-\def\menv{\el{\fun{Env}}~\Gamma~\Delta}
-\def\env{\fun{Env}~\Gamma~\Delta}
-\def\enve{\fun{Env}^\con{E}~\Gamma~\Delta}
-\newcommand{\dmenv}[1]{\el{\fun{Env}}~#1~\Delta}
-\newcommand{\denv}[1]{\fun{Env}~#1~\Delta}
-\newcommand{\gmenv}[1]{\el{\fun{Env}}~\Gamma~#1}
-\newcommand{\genv}[1]{\fun{Env}~\Gamma~#1}
-\newcommand{\cmenv}[2]{\el{\fun{Env}}~#1~#2}
-\newcommand{\cenv}[2]{\fun{Env}~#1~#2}
+\def\menv{\dmenv{\Gamma}}
+\def\env{\denv{\Gamma}}
+\def\enve{\Delta \turn{E} \Gamma}
+\newcommand{\dmenv}[1]{\els{\Delta \vdash #1}}
+\newcommand{\denv}[1]{\Delta \turn{V} #1}
+\newcommand{\gmenv}[1]{\els{#1 \vdash \Gamma}}
+\newcommand{\genv}[1]{#1 \turn{V} \Gamma}
+\newcommand{\cmenv}[2]{\els{#2 \vdash #1}}
+\newcommand{\cenv}[2]{#2 \turn{V} #1}
 
 
 %% \newcommand{\ren}[1]{\Gamma \le #1}
@@ -685,7 +685,7 @@ The empty context is trivially inhabited in the environment model.
 
 \begin{mycase}[Context extension]
 $$
-\dmenv{(\Gamma, A)} \dfn \dmenv{\Gamma} \cross \dtypm{A}
+\dmenv{\Gamma, A} \dfn \dmenv{\Gamma} \cross \dtypm{A}
 $$
 
 The environment model of a context extension consists of two parts,
@@ -975,7 +975,7 @@ b   &: \gatypv{B} && \byass\\
 \sigma  &: \menv && \byass\\
 \Xi& && \byass\\
 a   &: \el{\Delta, \Xi \vdash A} && \byass\\
-\sigma'  &: \gmenv{(\Delta, \Xi)} && \by{\monos~\Xi~\sigma}\\
+\sigma'  &: \gmenv{\Delta, \Xi} && \by{\monos~\Xi~\sigma}\\
 b'  &: \dtypm{B} && \ih{\cevalv~b~(\sigma', a)}\\
 \end{align*}
 \end{mycase}
@@ -1338,9 +1338,9 @@ u &: \cmenv{\emp}{\emp} && \bydef
 \Gamma& && \byass\\
 A& && \byass\\
 \sigma  &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
-\sigma' &: \cmenv{\Gamma}{(\Gamma, A)} && \by{\monos~(\emp, A)~\sigma}\\
+\sigma' &: \cmenv{\Gamma}{\Gamma, A} && \by{\monos~(\emp, A)~\sigma}\\
 x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
-\sigma'' &: \cmenv{(\Gamma, A)}{(\Gamma, A)} && \by{\sigma', x}
+\sigma'' &: \cmenv{\Gamma, A}{\Gamma, A} && \by{\sigma', x}
 \end{align*}
 \end{mycase}
 
@@ -1369,7 +1369,7 @@ By induction on the context $\Gamma$.
 \begin{align*}
 \Delta& && \byass\\
 u &: \top && \byass\\
-u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
+u &: \cmenv{\emp}{\Xi, \Delta} && \bydef
 \end{align*}
 \end{mycase}
 
@@ -1378,9 +1378,9 @@ u &: \cmenv{\emp}{(\Xi, \Delta)} && \bydef
 \Delta& && \byass\\
 \sigma &: \gmenv{\Xi} && \byass\\
 x    &: \xtypm{A} && \byass\\
-\sigma'  &: \gmenv{(\Xi, \Delta)} && \ih{\monos~\Delta~\sigma}\\
+\sigma'  &: \gmenv{\Xi, \Delta} && \ih{\monos~\Delta~\sigma}\\
 x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
-\sigma'' &: \cmenv{(\Gamma, A)}{(\Xi, \Delta)} && \by{\sigma', x'}
+\sigma'' &: \cmenv{\Gamma, A}{\Xi, \Delta} && \by{\sigma', x'}
 \end{align*}
 \end{mycase}
 
@@ -1418,10 +1418,10 @@ n' &: \gdtypm{\nat} && \bydef
 f  &: \typm{A \arr B} && \byass\\
 \Xi& && \byass\\
 a  &: \el{(\Gamma, \Delta), \Xi \vdash A} && \byass\\
-a  &: \el{\Gamma, (\Delta, \Xi) \vdash A} && \by{associativity}\\
+a'  &: \el{\Gamma, (\Delta, \Xi) \vdash A} && \by{associativity}\\
 f  &: \all{\Phi} \gftypm{A} \marr \gftypm{B} && \bydef\\
-b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a}\\
-b  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
+b  &: \el{\Gamma, (\Delta, \Xi) \vdash B} && \by{f~(\Delta,\Xi)~a'}\\
+b'  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 \end{align*}
 \end{mycase}
 
