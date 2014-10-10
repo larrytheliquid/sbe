@@ -424,33 +424,27 @@ After a brief discussion about our notation, the rest of the paper is
 structured as follows:
 
 \begin{itemize}
-\item{\bf{\refsec{epred}}}
-We review the definitions and state the theorems needed to prove termination of
-an extrinsic big-step semantics for G{\"o}del's System T using a
-realizability predicate.
+\item{\bf{\refsec{overview}}}
+We review the model and theorems used by NbE, and explain the
+definition (or implicit termination proof) of NbE. Then, we present the
+novel definition of SbE, in which we reuse the model and some theorems
+from NbE. Finally, we compare and contrast SbE with NbE.
 
-\item{\bf{\refsec{emodel}}}
-We review the definitions and prove the theorems needed to define an
-intrinsic semantics for G{\"o}del's System T via NbE and a Kripke
-model. We point out which theorems from \refsec{epred} that we get for
-free.
+\item{\bf{\refsec{ceval}}}
+We present the novel definition of canonical evaluation. In NbE,
+evaluation takes a syntactic expression and a semantic environment to
+a semantic value. Canonical evaluation is like evaluation, except it
+works on values instead of expressions. In SbE, canonical evaluation
+takes a syntactic value and a semantic environment to
+a semantic value.
 
-\item{\bf{\refsec{vmodel}}}
-We review why the extrinsic relational semantics for hereditary
-substitution does not obviously terminate, and show what choices you
-need to make when defining its realizability predicate. Instead of
-proving termination in the more complex setting of extrinsic
-semantics, we define hereditary substitution as an intrinsic
-semantics.
-
-\item{\bf{\refsec{list}}}
-We show how to extend the intrinsic semantics to a language including
-parametric inductive types (e.g. lists).
-
-\item{\bf{\refsec{correctness}}}
-We prove that normalization of expressions, defined in terms of
-hereditary substitution, is sound and complete with respect to a
-contextual equivalence relation for expressions.
+\item{\bf{\refsec{reflecte}}}
+We present the novel definition of environment reflection. Because
+hereditary substitution already has a syntactic environment parameter
+(the ``substitution'' to be applied to the variables of the syntactic
+value that we are hereditarily substituting into), we must reflect that
+syntactic environment as a semantic environment so that we may use it
+as an argument of canonical evaluation.
 
 \item{\bf{\refsec{related}}}
 We discuss related work.
@@ -1105,6 +1099,7 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 %% \end{displaymath}
 
 \section{Related Work}
+\label{sec:related}
 
 Our termination proof is a novel model-theoretic result, but it
 does not solve the proof-theoretic version of the same problem.
