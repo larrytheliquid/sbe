@@ -300,22 +300,34 @@
 
 \begin{abstract}
 
-This paper is about termination proofs for the semantics of total lambda calculi.
-We introduce a change in perspective about how one might
-think about such proofs. The standard perspective is to prove that a relationally
-specified semantics terminates, e.g. by using realizability predicates. Instead,
-we promote the perspective that the termination proof implicitly defines
-an \textit{intrinsic semantics}, e.g. Normalization by Evaluation (NbE) into a Kripke model.
-Thus we think of the termination proof as an intrinsic functional semantics, as compared
-to the (no longer necessary) extrinsic relational semantics.
+Hereditary substitution is a modified definition of ordinary
+substitution, suitable for substituting into canonical terms. Because
+substituting into a canonical term may temporarily create a $\beta$-redex,
+hereditary substitution immediately evaluates the redex so that the
+result remains a canonical term. As such, hereditary substitution can
+be used to give an alternative semantics for expressions (e.g. instead
+of a small-step semantics), by normalizing the expression to a
+canonical term and invoking hereditary substitution in the function
+application case.
 
-Just as intrinsic typing of terms results in simpler metatheoretical definitions and provides
-free theorems, intrinsic semantics does the same. Adopting this perspective
-led us to an elegant proof
-that hereditary substitution for G{\"o}del's System T terminates. This proof
-reuses the Kripke model (of NbE) and introduces a new technique that we call
-Hereditary Substitution by Canonical Evaluation (SbE). Furthermore,
-our entire development is simple to formalize in a proof assistant, such as Agda.
+Thus far, the termination argument for hereditary substitution has
+primarily been studied \textit{proof-theoretically}. However, formalizations of
+the proof theoretic termination arguments within type theory have
+trouble scaling to systems with inductive types, such as
+G{\"o}del's System T.
+
+In this paper we present a model-theoretic
+termination argument of hereditary substitution that easily scales to
+systems with inductive types. Specifically, we adapt the technique of
+Normalization by Evaluation (NbE), normally defined on expressions, to
+canonical terms. We call this technique Hereditary Substitution by
+Canonical Evaluation (SbE), and much of the existing NbE machinery can be reused, or
+only requires minor modifications. In some sense, we merely point out
+and clarify a beautiful coincidence: NbE for canonical terms is essentially a
+terminating model-theoretic definition of hereditary substitution.
+SbE of G{\"o}del's System T can be elegantly formalized within
+dependent type theory, just like NbE, and all of our results have been
+verified by Agda.
 \end{abstract}
 
 %% \category{D.3}{Software}{Programming Languages}.
