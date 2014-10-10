@@ -329,8 +329,6 @@ dependent type theory, just like NbE, and all of our results have been
 verified by Agda.
 \end{abstract}
 
-%% \category{D.3}{Software}{Programming Languages}.
-
 \keywords
 Type theory; hereditary substitution; termination; formalization.
 
@@ -536,8 +534,8 @@ $$
 \section{Overview of NbE and SbE}
 \label{sec:overview}
 
-First we review why proving termination of naive definitions of
-normalization and hereditary substitution fails, and then we provide a
+First we review why the proofs of termination of naive definitions of
+normalization and hereditary substitution fail, and then we provide a
 high-level overview of theorems and definitions necessary to define NbE
 and SbE (which provably terminate, unlike the naive definitions).
 Finally, we discuss the similarities and differences between NbE and
@@ -1062,7 +1060,7 @@ recursion ($\rec$), we can get inductive hypotheses for all the
 arguments to the primitive recursion, but we must perform a semantic version of
 primitive recursion using a lemma ($\mrec$). The lemma
 $\mrec$ was developed for evaluation in NbE, and is given in
-\refsec{TODO}.
+\refapp{eval} as \reflem{mrec}.
 }
 \begin{align*}
 c_z  &: \typv{C} && \byass\\
