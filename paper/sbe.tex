@@ -2,6 +2,7 @@
 \usepackage{etex} % trick to get xypic to load
 \usepackage[authoryear,square]{natbib}
 \usepackage{proof}
+\usepackage{xifthen}
 
 \usepackage{todonotes}
 \usepackage{amsmath}
@@ -58,19 +59,21 @@
 { \end{mydefinition'} }
 
 \newenvironment{myproof}[1]
-{ \begin{myproof'} \textit{#1} }
+{ \begin{myproof'} \ifthenelse{\isempty{#1}}{}{\textit{#1}} }
 { \myqed \end{myproof'} }
 
 \newenvironment{mytheorem}[4]
 { \begin{mytheorem'}[#1] \label{thm:#2}
   $$#3$$
 
+  \ifthenelse{\isempty{#4}}{}{
   \begingroup \small
   \begin{tabularx}{\textwidth}{ |c|c|c|X| }
     \hline #4 \hline
   \end{tabularx}
   \hfill \break  
   \endgroup
+  }
 }
 { \end{mytheorem'} }
 
@@ -78,12 +81,14 @@
 { \begin{mylemma'}[#1] \label{lem:#2}
   $$#3$$
 
+  \ifthenelse{\isempty{#4}}{}{
   \begingroup \small
   \begin{tabularx}{\textwidth}{ |c|c|c|X| }
     \hline #4 \hline
   \end{tabularx}
   \hfill \break  
   \endgroup
+  }
 }
 { \end{mylemma'} }
 
@@ -203,6 +208,7 @@
 
 \def\bydef{(\textit{definition})}
 \def\byass{(\textit{assumption})}
+\def\bywkn{(\textit{weakening})}
 \def\bytri{(\textit{trivial})}
 \newcommand{\ih}[1]{(\textit{i.h.}~ #1)}
 \newcommand{\by}[1]{(#1)}
@@ -1022,7 +1028,7 @@ value in the semantic environment.
 \begin{align*}
 i   &: \typr{A} && \byass\\
 \sigma  &: \menv && \byass\\
-a  &: \dtypm{A} && \by{\lookup~\sigma~i}
+a  &: \dtypm{A} && \by{\textit{lookup} ~ \sigma[i]}
 \end{align*}
 \end{mycase}
 
@@ -1127,11 +1133,9 @@ model (rather than HA or CCC).
 
 \section{Evaluation}
 
-\begin{mytheorem'}[Evaluation]
-\label{thm:eval}
-$$
-\fun{eval} : \type{A} \marr \menv \marr \dtypm{A}
-$$
+\begin{mytheorem}{Evaluation}{eval}
+{ \eval : \evalT }
+{}
 
 \begin{myproof}
 {
@@ -1145,7 +1149,7 @@ of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
 }
 \end{myproof}
 
-\end{mytheorem'}
+\end{mytheorem}
 
 \begin{mylemma}{Semantic Primitive Recursion}{mrec}
 {
@@ -1266,8 +1270,6 @@ f' &: \typv{A \arr B} && \by{\lam b'}
 }
 {
 \refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
-\hline
-\refsec{TODO} & \refthm{TODO} & $\wknnt$ & $\wknnT$ \\
 }
 
 Note that we can only reflect neutrals. Values must instead be
@@ -1294,7 +1296,7 @@ n' &: \typm{\nat} && \bydef
 f &: \typn{A \arr B} && \byass\\
 \Delta& && \byass\\
 a  &: \gdtypm{A} && \byass\\
-f' &: \gdtypn{A \arr B} && \by{\wknn{f}}\\
+f' &: \gdtypn{A \arr B} && \bywkn\\
 a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
 b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 \end{align*}
@@ -1390,9 +1392,7 @@ x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
 
 \begin{mylemma}{Value Monotonicity}{mono}
 { \mono : \monoT }
-{
-\refsec{TODO} & \refthm{TODO} & $\wknvt$ & $\wknvT$ \\
-}
+{}
 
 The value monotonicity lemma is basically a version of weakening (of
 syntactic values) lifted to semantic values.
@@ -1407,7 +1407,7 @@ By case analysis of the type $A$.
 \Delta& && \byass\\
 n  &: \typm{\nat} && \byass\\
 n  &: \typv{\nat} && \bydef\\
-n' &: \gdtypv{\nat} && \by{\wknv{n}}\\
+n' &: \gdtypv{\nat} && \bywkn\\
 n' &: \gdtypm{\nat} && \bydef
 \end{align*}
 \end{mycase}
