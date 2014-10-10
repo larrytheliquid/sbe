@@ -673,9 +673,9 @@ Given that evaluation must map syntactic expressions to semantic values,
 what should it do when it encounters a variable? We can make
 evaluation take an additional argument, called the
 ``semantic environment'', mapping variables to model values. More
-specifically, the semantic environment maps all variables in
-some initial context $\Gamma$ to semantic values in some terminal context
-$\Delta$.
+specifically, the semantic environment maps all types (where each type
+represents a variable) in some initial context $\Gamma$ to semantic
+values in some terminal context $\Delta$.
 
 \begin{mydefinition}{Semantic Environments}{menv}
 {
@@ -750,8 +750,6 @@ v  &: \typm{A} && \by{\eval~e~\sigma}\\
 v' &: \typv{A} && \by{\reify~v}
 \end{align*}
 
-\end{myproof}
-
 The diagram of NbE in the introduction left out some details, as it
 was only meant to convey intuition for how NbE works. However, we can
 fill in the details to arrive at the alternative pictorial proof
@@ -766,6 +764,8 @@ below.
           \ar[d]^{\large{\reify~v}}
 \\      & \dtypv{A} }
 \end{displaymath}
+
+\end{myproof}
 
 \end{mytheorem}
 
@@ -834,7 +834,6 @@ v    &: \typv{A} && \byass\\
 v'   &: \dtypm{A} && \by{\cevalv~v~\sigma'}\\
 v''  &: \dtypv{A} && \by{\reify~A~v'}
 \end{align*}
-\end{myproof}
 
 Once again, we can add detail to the commutative diagram of SbE in the
 introduction to arrive at the alternative pictorial proof below.
@@ -848,6 +847,8 @@ introduction to arrive at the alternative pictorial proof below.
           \ar[d]^{\large{\reify~v'}}
 \\      & \dtypv{A} }
 \end{displaymath}
+
+\end{myproof}
 
 \end{mytheorem}
 
