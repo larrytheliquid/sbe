@@ -304,11 +304,10 @@ Hereditary substitution is a modified definition of ordinary
 substitution, suitable for substituting into canonical terms. Because
 substituting into a canonical term may temporarily create a $\beta$-redex,
 hereditary substitution immediately evaluates the redex so that the
-result remains a canonical term. As such, hereditary substitution can
-be used to give an alternative semantics for expressions (e.g. instead
-of a small-step semantics), by normalizing the expression to a
-canonical term and invoking hereditary substitution in the function
-application case.
+result remains a canonical term. Hereditary substitution is
+traditionally used to give a large-step semantics to a
+$\lambda$-calculus. It is used in the function application case when
+defining the normalization function, taking expressions to canonical terms.
 
 Thus far, the termination argument for hereditary substitution has
 primarily been studied \textit{proof-theoretically}. However, formalizations of
@@ -316,14 +315,14 @@ the proof theoretic termination arguments within type theory have
 trouble scaling to systems with inductive types, such as
 G{\"o}del's System T.
 
-In this paper we present a model-theoretic
+In this paper we present a \textit{model-theoretic}
 termination argument of hereditary substitution that easily scales to
 systems with inductive types. Specifically, we adapt the technique of
 Normalization by Evaluation (NbE), normally defined on expressions, to
 canonical terms. We call this technique Hereditary Substitution by
 Canonical Evaluation (SbE), and much of the existing NbE machinery can be reused, or
 only requires minor modifications. In some sense, we merely point out
-and clarify a beautiful coincidence: NbE for canonical terms is essentially a
+and clarify a beautiful coincidence: SbE (NbE for canonical terms) is essentially a
 terminating model-theoretic definition of hereditary substitution.
 SbE of G{\"o}del's System T can be elegantly formalized within
 dependent type theory, just like NbE, and all of our results have been
