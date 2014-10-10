@@ -179,7 +179,7 @@
 \def\mono{\fun{mono}^\con{V}}
 \def\monoT{\all{\Delta} \typm{A} \marr \gdtypm{A}}
 
-\def\monos{\fun{mono}^\con{E}}
+\def\monos{\fun{mono}^\con{S}}
 \def\monosT{\all{\Delta} \gmenv{\Xi} \marr \gmenv{\Xi, \Delta}}
 
 \def\eval{\fun{eval}^\con{E}}
@@ -786,7 +786,7 @@ it is less ambiguous to refer to its ``substitution'' argument as a
 
 \todo[inline]{talk about the beta redexes in syntactic hsub}
 
-\begin{mydefinition}{Syntax of Environments}{senv}
+\begin{mydefinition}{Syntactic Environments}{env}
 {
 Syntactic environments $\env$ are defined exactly like semantic
 environments (\refdef{menv}, $\menv$), except they contain syntactic values
@@ -887,7 +887,7 @@ corresponcence with evaluation that is just as direct as the one that
 SbE enjoys.
 
 $$
-\nsbe : \type{A} \marr \enve \marr \dtype{A}
+\nsbe : \type{A} \marr \enve \marr \dtypv{A}
 $$
 
 
