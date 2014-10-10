@@ -164,11 +164,11 @@
 \def\reflecte{\fun{reflect}^\con{E}}
 \def\reflecteT{\env \marr \menv}
 
-\def\reflectg{\fun{reflect}^\con{G}}
-\def\reflectgT{\all{\Gamma} \gmenv{\Gamma}}
+\def\reflectc{\fun{reflect}^\con{C}}
+\def\reflectcT{\all{\Gamma} \gmenv{\Gamma}}
 
-\def\midenv{\reflectg}
-\def\midenvT{\reflectgT}
+\def\midenv{\reflectc}
+\def\midenvT{\reflectcT}
 
 \def\idenv{\fun{idEnv}}
 
@@ -179,13 +179,13 @@
 \def\monos{\fun{mono}^\con{E}}
 \def\monosT{\all{\Delta} \gmenv{\Xi} \marr \gmenv{(\Xi, \Delta)}}
 
-\def\eval{\fun{eval}}
+\def\eval{\fun{eval}^\con{E}}
 \def\evalT{\type{A} \marr \menv \marr \dtypm{A}}
 
-\def\cevalv{\fun{ceval}}
+\def\cevalv{\fun{eval}^\con{V}}
 \def\cevalvT{\typv{A} \marr \menv \marr \dtypm{A}}
 
-\def\cevaln{\fun{ceval}^\con{N}}
+\def\cevaln{\fun{eval}^\con{N}}
 \def\cevalnT{\typn{A} \marr \menv \marr \dtypm{A}}
 
 \def\lookup{\fun{lookup}}
@@ -334,7 +334,7 @@ Kripke model value, and then reifying the result to a syntactic value
     \xymatrix{
           {\forall (e : A)} 
           \ar[dr]_{\fun{norm}}
-          \ar[r]^{\fun{eval}}
+          \ar[r]^{\eval}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
 \\      & \exists (v : A) }
@@ -377,7 +377,7 @@ Kripke model value, and then reifying back to a syntactic value.
     \xymatrix{
           \forall{\ascribe{v}{A}, \sigma}
           \ar[dr]_{\fun{hsub}}
-          \ar[r]^{\fun{ceval}}
+          \ar[r]^{\cevalv}
         & {\el{A}}
           \ar[d]^{\large{\fun{reify}}}
 \\      & \exists{\ascribe{v'}{A}} }
