@@ -126,6 +126,7 @@
 \newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
 
 \newcommand{\reffig}[1]{Figure \ref{fig:#1}}
+\newcommand{\refapp}[1]{Appendix \ref{sec:#1}}
 \newcommand{\refsec}[1]{Section \ref{sec:#1}}
 \newcommand{\refparte}[1]{Part$_E$ \ref{parte:#1}}
 \newcommand{\refparti}[1]{Part$_I$ \ref{parti:#1}}
@@ -171,9 +172,6 @@
 
 \def\reflectc{\fun{reflect}^\con{C}}
 \def\reflectcT{\all{\Gamma} \gmenv{\Gamma}}
-
-\def\midenv{\reflectc}
-\def\midenvT{\reflectcT}
 
 \def\idenv{\fun{idEnv}}
 
@@ -721,11 +719,11 @@ normalization?
 \nbe : \nbeT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\eval$ & $\evalT$ \\
+\refapp{eval} & \refthm{eval} & $\eval$ & $\evalT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
+\refapp{reify} & \refthm{reify} & $\reify$ & $\reifyT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\midenv$ & $\midenvT$ \\
+\refapp{reflectc} & \refthm{reflectc} & $\reflectc$ & $\reflectcT$ \\
 }
 
 The high-level plan of NbE is to define
@@ -736,14 +734,14 @@ while evaluation takes a syntactic expression \textit{and} a semantic
 environment to a semantic value. So what should we use for the semantic
 environment argument when defining normalization in terms of
 evaluation? We can reflect any context ($\Gamma$) as a semantic
-environment ($\midenv$). Specifically, a context is reflected as the
+environment ($\reflectc$). Specifically, a context is reflected as the
 identity semantic environment, mapping syntactic variables to
 themselves, but as semantic values.
 
 \begin{myproof}{}
 \begin{align*}
 x    &: \type{A} && \byass\\
-\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\midenv~\Gamma}\\
+\sigma &: \cmenv{\Gamma}{\Gamma} && \by{\reflectc~\Gamma}\\
 x'  &: \typm{A} && \by{\eval~x~\sigma}\\
 x'' &: \typv{A} && \by{\reify~x'}
 \end{align*}
@@ -791,11 +789,11 @@ instead of semantic values.
 \sbe : \sbeT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\cevalvT$ \\
+\refsec{ceval} & \refthm{cevalv} & $\cevalv$ & $\cevalvT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
+\refapp{reify} & \refthm{reify} & $\reify$ & $\reifyT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reflecte$ & $\reflecteT$ \\
+\refsec{reflecte} & \refthm{reflecte} & $\reflecte$ & $\reflecteT$ \\
 }
 
 \todo[inline]{ceval is not just composition bc of extra env argument}
@@ -848,7 +846,7 @@ A consequence of this is that normalization must invent a semantic
 environment to pass to evaluation, because it does not already
 have a syntactic environment argument to reflect. Because normalization does not
 change the value of free variables, the identity semantic environment
-($\midenv$) can be used by reflecting the context. In contrast, hereditary substitution already has
+($\reflectc$) can be used by reflecting the context. In contrast, hereditary substitution already has
 a syntactic environment (that is used to look up the values of any free
 variables), so canonical evaluation takes the 
 reflection ($\reflecte$) of the syntactic environment as its semantic
@@ -888,7 +886,7 @@ that begins with the elimination of a variable.
 
 Expressions and values are quite different, as the former
 may contain $\beta$-redexes. However, if you compare
-canonical evaluation (\refthm{cevalv} \& \refthm{cevaln}) with
+canonical evaluation (\refthm{cevalv} \& \reflem{cevaln}) with
 evaluation (\refthm{eval}) you will notice that they are identical,
 modulo the former being defined over a split grammar. Why is that?
 Even though an expression may already be a syntactic $\beta$-redex, a
@@ -909,9 +907,9 @@ syntactic environment.
 \cevalv : \cevalvT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\cevaln$ & $\cevalnT$ \\
+\refsec{ceval} & \reflem{cevaln} & $\cevaln$ & $\cevalnT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\monos$ & $\monosT$ \\
+\refapp{reflectc} & \reflem{monos} & $\monos$ & $\monosT$ \\
 }
 
 Canonical evaluation ($\cevalv$) is a type-preserving
@@ -1003,12 +1001,12 @@ a'  &: \dtypm{A} && \ih{\cevaln~a~\sigma}
 
 \end{mytheorem}
 
-\begin{mytheorem}{Canonical Evaluation of Neutrals}{cevaln}
+\begin{mylemma}{Canonical Evaluation of Neutrals}{cevaln}
 { \cevaln : \cevalnT }
 {
-\refsec{TODO} & \refthm{TODO} & $\cevalv$ & $\cevalvT$ \\
+\refsec{ceval} & \refthm{cevalv} & $\cevalv$ & $\cevalvT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\mrec$ & $\mrecT$ \\
+\refapp{eval} & \reflem{mrec} & $\mrec$ & $\mrecT$ \\
 }
 
 Canonical evaluation of neutrals ($\cevaln$) handles the canonical
@@ -1075,12 +1073,20 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 
 \end{myproof}
 
-\end{mytheorem}
+\end{mylemma}
 
 
 \section{Environment Reflection}
+\label{sec:reflecte}
 
 \todo[inline]{description and proof}
+
+\begin{mytheorem}{Environment Reflection}{reflecte}
+{ \reflecte : \reflecteT }
+{
+}
+
+\end{mytheorem}
 
 
 %% \begin{align*}
@@ -1132,6 +1138,7 @@ model (rather than HA or CCC).
 \appendix
 
 \section{Evaluation}
+\label{sec:eval}
 
 \begin{mytheorem}{Evaluation}{eval}
 { \eval : \evalT }
@@ -1156,9 +1163,9 @@ of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
 \mrec : \mrecT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
+\refapp{reify} & \refthm{reify} & $\reify$ & $\reifyT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\reflectn$ & $\reflectnT$ \\
+\refapp{reify} & \reflem{reflectn} & $\reflectn$ & $\reflectnT$ \\
 }
 
 Because the model of natural numbers is just a natural number value,
@@ -1211,6 +1218,7 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 \end{mylemma}
 
 \section{Reification}
+\label{sec:reify}
 
 Reification (\refthm{reify}) is the process of turning a model value into a theory
 model.
@@ -1220,7 +1228,7 @@ model.
 \reify : \reifyT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\reflectn$ & $\reflectnT$ \\
+\refapp{reify} & \reflem{reflectn} & $\reflectn$ & $\reflectnT$ \\
 }
 
 The model of natural numbers is the theory value, so their
@@ -1269,7 +1277,7 @@ f' &: \typv{A \arr B} && \by{\lam b'}
 \reflectn : \reflectnT
 }
 {
-\refsec{TODO} & \refthm{TODO} & $\reify$ & $\reifyT$ \\
+\refapp{reify} & \refthm{reify} & $\reify$ & $\reifyT$ \\
 }
 
 Note that we can only reflect neutrals. Values must instead be
@@ -1308,19 +1316,20 @@ b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 
 
 \section{Context Reflection}
+\label{sec:reflectc}
 
-\begin{mytheorem}{Context Reflection}{midenv}
-{ \midenv : \midenvT }
+\begin{mytheorem}{Context Reflection}{reflectc}
+{ \reflectc : \reflectcT }
 {
-\refsec{TODO} & \refthm{TODO} & $\reflectn$ & $\reflectnT$ \\
+\refapp{reify} & \reflem{reflectn} & $\reflectn$ & $\reflectnT$ \\
 \hline
-\refsec{TODO} & \refthm{TODO} & $\monos$ & $\monosT$ \\
+\refapp{reflectc} & \reflem{monos} & $\monos$ & $\monosT$ \\
 }
 
 The identity model environment is a mapping from each variable in a
 context, to the same variable but as a model value. Essentially, the
 proof reflects each variable of the context, but it must also appeal
-to model environment monotonicity (\reflem{mod:monos}) to weaken the
+to model environment monotonicity (\reflem{monos}) to weaken the
 previously built identity model environment.
 
 \begin{myproof}
@@ -1339,7 +1348,7 @@ u &: \cmenv{\emp}{\emp} && \bydef
 \begin{align*}
 \Gamma& && \byass\\
 A& && \byass\\
-\sigma  &: \cmenv{\Gamma}{\Gamma} && \ih{\midenv~\Gamma}\\
+\sigma  &: \cmenv{\Gamma}{\Gamma} && \ih{\reflectc~\Gamma}\\
 \sigma' &: \cmenv{\Gamma}{\Gamma, A} && \by{\monos~(\emp, A)~\sigma}\\
 x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 \sigma'' &: \cmenv{\Gamma, A}{\Gamma, A} && \by{\sigma', x}
@@ -1353,7 +1362,7 @@ x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 \begin{mylemma}{Environment Monotonicity}{monos}
 { \monos : \monosT }
 {
-\refsec{TODO} & \refthm{TODO} & $\mono$ & $\monoT$ \\
+\refapp{reflectc} & \reflem{mono} & $\mono$ & $\monoT$ \\
 }
 
 As mentioned above, we need environment model monotonicity
