@@ -167,7 +167,7 @@
 \def\reflectnT{\typn{A} \marr \typm{A}}
 \def\reflect{\reflectn}
 
-\def\reflecte{\fun{reflect}^\con{E}}
+\def\reflecte{\fun{reflect}^\con{S}}
 \def\reflecteT{\env \marr \menv}
 
 \def\reflectc{\fun{reflect}^\con{C}}
@@ -307,7 +307,7 @@ hereditary substitution immediately evaluates the redex so that the
 result remains a canonical term. Hereditary substitution is
 traditionally used to give a large-step semantics to a
 $\lambda$-calculus. It is used in the function application case when
-defining the normalization function, taking expressions to canonical terms.
+defining the normalization function, which takes expressions to canonical terms.
 
 Thus far, the termination argument for hereditary substitution has
 primarily been studied \textit{proof-theoretically}. However, formalizations of
@@ -316,13 +316,14 @@ trouble scaling to systems with inductive types, such as
 G{\"o}del's System T.
 
 In this paper we present a \textit{model-theoretic}
-termination argument of hereditary substitution that easily scales to
+termination argument of hereditary substitution that scales to
 systems with inductive types. Specifically, we adapt the technique of
 Normalization by Evaluation (NbE), normally defined on expressions, to
 canonical terms. We call this technique Hereditary Substitution by
-Canonical Evaluation (SbE), and much of the existing NbE machinery can be reused, or
+Canonical Evaluation (SbE). Much of the existing NbE machinery can be reused, or
 only requires minor modifications. In some sense, we merely point out
-and clarify a beautiful coincidence: SbE (NbE for canonical terms) is essentially a
+and clarify a beautiful coincidence: Canonical evaluation (evaluation
+from NbE, but defined on canonical terms) is a
 terminating model-theoretic definition of hereditary substitution.
 SbE of G{\"o}del's System T can be elegantly formalized within
 dependent type theory, just like NbE, and all of our results have been
@@ -743,24 +744,30 @@ themselves, but as semantic values.
 
 \begin{myproof}{}
 \begin{align*}
-x    &: \type{A} && \byass\\
+e    &: \type{A} && \byass\\
 \sigma &: \cmenv{\Gamma}{\Gamma} && \by{\reflectc~\Gamma}\\
-x'  &: \typm{A} && \by{\eval~x~\sigma}\\
-x'' &: \typv{A} && \by{\reify~x'}
+v  &: \typm{A} && \by{\eval~e~\sigma}\\
+v' &: \typv{A} && \by{\reify~v}
 \end{align*}
+
 \end{myproof}
 
-\end{mytheorem}
+The diagram of NbE in the introduction left out some details, as it
+was only meant to convey intuition for how NbE works. However, we can
+fill in the details to arrive at the alternative pictorial proof
+below.
 
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\typv{A} \cross \env} 
-%%           \ar[dr]_{\fun{sbe}}
-%%           \ar[r]^{\fun{ceval}}
-%%         & {\dtypm{A}}
-%%           \ar[d]^{\large{\fun{reify}}}
-%% \\      & \dtypv{A} }
-%% \end{displaymath}
+\begin{displaymath}
+    \xymatrix{
+          {(e : \type{A})} 
+          \ar[dr]_{\nbe~e}
+          \ar[r(0.77)]^*++{\labelstyle ~~~~~~~~~~~~~~ \eval~e~(\reflectc~\Gamma)}
+        & {~~~~~~~(v : \dtypm{A})}
+          \ar[d]^{\large{\reify~v}}
+\\      & \dtypv{A} }
+\end{displaymath}
+
+\end{mytheorem}
 
 \subsection{Hereditary Substitution by Canonical Evaluation}
 
@@ -821,13 +828,26 @@ as the semantic environment argument of canonical evaluation.
 
 \begin{myproof}{}
 \begin{align*}
-a    &: \typv{A} && \byass\\
+v    &: \typv{A} && \byass\\
 \sigma   &: \env && \byass\\
 \sigma'  &: \menv && \by{\reflecte~\sigma}\\
-a'   &: \dtypm{A} && \by{\cevalv~a~\sigma'}\\
-a''  &: \dtypv{A} && \by{\reify~A~a'}
+v'   &: \dtypm{A} && \by{\cevalv~v~\sigma'}\\
+v''  &: \dtypv{A} && \by{\reify~A~v'}
 \end{align*}
 \end{myproof}
+
+Once again, we can add detail to the commutative diagram of SbE in the
+introduction to arrive at the alternative pictorial proof below.
+
+\begin{displaymath}
+    \xymatrix{
+          {(v : \typv{A}) ~ (\sigma : \env)} 
+          \ar[dr]_{\sbe~v~\sigma}
+          \ar[r(0.80)]^*++{\labelstyle ~~~~~~~~~~~~~~~~~~~~ \cevalv~v~(\reflecte~\sigma)}
+        & {~~~~~~~(v' : \dtypm{A})}
+          \ar[d]^{\large{\reify~v'}}
+\\      & \dtypv{A} }
+\end{displaymath}
 
 \end{mytheorem}
 
