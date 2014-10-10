@@ -137,7 +137,7 @@
 \def\app{\cdot}
 \def\lam{\lambda}
 \def\nat{\mathbb{N}}
-\def\emp{\epsilon}
+\def\emp{\emptyset}
 
 \def\here{\con{here}}
 \def\there{\con{there}}
@@ -157,12 +157,21 @@
 \def\reify{\fun{reify}}
 \def\reifyT{\typm{A} \marr \typv{A}}
 
-\def\reflectn{\fun{reflect}}
+\def\reflectn{\fun{reflect}^\con{N}}
 \def\reflectnT{\typn{A} \marr \typm{A}}
 \def\reflect{\reflectn}
 
-\def\reflecte{\fun{reflects}}
+\def\reflecte{\fun{reflect}^\con{E}}
 \def\reflecteT{\env \marr \menv}
+
+\def\reflectg{\fun{reflect}^\con{G}}
+\def\reflectgT{\all{\Gamma} \gmenv{\Gamma}}
+
+\def\midenv{\reflectg}
+\def\midenvT{\reflectgT}
+
+\def\idenv{\fun{idEnv}}
+
 
 \def\mono{\fun{mono}}
 \def\monoT{\all{\Delta} \typm{A} \marr \gdtypm{A}}
@@ -191,10 +200,6 @@
 \def\nsbe{\fun{nsbe}}
 
 \def\nbs{\fun{nbs}}
-
-\def\idenv{\fun{idEnv}}
-\def\midenv{\el{\fun{idEnv}}}
-\def\midenvT{\all{\Gamma} \gmenv{\Gamma}}
 
 \def\bydef{(\textit{definition})}
 \def\byass{(\textit{assumption})}
@@ -401,11 +406,11 @@ by lexicographic induction on terms and types, but this approach does
 not scale to $\lambda$-calculi with inductive types.
 
 The syntactic approach to hereditary substitution
-demands less from the metalanguage than from a model-theoretic
+demands less from the metalanguage than a semantic
 approach (i.e. the metalanguage
 function space is not needed to construct a model). A disadvantage is
 that exposing the lexicographic termination argument requires changing
-the structure of values, e.g. requiring values to be in spine
+the structure of values, i.e. requiring values to be in spine
 form.
 
 \subsection{Outline}
@@ -528,11 +533,19 @@ and SbE (which provably terminate, unlike the naive definitions).
 Finally, we discuss the similarities and differences between NbE and
 SbE.
 Henceforth, the development will proceed in a top-down manner.
-Each statement of a theorem immediately lists the lemmas it depends on
-(in the subsequent proof), as well as
-the section where the proof of each lemma can be found. Pre-existing
-proofs that we reuse from the NbE literature can be found in the
-appendices, while novel proofs appear in the body of the paper.
+Each theorem comes in four parts:
+
+\begin{enumerate}
+\item{The statement of the theorem.}
+\item{A table of lemmas that the theorem depends on in its proof, and
+  references to where proofs of the lemmas can be found.}
+\item{A high-level discussion of the theorem and its proof.}
+\item{The low-level details of the proof, sometimes interspersed with
+  high-level explanations of how it works.}
+\end{enumerate}
+
+Pre-existing proofs that we reuse from the NbE literature can be found
+in the appendices, while novel proofs appear in the body of the paper.
 
 \subsection{Termination Issues with Naive Definitions}
 
@@ -597,19 +610,21 @@ substitution is function application. In NbE, normalization is no
 longer the ``meaty'' definition given by case analyzes over all
 possible expressions. Instead, evaluation is the ``meaty'' definition
 that case analyzes all expressions. Evaluation takes an expression
-to a \textit{model} value instead of a \textit{syntactic} value.
+to a \textit{semantic} value (a value in the model) instead of a
+\textit{syntactic} value.
 Thus, normalization can defined more simply as the composition of
-evaluation to a model value, and reification back to a syntactic value.
+evaluation to a semantic value, and reification back to a syntactic value.
 
 So how can we define the model in a way that makes termination of the
 application case of evaluation no longer problematic? How about the
 Kripke model below?
 
-\begin{mydefinition}{Model of Values}{mval}
+\begin{mydefinition}{Semantic Values}{mval}
 {
 The model of values $\typm{A}$ denotes a set (a type in the
 metalanguage), and it is defined inductively on the structure
-of (object language) types ($A$).
+of (object language) types ($A$). We refer to any member of the model
+of values as a ``semantic value''.
 }
 
 \begin{mycase}[Natural numbers]
@@ -626,9 +641,9 @@ $$
 $$
 
 The model of functions is a function in the metalanguage.
-The model function takes a weakened model value (whose type is
+The semantic function takes a weakened semantic value (whose type is
 the domain of the function) as an argument, and produces a
-weakened element of the model (whose type is the codomain of the
+weakened semantic value (whose type is the codomain of the
 function). Both the input and output values of the model function are
 weakened by some arbitrary context $\Delta$, which can be empty.
 \end{mycase}
@@ -637,29 +652,27 @@ weakened by some arbitrary context $\Delta$, which can be empty.
 
 So how does this model help us to define the application case of
 evaluation? Well, the result of evaluation (rather than
-normalization) is a model value (rather than a syntactic value).
-Thus, evaluating the function produces a model
-function (a function in the metalanguage), which we can apply to the model value produced by evaluating
+normalization) is a semantic value (rather than a syntactic value).
+Thus, evaluating the function produces a semantic
+function (a function in the metalanguage), which we can apply to the semantic value produced by evaluating
 the argument (in this case the weakening $\Delta$ is merely the empty
 context). Hence, we can define the application case of evaluation in
 an structurally terminating way since it only needs to appeal to the
 two available inductive hypotheses.
 
-Given that evaluation must map syntactic expressions to model values,
+Given that evaluation must map syntactic expressions to semantic values,
 what should it do when it encounters a variable? We can make
 evaluation take an additional argument, called the
-``model environment'', mapping variables to model values. More
-specifically, the model environment maps all variables in
-some initial context $\Gamma$ to model values in some terminal context
+``semantic environment'', mapping variables to model values. More
+specifically, the semantic environment maps all variables in
+some initial context $\Gamma$ to semantic values in some terminal context
 $\Delta$.
 
-\todo[inline]{Should we explain extending the env when evaluating the
-  lambda case?}
-
-\begin{mydefinition}{Model of Environments}{menv}
+\begin{mydefinition}{Semantic Environments}{menv}
 {
 The model of environments $\menv$ is defined inductively on the structure
-of the first context argument ($\Gamma$).
+of the second argument ($\Gamma$). We refer to any member of the model
+of environments as a ``semantic environment''.
 }
 
 \begin{mycase}[Empty context]
@@ -676,8 +689,8 @@ $$
 
 The environment model of a context extension consists of two parts,
 given as a pair type. The first part
-is the environment model of the context being extended ($\Gamma$). The second part
-is a model value in the terminal context ($\Delta$),
+is a semantic environment for the context being extended ($\Gamma$). The second part
+is a semantic value in the terminal context ($\Delta$),
 whose type is the type of the context extension ($A$).
 
 \end{mycase}
@@ -710,14 +723,15 @@ normalization?
 
 The high-level plan of NbE is to define
 normalization as the composition of evaluation ($\eval$) of an expression to a
-model value, and reification ($\reify$) back to a syntactic value.
-Normalization takes a syntactic expression to a model value,
-while evaluation takes a syntactic expression \textit{and} a model
-environment to a model value. So what should we use for the model
+semantic value, and reification ($\reify$) back to a syntactic value.
+Normalization takes a syntactic expression to a semantic value,
+while evaluation takes a syntactic expression \textit{and} a semantic
+environment to a semantic value. So what should we use for the semantic
 environment argument when defining normalization in terms of
-evaluation? We can create an identity model environment ($\midenv$)
-for any context ($\Gamma$). The identity model environment maps
-syntactic variables in $\Gamma$ to model values of the same variables in $\Gamma$.
+evaluation? We can reflect any context ($\Gamma$) as a semantic
+environment ($\midenv$). Specifically, a context is reflected as the
+identity semantic environment, mapping syntactic variables to
+themselves, but as semantic values.
 
 \begin{myproof}{}
 \begin{align*}
@@ -747,12 +761,19 @@ normalization? First, we are substituting into a \textit{value} rather
 than normalizing an \textit{expression}. Second, hereditary
 substitution also takes a \textit{syntactic} environment, a mapping of
 variables to syntactic values, as an additional argument.
+\footnote{
+What we call a
+``syntactic environment'' is normally called a ``substitution''.
+Because we refer so much to the operation of hereditary substitution,
+it is less ambiguous to refer to its ``substitution'' argument as a
+``syntactic environment''.
+}
 
 \begin{mydefinition}{Syntax of Environments}{senv}
 {
-The syntax of environments $\env$ is defined exactly like the model of
-environments (\refdef{menv}, $\menv$), except it contains syntactic values
-instead of model values.
+Syntactic environments $\env$ are defined exactly like semantic
+environments (\refdef{menv}, $\menv$), except they contain syntactic values
+instead of semantic values.
 }
 \end{mydefinition}
 
