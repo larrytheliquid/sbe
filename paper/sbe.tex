@@ -92,35 +92,6 @@
 }
 { \end{mylemma'} }
 
-\newtheorem{subdefin}{Case}
-%% \numberwithin{subdefin}{defin}
-
-%% \theoremstyle{definition}
-%% \theoremstyle{plain}
-
-%% \newtheorem{theorem}{Theorem}
-\newtheorem{subtheorem}{Theorem}
-%% \numberwithin{subtheorem}{theorem}
-\newtheorem{sublemma}{Lemma}
-%% \numberwithin{sublemma}{theorem}
-%% \newtheorem{corollary}{Corollary}
-%% \numberwithin{corollary}{theorem}
-
-%% \newtheorem{case}{Case}
-%% \numberwithin{case}{theorem}
-
-\newtheorem{slcase}{Case}
-%% \numberwithin{slcase}{sublemma}
-
-\newtheorem{scase}{Case}
-%% \numberwithin{scase}{subtheorem}
-
-%% \newtheorem{lemma}{Lemma}
-
-\newtheorem{lcase}{Case}
-%% \numberwithin{lcase}{lemma}
-
-
 \newcommand{\refdef}[1]{Definition \ref{def:#1}}
 \newcommand{\refthm}[1]{Theorem \ref{thm:#1}}
 \newcommand{\reflem}[1]{Lemma \ref{lem:#1}}
@@ -279,11 +250,6 @@
 \newcommand{\cenv}[2]{#2 \turn{V} #1}
 
 
-%% \newcommand{\ren}[1]{\Gamma \le #1}
-%% \def\dren{\ren{\Delta}}
-%% \newcommand{\env}[1]{\Gamma \sqsubseteq #1}
-%% \def\denv{\env{\Delta}}
-
 \begin{document}
 
 \frontmatter
@@ -341,7 +307,7 @@ technique for defining the semantics of a $\lambda$-calculus. For
 example, normalization for a total $\lambda$-calculus with inductive
 types (such as G{\"o}del's System T) can be defined by first
 evaluating a syntactic expression (possibly containing $\beta$-redexes) to a
-Kripke model value, and then reifying the result to a syntactic value
+semantic value of a Kripke model, and then reifying the result to a syntactic value
 (not containing any $\beta$-redexes).
 
 \begin{displaymath}
@@ -784,8 +750,6 @@ it is less ambiguous to refer to its ``substitution'' argument as a
 ``syntactic environment''.
 }
 
-\todo[inline]{talk about the beta redexes in syntactic hsub}
-
 \begin{mydefinition}{Syntactic Environments}{env}
 {
 Syntactic environments $\env$ are defined exactly like semantic
@@ -805,8 +769,6 @@ instead of semantic values.
 \hline
 \refsec{reflecte} & \refthm{reflecte} & $\reflecte$ & $\reflecteT$ \\
 }
-
-\todo[inline]{ceval is not just composition bc of extra env argument}
 
 Above are the theorems we need for SbE. In particular, notice that we
 get to reuse $\reify$ from NbE.
@@ -1113,44 +1075,26 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 \end{mytheorem}
 
 
-%% \begin{align*}
-%% &\typm{A \arr B}& &\dfn \forall \Delta.~ \dren \marr \dtypm{A} \marr \dtypm{B} \\
-%% &\typm{A}& &\dfn \typv{A}
-%% \end{align*}
-
-
-
-%% \begin{displaymath}
-%%     \xymatrix{
-%%           {\forall (v : \typv{A}) (\sigma : \denv)} \ar[dr] 
-%%             \ar[r]
-%%         & {\dtypm{A}} \ar[d]
-%% \\      & {\exists (v' : \dtypv{A}). ~ [ \sigma ] v = v'} }
-%% \end{displaymath}
-
 \section{Related Work}
 \label{sec:related}
 
 Our termination proof is a novel model-theoretic result, but it
 does not solve the proof-theoretic version of the same problem.
-Nevertheless, we view our solution as somewhere in between a largely
-model theoretic, and proof theoretic semantics, as it is a syntactic
-model (rather than HA or CCC).
 
 \todo[inline]{formal version of Kripke model via renaming}
-\todo[inline]{extension polymorphic lists}
+\todo[inline]{extension to polymorphic lists, sums, and continuations}
 \todo[inline]{correctness wrt contextual equiv on exprs}
 \todo[inline]{Future work: state (via worlds), exceptions (via monad),
   dependent types, continuations}
 \todo[inline]{reference morrison nbe formalization}
 
-%% \acks
+\section*{\acksname}
 
-%% We would like to thank Andrew Cave for helping us understand subtle
-%% issues related to context weakening when formalizing termination proofs. We would also
-%% like to thank Darin Morrison for originally introducing us to the connection
-%% between NbE and a Kripke model for intuitionistic logic.
-%% This work was supported by NSF/CISE/CCF grant \#1320934.
+We would like to thank Andrew Cave for helping us understand subtle
+issues related to context weakening when formalizing termination proofs. We would also
+like to thank Darin Morrison for originally introducing us to the connection
+between NbE and a Kripke model for intuitionistic logic.
+This work was supported by NSF/CISE/CCF grant \#1320934.
 
 
 
