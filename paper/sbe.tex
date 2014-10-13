@@ -498,6 +498,107 @@ $$
 }
 $$
 
+\begin{figure}[t!]
+\caption{
+BNF grammar for \textit{types} and \textit{contexts}. 
+Expressions, values, and neutrals
+are not represented by a BNF grammar. Instead, they are defined by
+an intrinsically typed representation, rather than a BNF grammar and
+an extrinsic typing relation over said grammar.
+}
+\begin{align*}
+A, B, C &::= \nat ~ | ~ A \arr B \\
+\Gamma, \Delta, \Xi, \Phi &::= \emp ~ | ~ \Gamma , A
+\end{align*}
+\label{fig:gram}
+\end{figure}
+
+\begin{figure}[t!]
+\caption{
+Intrinsic typing of De Bruijn \textit{variables}.
+The intrinsically typed variables act as proofs that the type
+parameter of the judgment appears in the context parameter of the
+judgement.
+}
+$$
+\infer
+  [\con{here}]
+  {\ctypr{A}{A}}
+{
+}
+\qquad
+\infer
+  [\con{there} ~ i]
+  {\ctypr{B}{A}}
+{
+  (i : \typr{A})
+}
+$$
+\label{fig:typr}
+\end{figure}
+
+\begin{figure}[t!]
+\caption{
+Intrinsic typing of \textit{expressions} for G{\"o}del's System T. The
+intrinsically typed expressions act as proofs that the expression
+represented by the proof term is well typed.
+}
+$$
+\infer
+  [\con{zero}]
+  {\type{\nat}}
+{}
+\qquad
+\infer
+  [\con{suc} ~ n]
+  {\type{\nat}}
+{
+  (n : \type{\nat})
+}
+$$
+
+$$
+\infer
+  [\lam b]
+  {\type{A \arr B}}
+{
+  (b : \ctype{A}{B})
+}
+\qquad
+\infer
+  [\fun{var} ~ i]
+  {\type{A}}
+{
+  (i : \typr{A})
+}
+$$
+
+$$
+\infer
+  [f \app a]
+  {\type{B}}
+{
+  (f : \type{A \arr B})
+  &
+  (a : \type{A})
+}
+$$
+
+$$
+\infer
+  [\fun{rec} ~ n ~ c_z ~ c_s]
+  {\type{C}}
+{
+  (n : \type{\nat})
+  &
+  (c_z : \type{C})
+  &
+  (c_s : \type{C \arr C})
+}
+$$
+\label{fig:type}
+\end{figure}
+
 \section{Overview of NbE and SbE}
 \label{sec:overview}
 
@@ -577,6 +678,88 @@ This relation is not obviously terminating for the same reason as
 normalization. We have inductive hypotheses for substituting into the
 function and substituting into the argument, but there is no inductive hypothesis for
 substituting into the $\lambda$-body.
+
+\begin{figure}[t!]
+\caption{
+Intrinsic typing of \textit{values} (canonical terms) for G{\"o}del's System T.
+The intrinsically typed values act as proofs that the value
+represented by the proof term is well typed. The grammar of values
+also includes all neutral terms.
+}
+$$
+\infer
+  [\con{zero}]
+  {\typv{\nat}}
+{}
+\qquad
+\infer
+  [\con{suc} ~ n]
+  {\typv{\nat}}
+{
+  (n : \typv{\nat})
+}
+$$
+
+$$
+\infer
+  [\lam b]
+  {\typv{A \arr B}}
+{
+  (b : \ctypv{A}{B})
+}
+\qquad
+\infer
+  [\fun{neut} ~ a]
+  {\typv{A}}
+{
+  (a : \typn{A})
+}
+$$
+\label{fig:typv}
+\end{figure}
+
+\begin{figure}[t!]
+\caption{
+Intrinsic typing of \textit{neutrals} (variables and elimination rules) 
+for G{\"o}del's System T.
+The intrinsically typed neutrals act as proofs that the neutral
+represented by the proof term is well typed.
+}
+
+$$
+\infer
+  [\fun{var} ~ i]
+  {\typn{A}}
+{
+  (i : \typr{A})
+}
+$$
+
+$$
+\infer
+  [f \app a]
+  {\typn{B}}
+{
+  (f : \typn{A \arr B})
+  &
+  (a : \typv{A})
+}
+$$
+
+$$
+\infer
+  [\fun{rec} ~ n ~ c_z ~ c_s]
+  {\typn{C}}
+{
+  (n : \typn{\nat})
+  &
+  (c_z : \typv{C})
+  &
+  (c_s : \typv{C \arr C})
+}
+$$
+\label{fig:typn}
+\end{figure}
 
 \subsection{The Model}
 
@@ -1088,7 +1271,7 @@ does not solve the proof-theoretic version of the same problem.
   dependent types, continuations}
 \todo[inline]{reference morrison nbe formalization}
 
-\section*{\acksname}
+\section*{\ackname}
 
 We would like to thank Andrew Cave for helping us understand subtle
 issues related to context weakening when formalizing termination proofs. We would also
@@ -1460,191 +1643,5 @@ $$
 \end{myproof}
 
 \end{lemma}
-
-
-\clearpage
-
-\begin{figure}
-\caption{
-BNF grammar for \textit{types} and \textit{contexts}. 
-Expressions, values, and neutrals
-are not represented by a BNF grammar. Instead, they are defined by
-an intrinsically typed representation, rather than a BNF grammar and
-an extrinsic typing relation over said grammar.
-}
-\begin{align*}
-A, B, C &::= \nat ~ | ~ A \arr B \\
-\Gamma, \Delta, \Xi, \Phi &::= \emp ~ | ~ \Gamma , A
-\end{align*}
-\label{fig:gram}
-\end{figure}
-
-\begin{figure}
-\caption{
-Intrinsic typing of De Bruijn \textit{variables}.
-The intrinsically typed variables act as proofs that the type
-parameter of the judgment appears in the context parameter of the
-judgement.
-}
-$$
-\infer
-  [\con{here}]
-  {\ctypr{A}{A}}
-{
-}
-\qquad
-\infer
-  [\con{there} ~ i]
-  {\ctypr{B}{A}}
-{
-  (i : \typr{A})
-}
-$$
-\label{fig:typr}
-\end{figure}
-
-\begin{figure}
-\caption{
-Intrinsic typing of \textit{expressions} for G{\"o}del's System T. The
-intrinsically typed expressions act as proofs that the expression
-represented by the proof term is well typed.
-}
-$$
-\infer
-  [\con{zero}]
-  {\type{\nat}}
-{}
-\qquad
-\infer
-  [\con{suc} ~ n]
-  {\type{\nat}}
-{
-  (n : \type{\nat})
-}
-$$
-
-$$
-\infer
-  [\lam b]
-  {\type{A \arr B}}
-{
-  (b : \ctype{A}{B})
-}
-\qquad
-\infer
-  [\fun{var} ~ i]
-  {\type{A}}
-{
-  (i : \typr{A})
-}
-$$
-
-$$
-\infer
-  [f \app a]
-  {\type{B}}
-{
-  (f : \type{A \arr B})
-  &
-  (a : \type{A})
-}
-$$
-
-$$
-\infer
-  [\fun{rec} ~ n ~ c_z ~ c_s]
-  {\type{C}}
-{
-  (n : \type{\nat})
-  &
-  (c_z : \type{C})
-  &
-  (c_s : \type{C \arr C})
-}
-$$
-\label{fig:type}
-\end{figure}
-
-\begin{figure}
-\caption{
-Intrinsic typing of \textit{values} (canonical terms) for G{\"o}del's System T.
-The intrinsically typed values act as proofs that the value
-represented by the proof term is well typed. The grammar of values
-also includes all neutral terms.
-}
-$$
-\infer
-  [\con{zero}]
-  {\typv{\nat}}
-{}
-\qquad
-\infer
-  [\con{suc} ~ n]
-  {\typv{\nat}}
-{
-  (n : \typv{\nat})
-}
-$$
-
-$$
-\infer
-  [\lam b]
-  {\typv{A \arr B}}
-{
-  (b : \ctypv{A}{B})
-}
-\qquad
-\infer
-  [\fun{neut} ~ a]
-  {\typv{A}}
-{
-  (a : \typn{A})
-}
-$$
-\label{fig:typv}
-\end{figure}
-
-\begin{figure}
-\caption{
-Intrinsic typing of \textit{neutrals} (variables and elimination rules) 
-for G{\"o}del's System T.
-The intrinsically typed neutrals act as proofs that the neutral
-represented by the proof term is well typed.
-}
-
-$$
-\infer
-  [\fun{var} ~ i]
-  {\typn{A}}
-{
-  (i : \typr{A})
-}
-$$
-
-$$
-\infer
-  [f \app a]
-  {\typn{B}}
-{
-  (f : \typn{A \arr B})
-  &
-  (a : \typv{A})
-}
-$$
-
-$$
-\infer
-  [\fun{rec} ~ n ~ c_z ~ c_s]
-  {\typn{C}}
-{
-  (n : \typn{\nat})
-  &
-  (c_z : \typv{C})
-  &
-  (c_s : \typv{C \arr C})
-}
-$$
-\label{fig:typn}
-\end{figure}
 
 \end{document}
