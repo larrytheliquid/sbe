@@ -1468,8 +1468,8 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 \section{Reification}
 \label{sec:reify}
 
-Reification (\refthm{reify}) is the process of turning a model value into a theory
-model.
+Reification (\refthm{reify}) is the process of turning a semantic
+value into a syntactic model.
 
 \begin{mytheorem}{Reification}{reify}
 {
@@ -1479,19 +1479,10 @@ model.
 \refapp{reify} & \reflem{reflectn} & $\reflectn$ & $\reflectnT$ \\
 }
 
-The model of natural numbers is the theory value, so their
-reification is immediate. The interesting case is the reification of
-functions. We need to somehow go from a higher-order model function to
-a first-order theory value of function type. The model of functions
-was specifically engineered to make it possible to weaken the domain
-and codomain by an arbitrary $\Delta$ for exactly this case! A
-function is reified by weakening by the type expected in the domain,
-passing in a free variable of De Bruijn zero, then constructing a
-lambda value from the reification of the result. However, the domain
-of the model function a model value, so we must translate the variable
-to an element of the model. Luckily, it is possible to
-reflect (\reflem{reflect}) any neutral term (including variables),
-so we must prove reflection mutually with reification.
+Reification maps any semantic value ($\typm{A}$) to a syntactic 
+value ($\typv{A}$). It is mutually defined with the reflection of
+syntactic neutrals to semantic values ($\reflectn$), making it
+possible to reify functions.
 
 \begin{myproof}
 {
@@ -1499,6 +1490,10 @@ By induction on the type $A$.
 }
 
 \begin{mycase}[Natural numbers]
+{
+Semantic natural numbers values are also syntactic values,
+so their reification is immediate.
+}
 \begin{align*}
 n  &: \typm{\nat} && \byass\\
 n  &: \typv{\nat} && \bydef
@@ -1506,6 +1501,23 @@ n  &: \typv{\nat} && \bydef
 \end{mycase}
 
 \begin{mycase}[Functions]
+{
+When reifying a function (of type $A \arr B$) we get a metalanguage
+function as a parameter. The function parameters are a context to weaken by
+and a weakened semantic value (of type $A$).
+
+We would like to call the function, but we cannot a produce a semantic
+value of type $\typm{A}$ out of thin air. What if we make the
+weakening parameter of the metalanguage function be the singleton
+context $\emp, A$? Now we can call the function by making the (now
+weakened) parameter $\gatypm{A}$ be a variable! However, the variable
+must be a semantic value. Luckily, the mutually defined lemma
+$\reflectn$ can translate any syntactic neutral term (including
+variables) to a semantic value.
+
+Finally, we reify the result of the metalanguage function and
+wrap it in a $\lambda$.
+}
 \begin{align*}
 f &: \typm{A \arr B} && \byass\\
 f &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
