@@ -377,7 +377,7 @@ definition of normalization that you get from NbE. Thus, SbE is
 amenable to formalization, allowing canonical type theory for
 $\lambda$-calculi with inductive types to be defined in dependent type
 theory. For simplicity, we use G{\"o}del's System T for our examples
-in this paper, but SbE scales to systems with paramterized inductive
+in this paper, but SbE scales to systems with parameterized inductive
 types (such as lists or trees) for the same reasons that NbE does.
 
 \subsection{Proof Theoretic Semantics}
@@ -526,7 +526,7 @@ A, B, C &::= \nat ~ | ~ A \arr B \\
 Intrinsic typing of De Bruijn \textit{variables}.
 The intrinsically typed variables act as proofs that the type
 parameter of the judgment appears in the context parameter of the
-judgement.
+judgment.
 }
 $$
 \infer
@@ -628,7 +628,7 @@ Each theorem comes in four parts:
   high-level explanations of how it works.}
 \end{enumerate}
 
-Pre-existing proofs that we reuse from the NbE literature can be found
+Preexisting proofs that we reuse from the NbE literature can be found
 in the appendices, while novel proofs appear in the body of the paper.
 
 \subsection{Termination Issues with Naive Definitions}
@@ -1053,7 +1053,7 @@ normalizes $\beta$-redexes, and simultaneously performs hereditary
 substitutions from an environment mapping variables to expressions.
 This normalization plus hereditary substitution function ($\nsbe$) would take an
 extra syntactic expression environment argument, creating a
-corresponcence with evaluation that is just as direct as the one that
+correspondence with evaluation that is just as direct as the one that
 SbE enjoys.
 
 $$
@@ -1091,7 +1091,7 @@ with values from the semantic environment.
 
 Essentially, evaluation and canonical evaluation are similar because
 they operate on variables the same way, replacing them with semantic
-values from the semantic environment. In constrast,
+values from the semantic environment. In contrast,
 normalization leaves variables unchanged, while hereditary
 substitution replaces variables with syntactic values from the
 syntactic environment. 
@@ -1940,7 +1940,7 @@ By induction on the function value $\typv{A \arr B}$.
 &\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
 \end{align*}
 
-The neutral case is a congruence, and the function case is defiend by
+The neutral case is a congruence, and the function case is defined by
 hereditary substitution of the argument into the function body.
 Specifically, the $\sbe$ is called by extending the identity syntactic
 environment $\idenv$ with the argument $a$.
