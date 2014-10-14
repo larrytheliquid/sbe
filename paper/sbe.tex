@@ -1619,6 +1619,16 @@ b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 \section{Context Reflection}
 \label{sec:reflectc}
 
+Context reflection (\refthm{reflectc}) gives a semantic meaning to a
+context by translating it to a semantic environment.
+Specifically, context reflection produces the identity
+semantic environment, mapping variables to themselves as semantic values.
+Context reflection makes use of environment monotonicity (\reflem{monos}),
+and environment monotonicity makes use of
+value monotonicity (\reflem{mono}). Both monotonicity lemmas are
+basically a version of weakening lifted from syntax to semantics, for
+environments and values respectively.
+
 \begin{mytheorem}{Context Reflection}{reflectc}
 { \reflectc : \reflectcT }
 {
@@ -1627,11 +1637,10 @@ b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 \refapp{reflectc} & \reflem{monos} & $\monos$ & $\monosT$ \\
 }
 
-The identity model environment is a mapping from each variable in a
-context, to the same variable but as a model value. Essentially, the
-proof reflects each variable of the context, but it must also appeal
-to model environment monotonicity (\reflem{monos}) to weaken the
-previously built identity model environment.
+Context reflection takes a new context ($\Gamma$), and produces a semantic
+environment ($\gmenv{\Gamma}$).
+At a high level, context reflection produces the semantic identity environment
+by reflecting each variable in the context.
 
 \begin{myproof}
 {
@@ -1639,6 +1648,9 @@ By induction on the context $\Gamma$.
 }
 
 \begin{mycase}[Empty Context]
+{
+The empty context case is trivial.
+}
 \begin{align*}
 u &: \top && \bytri\\
 u &: \cmenv{\emp}{\emp} && \bydef
@@ -1646,6 +1658,16 @@ u &: \cmenv{\emp}{\emp} && \bydef
 \end{mycase}
 
 \begin{mycase}[Context extension]
+{
+To produce a semantic identity environment for a context extension,
+we must extend the inductive hypothesis with the reflection of the
+variable representing the type ($A$) extending the context. However,
+the scope ($\Gamma,A$) of the variable includes the type of the
+context extension ($A$). Thus, the semantic environment produced by
+the inductive hypothesis must first be weakened, using environment
+monotonicity ($\monos$), before it is extended with the reflected
+variable.
+}
 \begin{align*}
 \Gamma& && \byass\\
 A& && \byass\\
@@ -1666,11 +1688,14 @@ x    &: \gatypm{A} && \by{\reflect~(\var~\here)}\\
 \refapp{reflectc} & \reflem{mono} & $\mono$ & $\monoT$ \\
 }
 
-As mentioned above, we need environment model monotonicity
-to define the $\lam$ case of \refthm{mod:eval}. Environment model
-monotonicity is essentially a mapping of a value model
-monotonicity (\reflem{mod:mono}) across all inhabitants of the
-environment model.
+Environment monotonicity takes a context ($\Delta$), and a semantic
+environment scoped under some existing context ($\Xi$), and returns a
+semantic environment scoped under the weakening of the existing
+context ($\Delta,\Xi$).
+
+Because a semantic environment is basically a tuple of semantic
+values, environment monotonicity is defined by mapping value
+monotonicity ($\mono$) across the tuple.
 
 \begin{myproof}
 {
@@ -1678,6 +1703,9 @@ By induction on the context $\Gamma$.
 }
 
 \begin{mycase}[Empty Context]
+{
+The empty context case is trivial.
+}
 \begin{align*}
 \Delta& && \byass\\
 u &: \top && \byass\\
@@ -1686,6 +1714,11 @@ u &: \cmenv{\emp}{\Xi, \Delta} && \bydef
 \end{mycase}
 
 \begin{mycase}[Context extension]
+{
+To weaken the context extension of a semantic environment, extend the
+inductive hypothesis with the weakening of the semantic value
+extending the context by using $\mono$.
+}
 \begin{align*}
 \Delta& && \byass\\
 \sigma &: \gmenv{\Xi} && \byass\\
@@ -1704,8 +1737,10 @@ x'   &: \xdtypm{A} && \by{\mono~\Delta~x}\\
 { \mono : \monoT }
 {}
 
-The value monotonicity lemma is basically a version of weakening (of
-syntactic values) lifted to semantic values.
+Value monotonicity takes a new context ($\Delta$), and a semantic
+value scoped under some existing context ($\Gamma$), and returns a
+semantic value scoped under the weakening of the existing context
+($\Gamma,\Delta$).
 
 \begin{myproof}
 {
@@ -1713,6 +1748,10 @@ By case analysis of the type $A$.
 }
 
 \begin{mycase}[Natural numbers]
+{
+Because semantic natural numbers are syntactic natural numbers, the
+natural number case can be defined via syntactic weakening.
+}
 \begin{align*}
 \Delta& && \byass\\
 n  &: \typm{\nat} && \byass\\
@@ -1723,6 +1762,16 @@ n' &: \gdtypm{\nat} && \bydef
 \end{mycase}
 
 \begin{mycase}[Functions]
+{
+In the function case, we get the context $\Delta$ and the semantic
+function $f$ as standard arguments. Additionally, we get a context
+$\Xi$ and an argument $a$ as arguments because we are returning a
+semantic function. We compute the required result by
+applying the semantic function $f$ to the weakening ($\Delta,\Xi$) and
+the semantic argument $a$. However, $a$ and the result must be
+suitably altered using syntactic associativity of context
+concatenation.
+}
 \begin{align*}
 \Delta& && \byass\\
 f  &: \typm{A \arr B} && \byass\\
