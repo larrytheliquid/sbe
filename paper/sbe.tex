@@ -1272,7 +1272,12 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 \section{Environment Reflection}
 \label{sec:reflecte}
 
-\todo[inline]{description}
+Environment reflection takes a context ($\Delta$) and a syntactic
+environment ($\env$), and produces a semantic environment ($\menv$).
+Recall that a syntactic environment (\refdef{env} in \refsec{overview})
+is a tuple of syntactic values, all scoped under the same context.
+In contrast, a semantic environment (\refdef{menv} in \refsec{overview})
+is a tuple of semantic values, all scoped under the same context.
 
 \begin{mytheorem}{Environment Reflection}{reflecte}
 { \reflecte : \reflecteT }
@@ -1281,6 +1286,16 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 \hline
 \refapp{reflectc} & \refthm{reflectc} & $\reflectc$ & $\reflectcT$ \\
 }
+
+Environment reflection is a context-preserving mapping from
+syntactic environments to semantic environments. So how do we
+translate a single syntactic value ($\dtypv{A}$) in the syntactic
+environment ($\env$) to a semantic value ($\dtypm{A}$) in the same
+context? We canonically evaluate it, but what should the semantic
+environment for canonical evaluation be? Because we do not want the
+context to change in the result of canonical evaluation, we can pass
+it the identity semantic environment ($\dmenv{\Delta}$) via
+context reflection (\refthm{reflectc} in \refapp{reflectc}).
 
 \begin{myproof}
 {
@@ -1300,9 +1315,18 @@ u &: \menv && \bydef
 
 \begin{mycase}[Environment extension]
 {
-To weaken the context extension of a semantic environment, extend the
-inductive hypothesis with the weakening of the semantic value
-extending the context by using $\mono$.
+To reflect a syntactic environment ($\sigma$) extended by a syntactic
+value ($x$), we must produce a semantic environment extended by a
+semantic value. The induction hypothesis gives us the semantic
+environment.
+
+To get the semantic value we must canonically evaluate
+the syntactic value argument ($x$).
+The second parameter of canonical evaluation is an environment, which
+determines the context that the resulting semantic value is scoped
+under. Because our syntactic value $x$ already has the correct scope
+($\Delta$), we can use context reflection (of $\Delta$) as the
+semantic environment argument for canonical evaluation.
 }
 \begin{align*}
 \Delta& && \byass\\
@@ -1319,6 +1343,21 @@ x'   &: \dtypm{A} && \by{\cevalv~x~\delta}\\
 
 \end{mytheorem}
 
+\subsection{No Circularity}
+
+If you look back at the definition of SbE (\refthm{sbe} in
+\refsec{overview}), it might now seem circular. SbE is defined by
+canonically evaluating a syntactic value, but canonical evaluation
+also takes a semantic environment. So before canonically evaluating
+the syntactic value, we must reflect the syntactic environment to a
+semantic environment. However, environment reflection is once again
+defined by canonical evaluation, which needs a semantic environment
+for each syntactic value in the reflected syntactic environment.
+
+Fortunately, the circularity is broken because we can always produce
+an identity semantic environment (mapping variables to themselves as
+semantic values) out of thin air using context reflection
+(\refthm{reflectc} in \refapp{reflectc}).
 
 \section{Related Work}
 \label{sec:related}
@@ -1335,7 +1374,8 @@ does not solve the proof-theoretic version of the same problem.
 \section*{\ackname}
 
 We would like to thank Andrew Cave for helping us understand subtle
-issues related to context weakening when formalizing termination proofs. We would also
+issues related to context weakening when formalizing termination
+proofs via realizability predicates. We would also
 like to thank Darin Morrison for originally introducing us to the connection
 between NbE and a Kripke model for intuitionistic logic.
 This work was supported by NSF/CISE/CCF grant \#1320934.
