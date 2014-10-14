@@ -766,21 +766,29 @@ $$
 
 \subsection{The Model}
 
-Recall that the problematic case for normalization and hereditary
-substitution is function application. In NbE, normalization is no
-longer the ``meaty'' definition given by case analyzes over all
-possible expressions. Instead, evaluation is the ``meaty'' definition
-that case analyzes all expressions. Evaluation takes an expression
-to a \textit{semantic} value (a value in the model) instead of a
-\textit{syntactic} value.
-Thus, normalization can defined more simply as the composition of
-evaluation to a semantic value, and reification back to a syntactic value.
+The naive definition of
+normalization is defined in one phase, going directly from syntactic
+expressions to syntactic values. In contrast, NbE is defined in two
+phases. The first (called ``evaluation'') phase goes from syntactic expressions to semantic
+values (of a Kripke model). The second phase (called ``reification'')
+goes from semantic values to syntactic values. In the naive
+definition, normalization (producing a syntactic value) is a large
+definition given by case analysis over all syntactic forms of
+expressions. In NbE, evaluation (producing a semantic value) is a
+large definition given by case analysis over all syntactic forms of
+expressions, while reification is a small definition given only by
+case analysis over the types of semantic values.
 
-So how can we define the model in a way that makes termination of the
-application case of evaluation no longer problematic? How about the
-Kripke model below?
-
-\todo[inline]{rewrite paragraphs above}
+NbE breaks up normalization into two phases (evaluation into the model
+and reification back out of it) so that both phases can be defined
+in a structurally terminating way. There are no termination issues
+when defining reification (the smaller phase). However, evaluation
+(the larger phase) must be defined by case analysis over all
+expressions. Recall that the problematic
+case in the definition of normalization is function application.
+The definition of the
+model below makes it possible to define the function application case
+of evaluation in a structurally terminating way.
 
 \begin{mydefinition}{Semantic Values}{mval}
 {
