@@ -1540,11 +1540,13 @@ f' &: \typv{A \arr B} && \by{\lam b'}
 \refapp{reify} & \refthm{reify} & $\reify$ & $\reifyT$ \\
 }
 
-Note that we can only reflect neutrals. Values must instead be
-evaluated (\refthm{mod:eval}), which requires a model of an
-environment (\refdef{menv}) as an additional parameter that neutral reflection does
-not need. The proof of reflection is straightforward and given explicitly
-below. 
+The reflection of neutrals maps any syntactic neutral ($\typn{A}$) to
+a semantic value ($\typm{A}$). Note that we can only reflect syntactic
+neutrals, not syntactic values! If we could reflect syntactic values,
+then this would be like canonical evaluation of values without the
+semantic environment argument. However, the semantic environment
+allows the semantic values to be collected when canonically evaluating
+underneath a function body.
 
 \begin{myproof}
 {
@@ -1552,6 +1554,7 @@ By induction on the type $A$.
 }
 
 \begin{mycase}[Natural numbers]
+{The natural number case is immediate.}
 \begin{align*}
 n  &: \typn{\nat} && \byass\\
 n' &: \typv{\nat} && \by{\con{neut}~n}\\
@@ -1560,12 +1563,25 @@ n' &: \typm{\nat} && \bydef
 \end{mycase}
 
 \begin{mycase}[Functions]
+{
+To reflect a neutral function, we get a syntactic neutral function $f$ as
+a standard argument. Because we are producing a metalanguage function,
+we also get $\Delta$ and $a$ as additional arguments. Reifying $a$
+changes it from a semantic value to a syntactic value. Now, we can
+appeal to the inductive hypothesis to reflect the \textit{application}
+of a weakened version of $f$ to the reified $a$. The reason why
+reflection of the function case is okay for neutrals, but not values,
+is because application of a syntactic neutral function to a syntactic
+value argument produces a syntactic neutral result. Finally, note that
+the appeal to the inductive hypothesis is decreasing on the size of
+the type (where $B$ is smaller than $A \arr B$), not the size of the term.
+}
 \begin{align*}
 f &: \typn{A \arr B} && \byass\\
 \Delta& && \byass\\
 a  &: \gdtypm{A} && \byass\\
-f' &: \gdtypn{A \arr B} && \bywkn\\
 a' &: \gdtypv{A} && \ih{\fun{reify}~a}\\
+f' &: \gdtypn{A \arr B} && \bywkn\\
 b  &: \gdtypm{B} && \ih{\reflect~(f' \cdot a')}
 \end{align*}
 \end{mycase}
