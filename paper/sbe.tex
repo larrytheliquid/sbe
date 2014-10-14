@@ -1469,7 +1469,8 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 \label{sec:reify}
 
 Reification (\refthm{reify}) is the process of turning a semantic
-value into a syntactic model.
+value into a syntactic model. It is defined mutually with the
+reflection of neutrals to semantic values.
 
 \begin{mytheorem}{Reification}{reify}
 {
@@ -1516,7 +1517,10 @@ $\reflectn$ can translate any syntactic neutral term (including
 variables) to a semantic value.
 
 Finally, we reify the result of the metalanguage function and
-wrap it in a $\lambda$.
+wrap it in a $\lambda$. Note that in this appeal to the inductive
+hypothesis the type gets smaller ($B$ is smaller $A \arr B$). When
+reflecting the variable after weakening, the type also gets smaller
+($B$ is smaller $A \arr B$).
 }
 \begin{align*}
 f &: \typm{A \arr B} && \byass\\
