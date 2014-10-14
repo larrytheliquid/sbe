@@ -1106,7 +1106,7 @@ initial context ($\typv{A}$) and a semantic environment in some
 terminal context ($\menv$), and produces a
 semantic value in the terminal context ($\dtypm{A}$). The semantic environment
 has a semantic value for every type in the initial context, each of which
-must be scoped in the terminal context.
+must be scoped in the terminal context. 
 
 \begin{myproof}
 {
@@ -1146,22 +1146,20 @@ We get two standard parameters from the theorem ($b$ and $\sigma$), but
 because we return a metalanguage function we also get two additional
 parameters from its domain ($\Xi$ and $a$). The $\Xi$
 parameter is a context to weaken the result with, and the $a$
-parameter is a semantic value that has been weakened by $\Xi$. See the
-function case of $\typm{A \arr B}$ in \refdef{mval}.
+parameter is a semantic value that has been weakened by $\Xi$. Review the
+function case of $\typm{A \arr B}$ in \refdef{mval} to see where the
+two additional parameters come from.
 
-%% When appealing to the inductive hypothesis for the $\lam$ body, we
-%% need to pass in a
+We would like to produce a result by canonically evaluating the
+$\lambda$-body $b$, using the semantic environment $\sigma$ extended
+by the extra argument $a$ that we received from the model. However,
+all of the semantic values in the semantic environment are scoped
+under $\Delta$, while semantic value $a$ is scoped under $\Delta,\Xi$.
+Thus, we must use the $\monos$ lemma from \refapp{reflectc} to
+transform $\sigma$. The
+reader can recognize $\monos$ as a form of weakening (we are weakening
+$\Delta$ by $\Xi$ above) lifted to semantic environments.
 
-\todo[inline]{rewrite paragraph below}
-
-The recursive evaluation of the $\lam$ body requires a context extended
-with just the type we need! Of course this is no coincidence, it is
-the reason why canonical evaluation requires a semantic environment parameter in
-the first place. The more interesting part of canonically evaluating the function
-is that the value we get (to extend the environment with) has been
-weakened by an arbitrary $\Delta$! Therefore, we must also weaken the
-semantic environment, by appealing to the monotonicity lemma for
-environments ($\monos$).
 }
 \begin{align*}
 b   &: \gatypv{B} && \byass\\
