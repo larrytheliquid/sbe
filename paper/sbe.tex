@@ -335,15 +335,17 @@ logical relations~\cite{TODO}.
 
 In a standard type theory \textit{expressions} are emphasized and
 their semantics is defined directly. Alternatively, a
-\textit{canonical type theory} emphasizes \textit{values} and defines
+\textit{canonical type theory} emphasizes \textit{values} (canonical terms) and defines
 the semantics of expressions in terms of hereditary substitution of
-values. Values are not closed under ordinary substitution, because a
+values (for example, see \refapp{nbs}). 
+Values are not closed under ordinary substitution, because a
 substitution can introduce a $\beta$-redex. Hereditary substitution
 fixes this problem by reducing whenever a $\beta$-redex is created as
 the result of substitution. But, it is not easy to show that
-traditional proof-theoretic definitions (discussed below in
-\refsec{proof-theoretic}) of hereditary substitution terminate in
-dependently typed languages.
+traditional proof-theoretic definitions of hereditary substitution 
+terminate (for a suitably complex $\lambda$-calculus, see
+\refsec{proof-theoretic} below)
+in dependently typed languages.
 
 \textbf{Our contribution} is adapting NbE to canonical terms, giving us a model-theoretic
 definition of hereditary substitution. We call this technique
@@ -351,7 +353,7 @@ definition of hereditary substitution. We call this technique
 SbE requires us to introduce novel definitions, but we also get to
 reuse the model from NbE, as well as some of its definitions. SbE is
 defined by \textit{canonically evaluating} a syntactic value to a
-Kripke model value, and then reifying back to a syntactic value.
+semantic value (of a Kripke model), and then reifying back to a syntactic value.
 
 \begin{displaymath}
     \xymatrix{
@@ -386,13 +388,13 @@ The termination of the hereditary substitution function is witnessed
 by lexicographic induction on terms and types, but this approach does
 not scale to $\lambda$-calculi with inductive types.
 
-The syntactic approach to hereditary substitution
-demands less from the metalanguage than a semantic
+An advantage of the syntactic approach to hereditary substitution is
+that it demands less from the metalanguage than a semantic
 approach (i.e. the metalanguage
-function space is not needed to construct a model). A disadvantage is
-that exposing the lexicographic termination argument requires changing
-the structure of values, i.e. requiring values to be in spine
-form.
+function space is not needed to construct a model). A disadvantage of
+the syntactic approach is that exposing the lexicographic termination
+argument requires changing the structure of values, i.e. requiring
+values to be in spine form.
 
 \subsection{Outline}
 
@@ -402,7 +404,7 @@ structured as follows:
 \begin{itemize}
 \item{\bf{\refsec{overview}}}
 We review the model and theorems used by NbE, and explain the
-definition (or implicit termination proof) of NbE. Then, we present the
+definition of NbE (and its implicit termination proof). Then, we present the
 novel definition of SbE, in which we reuse the model and some theorems
 from NbE. Finally, we compare and contrast SbE with NbE.
 
@@ -410,7 +412,7 @@ from NbE. Finally, we compare and contrast SbE with NbE.
 We present the novel definition of canonical evaluation. In NbE,
 evaluation takes a syntactic expression and a semantic environment to
 a semantic value. Canonical evaluation is like evaluation, except it
-works on values instead of expressions. In SbE, canonical evaluation
+operates on values instead of expressions. In SbE, canonical evaluation
 takes a syntactic value and a semantic environment to
 a semantic value.
 
@@ -430,7 +432,7 @@ We discuss related work.
 
 We define types and contexts for G{\"o}del's System T using a standard
 BNF grammar in \reffig{gram}. However, we use intrinsically typed
-terms instead of defining a grammar for expressions and an extrinsic
+terms instead of defining a grammar for terms and an extrinsic
 typing relation. Below is an example of the standard extrinsic typing
 of expressions.
 
@@ -484,8 +486,8 @@ $$
 }
 $$
 
-Additionally, proof that a De Bruijn variable of a particular type
-exists in the context is given by the $\turn{R}$ judgment in
+Additionally, proof that a (De Bruijn) variable of a particular type
+exists in the context is given by the judgment $\turn{R}$ in
 \reffig{typr}. Mentioning a variable in a term thus requires evidence
 that the variable judgment is satisfied.
 
@@ -605,7 +607,7 @@ $$
 First we review why the proofs of termination of naive definitions of
 normalization and hereditary substitution fail, and then we provide a
 high-level overview of theorems and definitions necessary to define NbE
-and SbE (which provably terminate, unlike the naive definitions).
+and SbE (which intrinsically terminate, unlike the naive definitions).
 Finally, we discuss the similarities and differences between NbE and
 SbE.
 Henceforth, the development will proceed in a top-down manner.
@@ -649,9 +651,10 @@ $$
 After evaluating the function to a lambda, we need to
 substitute the argument into the lambda body. This may introduce
 new $\beta$-redexes, so we must evaluate again but
-there is no obvious termination measure to justify this (we have
-already appealed to two inductive hypotheses, and there are no others
-available).
+there is no obvious termination measure to justify this. Above, we have
+already appealed to the inductive hypothesis for the two subterms $f$
+(the function) and $a$ (its argument), and there is no inductive
+hypothesis for the function $\lambda$-body $b$. 
 
 \paragraph{Naive Hereditary Substitution}
 Consider the application case in the definition of hereditary substitution
@@ -777,6 +780,8 @@ So how can we define the model in a way that makes termination of the
 application case of evaluation no longer problematic? How about the
 Kripke model below?
 
+\todo[inline]{rewrite paragraphs above}
+
 \begin{mydefinition}{Semantic Values}{mval}
 {
 The model of values $\typm{A}$ denotes a set (a type in the
@@ -789,8 +794,8 @@ of values as a ``semantic value''.
 $$
 \typm{\nat} \dfn \typv{\nat}
 $$
-Syntactic natural number values are also natural numbers values in the
-model.
+Syntactic natural number values are also semantic natural numbers
+values.
 \end{mycase}
 
 \begin{mycase}[Functions]
@@ -816,12 +821,15 @@ function (a function in the metalanguage), which we can apply to the semantic va
 the argument (in this case the weakening $\Delta$ is merely the empty
 context). Hence, we can define the application case of evaluation in
 an structurally terminating way since it only needs to appeal to the
-two available inductive hypotheses.
+inductive hypotheses for the function and its argument. The inductive
+hypothesis for the function produces a metalanguage function that we
+can apply, rather than a syntactic $\lambda$ and a body for which we
+would be missing an inductive hypothesis.
 
 Given that evaluation must map syntactic expressions to semantic values,
 what should it do when it encounters a variable? We can make
 evaluation take an additional argument, called the
-``semantic environment'', mapping variables to model values. More
+``semantic environment'', mapping variables to semantic values. More
 specifically, the semantic environment maps all types (where each type
 represents a variable) in some initial context $\Gamma$ to semantic
 values in some terminal context $\Delta$.
@@ -880,9 +888,9 @@ normalization?
 }
 
 The high-level plan of NbE is to define
-normalization as the composition of evaluation ($\eval$) of an expression to a
+normalization as the composition of evaluation ($\eval$) of a syntactic expression to a
 semantic value, and reification ($\reify$) back to a syntactic value.
-Normalization takes a syntactic expression to a semantic value,
+Normalization takes a syntactic expression to a syntactic value,
 while evaluation takes a syntactic expression \textit{and} a semantic
 environment to a semantic value. So what should we use for the semantic
 environment argument when defining normalization in terms of
@@ -960,7 +968,7 @@ hereditary substitution as the composition of
 canonical evaluation ($\cevalv$) of a syntactic value to a
 semantic value, and reification ($\reify$) back to a syntactic value.
 What exactly is canonical evaluation? Recall that evaluation of
-expressions turned syntactic expressions into semantic values, reducing
+expressions turns syntactic expressions into semantic values, reducing
 $\beta$-redexes and replacing variables with their definition in the
 semantic environment ($\sigma$) along the way. On the other hand,
 canonical evaluation takes a syntactic value and a semantic environment
@@ -1000,7 +1008,7 @@ introduction to arrive at the alternative pictorial proof below.
 \subsection{NbE versus SbE}
 
 In the world of expressions,
-evaluation takes an additional argument (the model environment) compared
+evaluation takes an additional argument (the semantic environment) compared
 to normalization, which only takes the expression to reduce. But, in
 the world of values hereditary substitution and canonical evaluation
 both take a value, an environment, and produce a value. The only
@@ -1016,10 +1024,13 @@ environment to pass to evaluation, because it does not already
 have a syntactic environment argument to reflect. Because normalization does not
 change the value of free variables, the identity semantic environment
 ($\reflectc$) can be used by reflecting the context. In contrast, hereditary substitution already has
-a syntactic environment (that is used to look up the values of any free
+a syntactic environment (that is used to look up the value of any free
 variables), so canonical evaluation takes the 
 reflection ($\reflecte$) of the syntactic environment as its semantic
-environment argument.
+environment argument. More generally, an important difference between
+normalization and hereditary substitution is that the former preserves
+the type ($A$) and context ($\Gamma$) of its input, while the latter
+only preserves its type (the context changes to $\Delta$).
 
 Although there is a more direct correspondence between SbE and canonical
 evaluation (than there is between NbE and evaluation), there is
@@ -1058,9 +1069,9 @@ may contain $\beta$-redexes. However, if you compare
 canonical evaluation (\refthm{cevalv} \& \reflem{cevaln}) with
 evaluation (\refthm{eval}) you will notice that they are identical,
 modulo the former being defined over a split grammar. Why is that?
-Even though an expression may already be a syntactic $\beta$-redex, a
+An expression may already be a syntactic $\beta$-redex, while a
 syntactic value will never be a syntactic $\beta$-redex. But, both an
-expression or a value may become a semantic $\beta$-redex (a
+expression and a value may become a semantic $\beta$-redex (a
 $\beta$-redex of the metalanguage) after replacing syntactic variables
 with values from the semantic environment. 
 
@@ -1083,7 +1094,8 @@ syntactic environment.
 
 Canonical evaluation ($\cevalv$) is a type-preserving
 translation. It takes a syntactic value in some
-initial context ($\typv{A}$) and a semantic environment ($\menv$), and produces a
+initial context ($\typv{A}$) and a semantic environment in some
+terminal context ($\menv$), and produces a
 semantic value in the terminal context ($\dtypm{A}$). The semantic environment
 has a semantic value for every type in the initial context, each of which
 must be scoped in the terminal context.
@@ -1122,7 +1134,7 @@ m  &: \dtypm{\nat} && \bydef
 {
 When canonically evaluating a function (a $\lam$ term),
 the return type is a model function (a metalanguage function).
-We get two normal parameters from the theorem ($b$ and $\sigma$), but
+We get two standard parameters from the theorem ($b$ and $\sigma$), but
 because we return a metalanguage function we also get two additional
 parameters from its domain ($\Xi$ and $a$). The $\Xi$
 parameter is a context to weaken the result with, and the $a$
@@ -1591,6 +1603,7 @@ b'  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 \end{mylemma}
 
 \section{Normalization by Hereditary Substitution}
+\label{sec:nbs}
 
 \begin{theorem}[Normalization by Hereditary Substitution]
 \label{thm:mod:nbs}
