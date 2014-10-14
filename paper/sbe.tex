@@ -1416,6 +1416,12 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 \refapp{reify} & \reflem{reflectn} & $\reflectn$ & $\reflectnT$ \\
 }
 
+Semantic primitive recursion ($\mrec$) is the lifting of the syntax of
+primitive recursion ($\rec$) to the model (the semantic domain). It
+takes a semantic value for zero branch, a semantic value for the
+successor case, and a semantic value for the natural number to recurse
+over.
+
 Because the model of natural numbers is just a natural number value,
 the model of primitive recursion works basically the same way that
 normalization of primitive recursion would work in the theory. The
@@ -1426,18 +1432,28 @@ other model values (i.e. the induction hypothesis).
 
 \begin{myproof}
 {
-By induction on the natural number model value $\typm{\nat}$.
-Definitionally, this reduces to induction on the natural number theory
+By induction on the semantic natural number value $\typm{\nat}$.
+Definitionally, this reduces to induction on the syntactic natural number
 value $\typv{\nat}$.
 }
 
 \begin{mycase}[Zero]
+{
+The zero case is immediate.
+}
 \begin{align*}
 c_z  &: \typm{C} && \byass
 \end{align*}
 \end{mycase}
 
 \begin{mycase}[Successor]
+{
+In the successor case we first get the inductive hypothesis for the
+predecessor. Because the successor branch argument is a semantic value
+of function type, it is a metalanguage function. Thus, we compute the
+result by applying the successor branch to the empty context
+(weakening by nothing), and the inductive hypothesis.
+}
 \begin{align*}
 c_z  &: \typm{C} && \byass\\
 c_s  &: \typm{C \arr C} && \byass\\
@@ -1450,6 +1466,11 @@ c'   &: \typm{C} && \by{c_s~\emp~c}
 \end{mycase}
 
 \begin{mycase}[Neutral]
+{
+If the value that we are trying to recurse over is neutral, then we
+reflect a syntactic primitive recursion stuck on the neutral input,
+while reifying both branch arguments.
+}
 \begin{align*}
 c_z  &: \typm{C} && \byass\\
 c_s  &: \typm{C \arr C} && \byass\\
@@ -1469,8 +1490,8 @@ c''  &: \typm{C} && \by{\fun{reflect}~c'}
 \label{sec:reify}
 
 Reification (\refthm{reify}) is the process of turning a semantic
-value into a syntactic model. It is defined mutually with the
-reflection of neutrals to semantic values.
+value into a syntactic value. It is defined mutually with the
+reflection (\reflem{reflectn}) of neutrals to semantic values.
 
 \begin{mytheorem}{Reification}{reify}
 {
