@@ -128,8 +128,12 @@
 \def\mrecT{\typm{C} \marr \typm{C \arr C} \marr \typm{\nat} \marr \typm{C}}
 
 \def\rec{\fun{rec}}
+
 \def\rbs{\fun{rbs}}
+\def\rbsT{\typv{C} \marr \typv{C \arr C} \marr \typv{\nat} \marr \typv{C}}
+
 \def\abs{\fun{abs}}
+\def\absT{\typv{A \arr B} \marr \typv{A} \marr \typv{B}}
 
 \def\reify{\fun{reify}}
 \def\reifyT{\typm{A} \marr \typv{A}}
@@ -144,7 +148,7 @@
 \def\reflectc{\fun{reflect}^\con{C}}
 \def\reflectcT{\all{\Gamma} \gmenv{\Gamma}}
 
-\def\idenv{\fun{idEnv}}
+\def\idenv{\sigma_\fun{id}}
 
 
 \def\mono{\fun{mono}^\con{V}}
@@ -174,6 +178,7 @@
 \def\nsbe{\fun{nsbe}}
 
 \def\nbs{\fun{nbs}}
+\def\nbsT{\type{A} \marr \typv{A}}
 
 \def\bydef{(\textit{definition})}
 \def\byass{(\textit{assumption})}
@@ -1791,13 +1796,33 @@ b'  &: \el{(\Gamma, \Delta), \Xi \vdash B} && \by{associativity}
 \section{Normalization by Hereditary Substitution}
 \label{sec:nbs}
 
-\begin{theorem}[Normalization by Hereditary Substitution]
-\label{thm:mod:nbs}
-$$
-\nbs : \type{A} \marr \typv{A}
-$$
+Normalization by hereditary substitution (\refthm{nbs}) defines
+normalization in terms of hereditary substitution in the function
+application and primitive recursion cases. Application by
+hereditary substitution (\reflem{abs}) is used in the application case
+of normalization, and primitive recursion by hereditary substitution
+(\reflem{rbs}) is used in the primitive recursion case
+of normalization. Primitive recursion by hereditary substitution also
+uses application by hereditary substitution in its successor case.
 
-\begin{myproof}{}
+\begin{mytheorem}{Normalization by Hereditary Substitution}{nbs}
+{
+\nbs : \nbsT
+}
+{
+\refapp{nbs} & \reflem{abs} & $\abs$ & $\absT$ \\
+\hline
+\refapp{nbs} & \reflem{rbs} & $\rbs$ & $\rbsT$ \\
+}
+
+Normalization by hereditary substitution takes a syntactic expression
+of some context ($\Gamma$) and some type ($A$), and returns a
+syntactic value of the same context and type. 
+
+\begin{myproof}
+{
+By induction on the expression $\type{A}$.
+}
 \begin{align*}
 &\nbs ~ \zero &&\dfn&& \zero\\
 &\nbs ~ (\suc~n) &&\dfn&& \suc ~ (\nbs~n)\\
@@ -1806,41 +1831,75 @@ $$
 &\nbs ~ (f~\app~a) &&\dfn&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
 &\nbs ~ (\rec~c_z~c_s~n) &&\dfn&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
 \end{align*}
+
+All cases except for the eliminations translate expressions to values
+immediately or via congruences. The application and primitive
+recursion cases are handled by lemmas that work on values ($\abs$ and $\rbs$ respectively).
+
 \end{myproof}
 
-\end{theorem}
+\end{mytheorem}
 
-\begin{lemma}[Application by Hereditary Substitution]
-\label{thm:mod:abs}
-$$
-\abs : \typv{A \arr B} \marr \typv{A} \marr \typv{B}
-$$
+\begin{mylemma}{Application by Hereditary Substitution}{abs}
+{
+\abs : \absT
+}
+{
+\refsec{overview} & \refthm{sbe} & $\sbe$ & $\sbeT$ \\
+}
 
-\begin{myproof}{}
+Application by Hereditary Substitution takes a syntactic function value
+(of type $A \arr B$) and a syntactic value for the domain of the function
+(of type $A$), and returns a syntactic value for the codomain of the
+function (of type $B$).
+
+\begin{myproof}
+{
+By induction on the function value $\typv{A \arr B}$.
+}
 \begin{align*}
-&\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv~\Gamma, a)\\
+&\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv, a)\\
 &\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
 \end{align*}
+
+The neutral case is a congruence, and the function case is defiend by
+hereditary substitution of the argument into the function body.
+Specifically, the $\sbe$ is called by extending the identity syntactic
+environment $\idenv$ with the argument $a$.
+
 \end{myproof}
 
-\end{lemma}
+\end{mylemma}
 
-\todo[inline]{Identity Environment description and proof}
+\begin{mylemma}{Primitive Recursion by Hereditary Substitution}{rbs}
+{
+\rbs : \rbsT
+}
+{
+\refapp{nbs} & \reflem{abs} & $\abs$ & $\absT$ \\
+}
 
-\begin{lemma}[Primitive Recursion by Hereditary Substitution]
-\label{thm:mod:rbs}
-$$
-\rbs : \typv{C} \marr \typv{C \arr C} \marr \typv{\nat} \marr \typv{C}
-$$
+Primitive Recursion by Hereditary Substitution recurses over a
+syntactic natural number value ($\typv{\nat}$)
+with two syntactic branch values ($\typv{C}$ and $\typv{C \arr C}$),
+and returns a syntactic value ($\typv{C}$).
 
-\begin{myproof}{}
+\begin{myproof}
+{
+By induction on the natural number value $\typv{\nat}$.
+}
 \begin{align*}
 &\rbs ~ c_z ~ c_s ~ \zero &&\dfn&& c_z\\
 &\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfn&& \abs~c_s~(\rbs~c_z~c_s~n)\\
 &\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfn&& \neut~(\rec~c_z~c_s~n)
 \end{align*}
+
+The zero case is immediate and the neutral case is a congruence. The
+successor case applies the successor branch to the inductive
+hypothesis using $\abs$ (\reflem{abs}).
+
 \end{myproof}
 
-\end{lemma}
+\end{mylemma}
 
 \end{document}
