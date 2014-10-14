@@ -143,7 +143,7 @@
 \def\reflect{\reflectn}
 
 \def\reflecte{\fun{reflect}^\con{S}}
-\def\reflecteT{\env \marr \menv}
+\def\reflecteT{\all{\Delta} \env \marr \menv}
 
 \def\reflectc{\fun{reflect}^\con{C}}
 \def\reflectcT{\all{\Gamma} \gmenv{\Gamma}}
@@ -1272,12 +1272,50 @@ c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
 \section{Environment Reflection}
 \label{sec:reflecte}
 
-\todo[inline]{description and proof}
+\todo[inline]{description}
 
 \begin{mytheorem}{Environment Reflection}{reflecte}
 { \reflecte : \reflecteT }
 {
+\refsec{ceval} & \refthm{cevalv} & $\cevalv$ & $\cevalvT$ \\
+\hline
+\refapp{reflectc} & \refthm{reflectc} & $\reflectc$ & $\reflectcT$ \\
 }
+
+\begin{myproof}
+{
+By induction on the environment $\env$.
+}
+
+\begin{mycase}[Empty Environment]
+{
+The empty environment case is trivial.
+}
+\begin{align*}
+\Delta& && \byass\\
+u &: \top && \byass\\
+u &: \menv && \bydef
+\end{align*}
+\end{mycase}
+
+\begin{mycase}[Environment extension]
+{
+To weaken the context extension of a semantic environment, extend the
+inductive hypothesis with the weakening of the semantic value
+extending the context by using $\mono$.
+}
+\begin{align*}
+\Delta& && \byass\\
+\sigma &: \env && \byass\\
+x    &: \dtypv{A} && \byass\\
+\sigma'  &: \menv && \ih{\reflecte~\Delta~\sigma}\\
+\delta  &: \dmenv{\Delta} && \by{\reflectc~\Delta}\\
+x'   &: \dtypm{A} && \by{\cevalv~x~\delta}\\
+\sigma'' &: \dmenv{\Gamma, A} && \by{\sigma', x'}
+\end{align*}
+\end{mycase}
+
+\end{myproof}
 
 \end{mytheorem}
 
