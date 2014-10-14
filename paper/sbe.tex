@@ -1076,7 +1076,7 @@ that begins with the elimination of a variable.
 Expressions and values are quite different, as the former
 may contain $\beta$-redexes. However, if you compare
 canonical evaluation (\refthm{cevalv} \& \reflem{cevaln}) with
-evaluation (\refthm{eval}) you will notice that they are identical,
+evaluation (\refthm{eval} in \refapp{eval}) you will notice that they are identical,
 modulo the former being defined over a split grammar. Why is that?
 An expression may already be a syntactic $\beta$-redex, while a
 syntactic value will never be a syntactic $\beta$-redex. But, both an
@@ -1284,11 +1284,10 @@ Our termination proof is a novel model-theoretic result, but it
 does not solve the proof-theoretic version of the same problem.
 
 \todo[inline]{formal version of Kripke model via renaming}
-\todo[inline]{extension to polymorphic lists, sums, and continuations}
-\todo[inline]{correctness wrt contextual equiv on exprs}
 \todo[inline]{Future work: state (via worlds), exceptions (via monad),
   dependent types, continuations}
 \todo[inline]{reference morrison nbe formalization}
+\todo[inline]{reference tutorial nbe formalization (polymorphic lists, sums, and continuations)}
 
 \section*{\ackname}
 
