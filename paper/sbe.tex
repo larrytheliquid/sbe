@@ -221,6 +221,7 @@
 \newcommand{\type}[1]{\Gamma \turn{E} #1}
 \newcommand{\dtype}[1]{\Delta \turn{E} #1}
 \newcommand{\gdtype}[1]{\Gamma, \Delta \turn{E} #1}
+\newcommand{\gatype}[1]{\Gamma, A \turn{E} #1}
 \newcommand{\ctype}[2]{\Gamma , #1 \turn{E} #2}
 
 \newcommand{\typv}[1]{\Gamma \turn{V} #1}
@@ -1310,20 +1311,98 @@ This work was supported by NSF/CISE/CCF grant \#1320934.
 \section{Evaluation}
 \label{sec:eval}
 
+Evaluation of expressions in NbE is like canonical evaluation of
+values in SbE. The proof of evaluation below does not describe how
+each case works, because it is essentially the same as
+canonical evaluation (\refthm{cevalv} and \reflem{cevaln} in
+\refsec{ceval}). We invite the reader to compare the proofs of
+evaluation and canonical evaluation to verify their similarity.
+Whereas canonical evaluation is defined separately for neutrals,
+evaluation is a single definition for all syntactic forms.
+
 \begin{mytheorem}{Evaluation}{eval}
 { \eval : \evalT }
-{}
+{
+\refapp{reflectc} & \reflem{monos} & $\monos$ & $\monosT$ \\
+\hline
+\refapp{eval} & \reflem{mrec} & $\mrec$ & $\mrecT$ \\
+}
+
+Evaluation ($\eval$) is a type-preserving
+translation. It takes a syntactic expression in some
+initial context ($\type{A}$) and a semantic environment in some
+terminal context ($\menv$), and produces a
+semantic value in the terminal context ($\dtypm{A}$). The semantic environment
+has a semantic value for every type in the initial context, each of which
+must be scoped in the terminal context. 
 
 \begin{myproof}
 {
-By induction on the expression $\type{A}$. This proof is standard and
-we do not repeat it here for space reasons. However, part of the
-insight of this paper is that is that what we call
-\textit{canonical evaluation} (\refthm{mod:cevalv}), the intrinsic hereditary substitution
-semantics, is essentially the same thing! To recover this proof,
-replace instances of values and neutrals with expressions in the proof
-of \refthm{mod:cevalv} and \refthm{mod:cevaln} from \refsec{vmod}.
+By induction on the expression $\type{A}$.
 }
+
+\begin{mycase}[Zero]{}
+\begin{align*}
+n  &: \dtype{\nat} && \by{\zero}\\
+n  &: \dtypm{\nat} && \bydef
+\end{align*}
+\end{mycase}
+
+\begin{mycase}[Successor]{}
+\begin{align*}
+n   &: \type{\nat} && \byass\\
+\sigma  &: \menv && \byass\\
+n'  &: \dtypm{\nat} && \ih{\eval~n~\sigma}\\
+n'  &: \dtype{\nat} && \bydef\\
+m   &: \dtype{\nat} && \by{\suc~n'}\\
+m  &: \dtypm{\nat} && \bydef
+\end{align*}
+\end{mycase}
+
+\begin{mycase}[Function]{}
+\begin{align*}
+b   &: \gatype{B} && \byass\\
+\sigma  &: \menv && \byass\\
+\Xi& && \byass\\
+a   &: \el{\Delta, \Xi \vdash A} && \byass\\
+\sigma'  &: \gmenv{\Delta, \Xi} && \by{\monos~\Xi~\sigma}\\
+b'  &: \dtypm{B} && \ih{\eval~b~(\sigma', a)}\\
+\end{align*}
+\end{mycase}
+
+\begin{mycase}[Variable]{}
+\begin{align*}
+i   &: \typr{A} && \byass\\
+\sigma  &: \menv && \byass\\
+a  &: \dtypm{A} && \by{\textit{lookup} ~ \sigma[i]}
+\end{align*}
+\end{mycase}
+
+\begin{mycase}[Application]{}
+\begin{align*}
+f   &: \type{A \arr B} && \byass\\
+a   &: \type{A} && \byass\\
+\sigma  &: \menv && \byass\\
+f'  &: \dtypm{A \arr B} && \ih{\eval~f~\sigma}\\
+f'  &: \all{\Delta} \gdtypm{A} \marr \gdtypm{B} && \bydef\\
+a'  &: \dtypm{A} && \ih{\eval~a~\sigma}\\
+b   &: \dtypm{B} && \by{f'~\emp~a'}
+\end{align*}
+\end{mycase}
+
+\begin{mycase}[Primitive Recursion]{}
+\begin{align*}
+c_z  &: \type{C} && \byass\\
+c_s  &: \type{C \arr C} && \byass\\
+n    &: \type{\nat} && \byass\\
+\sigma  &: \menv && \byass\\
+c_z' &: \dtypm{C} && \ih{\eval~c_z~\sigma}\\
+c_s' &: \dtypm{C \arr C} && \ih{\eval~c_s~\sigma}\\
+n'   &: \dtypm{\nat} && \ih{\eval~n~\sigma}\\
+c    &: \dtypm{C} && \by{\el{\rec}~c_z'~c_s'~n'}
+\end{align*}
+\end{mycase}
+
 \end{myproof}
 
 \end{mytheorem}
