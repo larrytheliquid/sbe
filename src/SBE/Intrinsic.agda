@@ -110,13 +110,13 @@ lookup (xs , x) (there i) = lookup xs i
   lemma : (Ξ : Ctx) → ⟦ (Γ ++ Δ) ++ Ξ ⊢ A ⟧ → ⟦ (Γ ++ Δ) ++ Ξ ⊢ B ⟧
   lemma Ξ a rewrite assoc++ Γ Δ Ξ = f (Δ ++ Ξ) a
 
-⟦wknᴱ⟧ : ∀{Ξ} Δ Γ → ⟦Env⟧ Γ Ξ → ⟦Env⟧ Γ (Ξ ++ Δ)
-⟦wknᴱ⟧ Δ ε tt = tt
-⟦wknᴱ⟧ Δ (Γ , A) (xs , x) = ⟦wknᴱ⟧ Δ Γ xs , ⟦wkn⟧ A Δ x
+⟦wknˢ⟧ : ∀{Ξ} Δ Γ → ⟦Env⟧ Γ Ξ → ⟦Env⟧ Γ (Ξ ++ Δ)
+⟦wknˢ⟧ Δ ε tt = tt
+⟦wknˢ⟧ Δ (Γ , A) (xs , x) = ⟦wknˢ⟧ Δ Γ xs , ⟦wkn⟧ A Δ x
 
 ⟦idEnv⟧ : ∀ Γ → ⟦Env⟧ Γ Γ
 ⟦idEnv⟧ ε = tt
-⟦idEnv⟧ (Γ , A) = (⟦wknᴱ⟧ (ε , A) Γ (⟦idEnv⟧ Γ)) , reflectᴺ A (`var here)
+⟦idEnv⟧ (Γ , A) = (⟦wknˢ⟧ (ε , A) Γ (⟦idEnv⟧ Γ)) , reflectᴺ A (`var here)
 
 ----------------------------------------------------------------------
 
@@ -135,7 +135,7 @@ f ⟦∙⟧ a = f ε a
 
 ⟦sub⟧ `zero σ = `zero
 ⟦sub⟧ (`suc n) σ = `suc (⟦sub⟧ n σ)
-⟦sub⟧ {Γ = Γ} {Δ = Δ} (`λ b) σ = λ Ξ a → ⟦sub⟧ b (⟦wknᴱ⟧ Ξ Γ σ , a)
+⟦sub⟧ {Γ = Γ} {Δ = Δ} (`λ b) σ = λ Ξ a → ⟦sub⟧ b (⟦wknˢ⟧ Ξ Γ σ , a)
 ⟦sub⟧ (`neut x) σ = ⟦subᴺ⟧ x σ
 
 ⟦subᴺ⟧ (`var i) σ = lookup σ i
@@ -148,22 +148,22 @@ Env : (Γ Δ : Ctx) → Set
 Env ε Δ = ⊤
 Env (Γ , A) Δ = Env Γ Δ × Val Δ A
 
-wknᴱ : ∀{Ξ} Δ Γ → Env Γ Ξ → Env Γ (Ξ ++ Δ)
-wknᴱ Δ ε tt = tt
-wknᴱ Δ (Γ , A) (xs , x) = wknᴱ Δ Γ xs , wkn Δ x
+wknˢ : ∀{Ξ} Δ Γ → Env Γ Ξ → Env Γ (Ξ ++ Δ)
+wknˢ Δ ε tt = tt
+wknˢ Δ (Γ , A) (xs , x) = wknˢ Δ Γ xs , wkn Δ x
 
 idEnv : ∀ Γ → Env Γ Γ
 idEnv ε = tt
-idEnv (Γ , A) = (wknᴱ (ε , A) Γ (idEnv Γ)) , `neut (`var here)
+idEnv (Γ , A) = (wknˢ (ε , A) Γ (idEnv Γ)) , `neut (`var here)
 
-reflectᴱ : ∀ Γ Δ → Env Γ Δ → ⟦Env⟧ Γ Δ
-reflectᴱ ε Δ tt = tt
-reflectᴱ (Γ , A) Δ (xs , x) = reflectᴱ Γ Δ xs , ⟦sub⟧ x (⟦idEnv⟧ Δ)
+reflectˢ : ∀ Γ Δ → Env Γ Δ → ⟦Env⟧ Γ Δ
+reflectˢ ε Δ tt = tt
+reflectˢ (Γ , A) Δ (xs , x) = reflectˢ Γ Δ xs , ⟦sub⟧ x (⟦idEnv⟧ Δ)
 
 ----------------------------------------------------------------------
 
 sub : ∀{Γ Δ A} → Val Γ A → Env Γ Δ → Val Δ A
-sub x σ = reify _ (⟦sub⟧ x (reflectᴱ _ _ σ))
+sub x σ = reify _ (⟦sub⟧ x (reflectˢ _ _ σ))
 
 subᴺ : ∀{Γ Δ A} → Neut Γ A → Env Γ Δ → Val Δ A
 subᴺ x σ = sub (`neut x) σ
@@ -210,7 +210,7 @@ norm (f `∙ a) = norm f ∙ norm a
 ⟦eval⟧ : ∀{Γ Δ A} → Expr Γ A → ⟦Env⟧ Γ Δ → ⟦ Δ ⊢ A ⟧
 ⟦eval⟧ `zero σ = `zero
 ⟦eval⟧ (`suc n) σ = `suc (⟦eval⟧ n σ)
-⟦eval⟧ {Γ = Γ} {Δ = Ξ} (`λ f) σ = λ Δ a → ⟦eval⟧ f (⟦wknᴱ⟧ Δ Γ σ , a)
+⟦eval⟧ {Γ = Γ} {Δ = Ξ} (`λ f) σ = λ Δ a → ⟦eval⟧ f (⟦wknˢ⟧ Δ Γ σ , a)
 ⟦eval⟧ (`var i) σ = lookup σ i
 ⟦eval⟧ (`rec cz cs n) σ = ⟦rec⟧ (⟦eval⟧ cz σ) (⟦eval⟧ cs σ) (⟦eval⟧ n σ)
 ⟦eval⟧ (f `∙ a) σ = ⟦eval⟧ f σ ⟦∙⟧ ⟦eval⟧ a σ
@@ -219,7 +219,7 @@ nbe : ∀{Γ A} → Expr Γ A → Val Γ A
 nbe x = reify _ (⟦eval⟧ x (⟦idEnv⟧ _))
 
 eval : ∀{Γ Δ A} → Expr Γ A → Env Γ Δ → Val Δ A
-eval x σ = reify _ (⟦eval⟧ x (reflectᴱ _ _ σ))
+eval x σ = reify _ (⟦eval⟧ x (reflectˢ _ _ σ))
 
 ----------------------------------------------------------------------
 
