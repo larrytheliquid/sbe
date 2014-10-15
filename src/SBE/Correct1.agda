@@ -106,7 +106,7 @@ comp (`trans x y) σ rewrite comp x σ | comp y σ = refl
 comp `cong-var σ = refl
 comp `cong-zero σ = refl
 comp (`cong-suc n) σ rewrite comp n σ = refl
-comp (`cong-lam b) σ = {!!} -- requires ext
+comp {Γ = Γ} (`cong-lam {A = A} {B = B} b) σ = ext2 (λ Δ a → comp b (⟦wknˢ⟧ Δ Γ σ , a))
 comp (`cong-rec cz cs n) σ = cong₃ ⟦rec⟧ (comp cz σ) (comp cs σ) (comp n σ)
 comp (`cong-app f a) σ = cong₂ _⟦∙⟧_ (comp f σ) (comp a σ)
 

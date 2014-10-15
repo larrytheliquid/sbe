@@ -32,6 +32,8 @@ data _≡_ {a} {A : Set a} (x : A) : A → Set a where
 {-# BUILTIN EQUALITY _≡_ #-}
 {-# BUILTIN REFL refl #-}
 
+----------------------------------------------------------------------
+
 cong : ∀ {a b} {A : Set a} {B : Set b}
        (f : A → B) {x y} → x ≡ y → f x ≡ f y
 cong f refl = refl
@@ -43,6 +45,14 @@ cong₂ f refl refl = refl
 cong₃ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d}
        (f : A → B → C → D) {x x' y y' z z'} → x ≡ x' → y ≡ y' → z ≡ z' → f x y z ≡ f x' y' z'
 cong₃ f refl refl refl = refl
+
+----------------------------------------------------------------------
+
+postulate
+  ext2 : {A : Set} {B : A → Set} {Z : (a : A) → B a → Set}
+    {f g : (a : A) (b : B a) → Z a b}
+    → ((a : A) (b : B a) → f a b ≡ g a b)
+    → f ≡ g
 
 ----------------------------------------------------------------------
 
