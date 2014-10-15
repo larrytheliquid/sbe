@@ -4,6 +4,20 @@ module SBE.Correct1 where
 
 ----------------------------------------------------------------------
 
+embed : ∀{Γ A} → Val Γ A → Expr Γ A
+embedᴺ : ∀{Γ A} → Neut Γ A → Expr Γ A
+
+embed `zero = `zero
+embed (`suc n) = `suc (embed n)
+embed (`λ b) = `λ (embed b)
+embed (`neut x) = embedᴺ x
+
+embedᴺ (`var i) = `var i
+embedᴺ (`rec cz cs n) = `rec (embed cz) (embed cs) (embedᴺ n)
+embedᴺ (f `∙ a) = embedᴺ f `∙ embed a
+
+----------------------------------------------------------------------
+
 record Kit (T : Ctx → Type → Set) : Set where
   field
     var    : ∀{Γ A} → Var Γ A → T Γ A
@@ -81,5 +95,11 @@ data _≈_ {Γ} : ∀{A} → Expr Γ A → Expr Γ A → Set where
     → `rec cz cs `zero ≈ cz
   `comp-recs : ∀{C} {cz : Expr Γ C} {cs : Expr Γ (C `→ C)} {n : Expr Γ `ℕ}
     → `rec cz cs (`suc n) ≈ cs `∙ `rec cz cs n
+
+----------------------------------------------------------------------
+
+sound : ∀{Γ A} {x y : Expr Γ A}
+  → x ≈ y → embed (nbe x) ≡ embed (nbe y)
+sound = {!!}
 
 ----------------------------------------------------------------------
