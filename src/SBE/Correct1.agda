@@ -99,7 +99,7 @@ data _≈_ {Γ} : ∀{A} → Expr Γ A → Expr Γ A → Set where
 ----------------------------------------------------------------------
 
 comp : ∀{Γ A} {x y : Expr Γ A}
-  → x ≈ y → embed (nbe x) ≡ embed (nbe y)
+  → x ≈ y → nbe x ≡ nbe y
 comp `refl = refl
 comp (`sym x) rewrite comp x = refl
 comp (`trans x y) rewrite comp x | comp y = refl
@@ -115,5 +115,11 @@ comp `comp-app = {!!}
 comp `comp-recz = {!!}
 
 comp `comp-recs = {!!}
+
+----------------------------------------------------------------------
+
+completeness : ∀{Γ A} {x y : Expr Γ A}
+  → x ≈ y → embed (nbe x) ≡ embed (nbe y)
+completeness p rewrite comp p = refl
 
 ----------------------------------------------------------------------
