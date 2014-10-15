@@ -98,8 +98,22 @@ data _≈_ {Γ} : ∀{A} → Expr Γ A → Expr Γ A → Set where
 
 ----------------------------------------------------------------------
 
-sound : ∀{Γ A} {x y : Expr Γ A}
+comp : ∀{Γ A} {x y : Expr Γ A}
   → x ≈ y → embed (nbe x) ≡ embed (nbe y)
-sound = {!!}
+comp `refl = refl
+comp (`sym x) rewrite comp x = refl
+comp (`trans x y) rewrite comp x | comp y = refl
+comp `cong-var = refl
+comp `cong-zero = refl
+comp (`cong-suc n) rewrite comp n = refl
+comp (`cong-lam b) rewrite comp b = refl
+comp (`cong-rec cz cs n) = {!!}
+comp (`cong-app f a) = {!!}
+
+comp `comp-app = {!!}
+
+comp `comp-recz = {!!}
+
+comp `comp-recs = {!!}
 
 ----------------------------------------------------------------------
