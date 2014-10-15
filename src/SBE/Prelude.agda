@@ -36,6 +36,14 @@ cong : ∀ {a b} {A : Set a} {B : Set b}
        (f : A → B) {x y} → x ≡ y → f x ≡ f y
 cong f refl = refl
 
+cong₂ : ∀ {a b c} {A : Set a} {B : Set b} {C : Set c}
+       (f : A → B → C) {x x' y y'} → x ≡ x' → y ≡ y' → f x y ≡ f x' y'
+cong₂ f refl refl = refl
+
+cong₃ : ∀ {a b c d} {A : Set a} {B : Set b} {C : Set c} {D : Set d}
+       (f : A → B → C → D) {x x' y y' z z'} → x ≡ x' → y ≡ y' → z ≡ z' → f x y z ≡ f x' y' z'
+cong₃ f refl refl refl = refl
+
 ----------------------------------------------------------------------
 
 id : {A : Set} → A → A

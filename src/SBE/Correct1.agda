@@ -98,28 +98,27 @@ data _≈_ {Γ} : ∀{A} → Expr Γ A → Expr Γ A → Set where
 
 ----------------------------------------------------------------------
 
-comp : ∀{Γ A} {x y : Expr Γ A}
-  → x ≈ y → nbe x ≡ nbe y
-comp `refl = refl
-comp (`sym x) rewrite comp x = refl
-comp (`trans x y) rewrite comp x | comp y = refl
-comp `cong-var = refl
-comp `cong-zero = refl
-comp (`cong-suc n) rewrite comp n = refl
-comp (`cong-lam b) rewrite comp b = refl
-comp (`cong-rec cz cs n) = {!!}
-comp (`cong-app f a) = {!!}
+comp : ∀{Γ Δ A} {x y : Expr Γ A}
+  → x ≈ y → (σ : ⟦Env⟧ Γ Δ) → ⟦eval⟧ x σ ≡ ⟦eval⟧ y σ
+comp `refl σ = refl
+comp (`sym x) σ rewrite comp x σ = refl
+comp (`trans x y) σ rewrite comp x σ | comp y σ = refl
+comp `cong-var σ = refl
+comp `cong-zero σ = refl
+comp (`cong-suc n) σ rewrite comp n σ = refl
+comp (`cong-lam b) σ = {!!} -- requires ext
+comp (`cong-rec cz cs n) σ = cong₃ ⟦rec⟧ (comp cz σ) (comp cs σ) (comp n σ)
+comp (`cong-app f a) σ = cong₂ _⟦∙⟧_ (comp f σ) (comp a σ)
 
-comp `comp-app = {!!}
+comp `comp-app σ = {!!}
 
-comp `comp-recz = {!!}
-
-comp `comp-recs = {!!}
+comp `comp-recz σ = refl
+comp `comp-recs σ = refl
 
 ----------------------------------------------------------------------
 
 completeness : ∀{Γ A} {x y : Expr Γ A}
   → x ≈ y → embed (nbe x) ≡ embed (nbe y)
-completeness p rewrite comp p = refl
+completeness p rewrite comp p (⟦idEnv⟧ _) = refl
 
 ----------------------------------------------------------------------
