@@ -1350,7 +1350,7 @@ If you look back at the definition of SbE (\refthm{sbe} in
 canonically evaluating a syntactic value, but canonical evaluation
 also takes a semantic environment. So before canonically evaluating
 the syntactic value, we must reflect the syntactic environment to a
-semantic environment. However, environment reflection is once again
+semantic environment. However, environment reflection (\refthm{reflecte}) is once again
 defined by canonical evaluation, which needs a semantic environment
 for each syntactic value in the reflected syntactic environment.
 
@@ -1370,6 +1370,33 @@ does not solve the proof-theoretic version of the same problem.
   dependent types, continuations}
 \todo[inline]{reference morrison nbe formalization}
 \todo[inline]{reference tutorial nbe formalization (polymorphic lists, sums, and continuations)}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+Normalization by Evaluation (NbE) makes it possible to formalize an
+intrinsic termination argument of the normalization of expressions for
+many $\lambda$-calculi (e.g. calculi with polymorphic lists, sums,
+continuations, etc). 
+
+If you adapt the evaluation part of NbE from expressions to canonical
+terms, you get a function with an intrinsic termination proof that
+maps a syntactic value and a semantic environment to a semantic value.
+We call this function canonical evaluation. By beautiful coincidence,
+canonical evaluation is \textit{semantic} hereditary substitution. In
+otherwords, it is the
+lifting of \textit{syntactic} hereditary substitution to semantic values of a
+Kripke model.
+
+After noticing that canonical evaluation is semantic hereditary
+substitution, we showed how to define syntactic hereditary
+substitution by reflecting its environment argument and reifying the
+result of canonical evaluation. We call this technique Hereditary
+Substitution by Canonical Evaluation (SbE). When defining SbE, we get
+to reuse many definitions, theorems, and lemmas from NbE, such as the
+model and reification. Finally, hereditary substitution for complex
+$\lambda$-calculi can be formalized within dependently typed languages
+as a function with an intrinsic termination proof!
 
 \section*{\ackname}
 
