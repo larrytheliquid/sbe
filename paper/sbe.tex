@@ -312,7 +312,7 @@ technique for defining the semantics of a $\lambda$-calculus. For
 example, normalization for a total $\lambda$-calculus with inductive
 types (such as G{\"o}del's System T~\cite{systemt}) can be defined by first
 evaluating a syntactic expression (possibly containing $\beta$-redexes) to a
-semantic value of a Kripke model, and then reifying the result to a syntactic value
+semantic value of a Kripke model~\cite{kripkemodel}, and then reifying the result to a syntactic value
 (not containing any $\beta$-redexes).
 
 \begin{displaymath}
@@ -330,7 +330,7 @@ $\lambda$-calculi in dependently typed languages (such as
 Coq~\cite{coq08}, Agda~\cite{norell2007towards}, or Idris~\cite{brady2011idris}), because the
 proof of termination of the semantics is \textit{implicit} in its
 definition. In other words, normalization can be defined as a total
-function within the language.
+function within a language based on Martin-L{\"o}f Type Theory~\cite{nordstrom1990programming}.
 In contrast, formalizing the semantics of expressions as a
 relation (e.g. a small or big-step relation), or as a
 coinductive function~\cite{TODO}, requires the additional overhead
