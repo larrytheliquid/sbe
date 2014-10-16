@@ -27,18 +27,6 @@
 \floatstyle{boxed}
 \restylefloat{figure}
 
-\DeclareUnicodeCharacter{8988}{\ensuremath{\ulcorner}}
-\DeclareUnicodeCharacter{8989}{\ensuremath{\urcorner}}
-\DeclareUnicodeCharacter{8803}{\ensuremath{\overline{\equiv}}}
-\DeclareUnicodeCharacter{8759}{\ensuremath{\colon\colon}}
-\DeclareUnicodeCharacter{12314}{\ensuremath{\llbracket}}
-\DeclareUnicodeCharacter{12315}{\ensuremath{\rrbracket}}
-\DeclareUnicodeCharacter{10214}{\ensuremath{\llbracket}}
-\DeclareUnicodeCharacter{10215}{\ensuremath{\rrbracket}}
-\DeclareUnicodeCharacter{8614}{\ensuremath{\mapsto}}
-\DeclareUnicodeCharacter{8799}{\ensuremath{\stackrel{?}{=}}}
-\DeclareUnicodeCharacter{8669}{\ensuremath{\leadsto}}
-
 \usepackage{fancyvrb}
 
 \usepackage[labelfont=bf]{caption}
@@ -107,7 +95,7 @@
 \parfillskip=0pt\finalhyphendemerits=0\endgraf}
 
 \def\cross{\times}
-\def\dfn{\mapsto}
+\def\dfn{\triangleq}
 \def\bigstep{\Downarrow}
 \def\arr{\supset}
 \def\marr{\rightarrow}
@@ -484,7 +472,7 @@ types expressions in \reffig{type}, $\turn{V}$ types values in
 
 Finally, we have taken care to ensure that all of our constructions
 are easily formalizable. For this reason, we
-use use De Bruijn~\cite{TODO} variables. For example, our typing rule
+use De Bruijn~\cite{TODO} variables. For example, our typing rule
 for functions does not explicitly bind its variable.
 
 $$
