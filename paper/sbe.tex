@@ -1,6 +1,6 @@
-\documentclass{llncs}
+\documentclass[runningheads,a4paper]{llncs}
+\setcounter{tocdepth}{3}
 \usepackage{etex} % trick to get xypic to load
-\usepackage[authoryear,square]{natbib}
 \usepackage{proof}
 \usepackage{xifthen}
 
@@ -96,6 +96,7 @@
 
 \def\cross{\times}
 \def\dfn{\triangleq}
+\def\dfun{\mapsto}
 \def\bigstep{\Downarrow}
 \def\arr{\supset}
 \def\marr{\rightarrow}
@@ -244,16 +245,17 @@
 \newcommand{\cenv}[2]{#2 \turn{V} #1}
 
 
+\def\mytitle{
+Hereditary Substitution
+\\by Canonical Evaluation
+}
+
 \begin{document}
 
-\frontmatter
-\pagestyle{headings}
+\mainmatter
 
-\title{
-Hereditary Substitution
-\\by Canonical Evaluation (SbE)
-\\{\small (Draft on Tue Oct 14 17:25:11 2014)}
-}
+\title{\mytitle (SbE)}
+\titlerunning{\mytitle}
 
 \author{Larry Diehl \and Tim Sheard}
 
@@ -292,10 +294,15 @@ terminating model-theoretic definition of hereditary substitution.
 SbE of G{\"o}del's System T can be elegantly formalized within
 dependent type theory, just like NbE, and all of our results have been
 verified using Agda.
+
+\keywords{
+Hereditary substitution; normalization by evaluation; termination;
+type theory; formalization.
+}
+
 \end{abstract}
 
-\keywords
-Type theory; hereditary substitution; termination; formalization.
+\todo[inline]{abstract should be max 150 words}
 
 \section{Introduction}
 \label{sec:intro}
@@ -303,7 +310,7 @@ Type theory; hereditary substitution; termination; formalization.
 Normalization by Evaluation (NbE)~\cite{TODO} is a model-theoretic
 technique for defining the semantics of a $\lambda$-calculus. For
 example, normalization for a total $\lambda$-calculus with inductive
-types (such as G{\"o}del's System T) can be defined by first
+types (such as G{\"o}del's System T~\cite{systemt}) can be defined by first
 evaluating a syntactic expression (possibly containing $\beta$-redexes) to a
 semantic value of a Kripke model, and then reifying the result to a syntactic value
 (not containing any $\beta$-redexes).
@@ -1390,8 +1397,7 @@ model and reification. Finally, hereditary substitution for complex
 $\lambda$-calculi can be formalized within dependently typed languages
 as a function with an intrinsic termination proof!
 
-\section*{\ackname}
-
+\subsubsection*{Acknowledgments.}
 We would like to thank Andrew Cave for helping us understand subtle
 issues related to context weakening when formalizing termination
 proofs via realizability predicates. We would also
@@ -1403,7 +1409,7 @@ This work was supported by NSF/CISE/CCF grant \#1320934.
 
 
 
-\bibliographystyle{abbrvnat}
+\bibliographystyle{splncs03}
 \bibliography{sbe}
 
 \clearpage
@@ -1923,12 +1929,12 @@ syntactic value of the same context and type.
 By induction on the expression $\type{A}$.
 }
 \begin{align*}
-&\nbs ~ \zero &&\dfn&& \zero\\
-&\nbs ~ (\suc~n) &&\dfn&& \suc ~ (\nbs~n)\\
-&\nbs ~ (\lam b) &&\dfn&& \lam (\nbs~b)\\
-&\nbs ~ (\var~i) &&\dfn&& \neut ~ (\var~i)\\
-&\nbs ~ (f~\app~a) &&\dfn&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
-&\nbs ~ (\rec~c_z~c_s~n) &&\dfn&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
+&\nbs ~ \zero &&\dfun&& \zero\\
+&\nbs ~ (\suc~n) &&\dfun&& \suc ~ (\nbs~n)\\
+&\nbs ~ (\lam b) &&\dfun&& \lam (\nbs~b)\\
+&\nbs ~ (\var~i) &&\dfun&& \neut ~ (\var~i)\\
+&\nbs ~ (f~\app~a) &&\dfun&& \abs ~ (\nbs~f) ~ (\nbs~a)\\
+&\nbs ~ (\rec~c_z~c_s~n) &&\dfun&& \rbs~(\nbs~c_z)~(\nbs~c_s)~(\nbs~n)
 \end{align*}
 
 All cases except for the eliminations translate expressions to values
@@ -1957,8 +1963,8 @@ function (of type $B$).
 By induction on the function value $\typv{A \arr B}$.
 }
 \begin{align*}
-&\abs ~ (\lam b) ~ a &&\dfn&& \sbe~b~(\idenv, a)\\
-&\abs ~ (\neut~f) ~ a &&\dfn&& \neut~(f~\app~a)
+&\abs ~ (\lam b) ~ a &&\dfun&& \sbe~b~(\idenv, a)\\
+&\abs ~ (\neut~f) ~ a &&\dfun&& \neut~(f~\app~a)
 \end{align*}
 
 The neutral case is a congruence, and the function case is defined by
@@ -1988,9 +1994,9 @@ and returns a syntactic value ($\typv{C}$).
 By induction on the natural number value $\typv{\nat}$.
 }
 \begin{align*}
-&\rbs ~ c_z ~ c_s ~ \zero &&\dfn&& c_z\\
-&\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfn&& \abs~c_s~(\rbs~c_z~c_s~n)\\
-&\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfn&& \neut~(\rec~c_z~c_s~n)
+&\rbs ~ c_z ~ c_s ~ \zero &&\dfun&& c_z\\
+&\rbs ~ c_z ~ c_s ~ (\suc~n) &&\dfun&& \abs~c_s~(\rbs~c_z~c_s~n)\\
+&\rbs ~ c_z ~ c_s ~ (\neut~n) &&\dfun&& \neut~(\rec~c_z~c_s~n)
 \end{align*}
 
 The zero case is immediate and the neutral case is a congruence. The
