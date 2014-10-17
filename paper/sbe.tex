@@ -696,7 +696,7 @@ substituting into the $\lambda$-body.
 Intrinsic typing of \textit{values} (canonical terms) for G{\"o}del's System T.
 The intrinsically typed values act as proofs that the value
 represented by the proof term is well typed. The grammar of values
-also includes all neutral terms.
+also includes all neutral terms (see \reffig{typn}).
 }
 $$
 \infer
@@ -831,7 +831,7 @@ weakened by some arbitrary context $\Delta$, which can be empty.
 \end{mydefinition}
 
 So how does this model help us to define the application case of
-evaluation? Well, the result of evaluation (rather than
+evaluation? The result of evaluation (rather than
 normalization) is a semantic value (rather than a syntactic value).
 Thus, evaluating the function produces a semantic
 function (a function in the metalanguage), which we can apply to the semantic value produced by evaluating
@@ -849,7 +849,9 @@ evaluation take an additional argument, called the
 ``semantic environment'', mapping variables to semantic values. More
 specifically, the semantic environment maps all types (where each type
 represents a variable) in some initial context $\Gamma$ to semantic
-values in some terminal context $\Delta$.
+values in some terminal context $\Delta$. Because the environment
+values are scoped by $\Delta$, evaluation works on open terms,
+hence NbE can define strong normalization.
 
 \begin{mydefinition}{Semantic Environments}{menv}
 {
@@ -960,9 +962,9 @@ it is less ambiguous to refer to its ``substitution'' argument as a
 
 \begin{mydefinition}{Syntactic Environments}{env}
 {
-Syntactic environments $\env$ are defined exactly like semantic
+Syntactic environments $\env$ are defined as a cartesian product, exactly like semantic
 environments (\refdef{menv}, $\menv$), except they contain syntactic values
-instead of semantic values.
+instead of semantic values. 
 }
 \end{mydefinition}
 
@@ -1040,7 +1042,7 @@ A consequence of this is that normalization must invent a semantic
 environment to pass to evaluation, because it does not already
 have a syntactic environment argument to reflect. Because normalization does not
 change the value of free variables, the identity semantic environment
-($\reflectc$) can be used by reflecting the context. In contrast, hereditary substitution already has
+can be used by reflecting the context ($\reflectc$). In contrast, hereditary substitution already has
 a syntactic environment (that is used to look up the value of any free
 variables), so canonical evaluation takes the 
 reflection ($\reflecte$) of the syntactic environment as its semantic
