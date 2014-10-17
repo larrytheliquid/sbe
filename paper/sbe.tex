@@ -307,12 +307,12 @@ type theory; formalization.
 \section{Introduction}
 \label{sec:intro}
 
-Normalization by Evaluation (NbE)~\cite{TODO} is a model-theoretic
+Normalization by Evaluation (NbE)~\cite{berger,coquandnbe,danvy} is a model-theoretic
 technique for defining the semantics of a $\lambda$-calculus. For
 example, normalization for a total $\lambda$-calculus with inductive
 types (such as G{\"o}del's System T~\cite{systemt}) can be defined by first
 evaluating a syntactic expression (possibly containing $\beta$-redexes) to a
-semantic value of a Kripke model~\cite{kripkemodel}, and then reifying the result to a syntactic value
+semantic value of a Kripke model~\cite{kripkeoriginal,kripkemodel}, and then reifying the result to a syntactic value
 (not containing any $\beta$-redexes).
 
 \begin{displaymath}
@@ -330,13 +330,14 @@ $\lambda$-calculi in dependently typed languages (such as
 Coq~\cite{coq08}, Agda~\cite{norell2007towards}, or Idris~\cite{brady2011idris}), because the
 proof of termination of the semantics is \textit{implicit} in its
 definition. In other words, normalization can be defined as a total
-function within a language based on Martin-L{\"o}f Type Theory~\cite{nordstrom1990programming}.
+function within a language based on
+Martin-L{\"o}f Type Theory~\cite{martinintuitionistic,martin1975intuitionistic,nordstrom1990programming}.
 In contrast, formalizing the semantics of expressions as a
 relation (e.g. a small or big-step relation), or as a
-coinductive function~\cite{TODO}, requires the additional overhead
+coinductive function~\cite{coinductivenbe}, requires the additional overhead
 of supplying an \textit{explicit}
 termination proof \textit{a posteriori} using techniques such as
-logical relations~\cite{TODO}.
+logical relations~\cite{plotkinlogrel}.
 
 In a standard type theory \textit{expressions} are emphasized and
 their semantics is defined directly. Alternatively, a
@@ -385,9 +386,12 @@ types (such as lists or trees) for the same reasons that NbE does.
 Hereditary substitution has historically been studied in the context
 of proof-theoretic semantics. A proof-theoretic semantics takes
 syntactic inputs directly to syntactic outputs, without going through
-an intermediate semantic model. Formalizing this approach in
+an intermediate semantic model. Additionally, a proof-theoretic
+termination proof (which can be implicit in the semantics or given explicitly) is completely
+syntactic (i.e. it does not use a logical relation).
+Formalizing this approach in
 dependently typed languages has been limited to simple calculi.
-For example, \cite{TODO} show how to formalize the
+For example, Keller and Altenkirch~\cite{hsubagda} show how to formalize the
 semantics of the STLC in Agda using syntactic hereditary substitution.
 The termination of the hereditary substitution function is witnessed
 by lexicographic induction on terms and types, but this approach does
@@ -479,7 +483,7 @@ types expressions in \reffig{type}, $\turn{V}$ types values in
 
 Finally, we have taken care to ensure that all of our constructions
 are easily formalizable. For this reason, we
-use De Bruijn~\cite{TODO} variables. For example, our typing rule
+use De Bruijn variables~\cite{debruijn}. For example, our typing rule
 for functions does not explicitly bind its variable.
 
 $$
