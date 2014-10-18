@@ -431,7 +431,12 @@ syntactic environment as a semantic environment so that we may use it
 as an argument of canonical evaluation.
 
 \item{\bf{\refsec{related}}}
-We discuss related work.
+We discuss related work. In particular, we compare and contrast
+proof-theoretic and model-theoretic hereditary substitution in more
+detail. We also point out how SbE (model-theoretic
+hereditary substitution) can be adapted from NbE to calculi with
+inductive types. In contrast, adapting proof-theoretic hereditary
+substitution to calculi with inductive types has been problematic.
 \end{itemize}
 
 \subsection{Notation}
@@ -1393,7 +1398,7 @@ semantic values) out of thin air using context reflection
 %% small because you do not need a type preservation proof. An intrinsic
 %% termination proof keeps the theory small 
 
-\section{Related Work and Applications}
+\section{Related Work}
 \label{sec:related}
 
 \subsection{Proof-Theoretic Hereditary Substitution}
@@ -1464,7 +1469,7 @@ terms, you get a function with an intrinsic termination proof that
 maps a syntactic value and a semantic environment to a semantic value.
 We call this function canonical evaluation. By beautiful coincidence,
 canonical evaluation is \textit{semantic} hereditary substitution. In
-otherwords, it is the
+other words, it is the
 lifting of \textit{syntactic} hereditary substitution to semantic values of a
 Kripke model.
 
