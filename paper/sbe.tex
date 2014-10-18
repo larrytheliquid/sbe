@@ -1385,7 +1385,7 @@ hereditary substitution by proving termination of a semantics for a concurrent
 logical framework.
 
 There has also been work on formalizing the syntactic termination
-argument of hereditary substitution. This is done by defining
+argument of hereditary substitution in type theory. This is done by defining
 hereditary substitution as a total function with an implicit
 termination proof that relies on the lexicographic termination
 argument on types and terms. For example, Keller and Altenkirch~\cite{keller}
@@ -1406,17 +1406,16 @@ numbers (G{\"o}del's System T) or parametric lists, remain to be discovered.
 \subsection{Model-Theoretic Hereditary Substitution}
 
 SbE is a model-theoretic definition of hereditary substitution. It is
-derived from NbE primary adapting evaluation from expressions to
-canonical terms. Because SbE reuses so much from NbE, it also enjoys
+derived from NbE by adapting evaluation to work on canonical terms,
+rather than expressions. Because SbE reuses so much from NbE, it also enjoys
 many of its benefits. For example, NbE can be used to define
 normalization of STLC within type theory as a function with an
-explicit proof. Coquand~\cite{coquandnbe} first formalized NbE for
-STLC in Alf~\cite{alf}. It is also easily to formalize NbE for STLC in Agda,
-for examples see the code by Morrison~\cite{morrison} and 
-the tutorial by Ilik~\cite{ilik}.
+implicit termination proof. Coquand~\cite{coquandnbe} first formalized NbE for
+STLC in Alf~\cite{alf}. It is also easy to formalize NbE for STLC in Agda,
+as demonstrated by Morrison~\cite{morrison} and Ilik~\cite{ilik}.
 
 Significantly, type theoretic formalizations of NbE have been easy to
-extend more complex calculi, such as calculi with inductive types.
+extend to more complex calculi, such as calculi with inductive types.
 Ilik~\cite{ilik} shows how to formalize NbE in Agda for a $\lambda$-calculus
 with sums, polymorphic lists, and even delimited control. 
 
@@ -1437,7 +1436,7 @@ relationally specified equivalence relation on expressions.
 
 Similarly, you may accept normalization defined in terms of SbE
 ($\nbs$ in \refapp{nbs}) as the specification and implementation of a semantics
-of expressions. If you do not accept this, then you may wish to prove
+for expressions. If you do not accept this, then you may wish to prove
 the following correctness theorem.
 
 $$
@@ -1460,7 +1459,7 @@ We expect the soundness direction of SbE to be provable directly, like
 the soundness direction of NbE also mentioned by Abel~\cite{abelhabil}.
 We expect the soundness proof to require several
 ``commutation lemmas'', as described by Keller and
-Altenkirch~\cite{keller} for proof-theoretic hereditary substitution. 
+Altenkirch~\cite{keller}, and as used in their correctness proof of syntactic hereditary substitution. 
 The commutation lemmas ensure that
 hereditary substitution into values commutes with ordinary substitution
 into expressions.
