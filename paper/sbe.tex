@@ -266,33 +266,30 @@ Hereditary Substitution
 
 \begin{abstract}
 
-Hereditary substitution is a modified definition of ordinary
-substitution, suitable for substituting into canonical terms. Because
-substituting into a canonical term may temporarily create a $\beta$-redex,
-hereditary substitution immediately evaluates the redex so that the
-result remains a canonical term. Hereditary substitution is
-traditionally used to give a large-step semantics to a
-$\lambda$-calculus. It is used in the function application case when
+Hereditary substitution is a 
+substitution on canonical terms. 
+Substituting into a canonical term may temporarily create a $\beta$-redex.
+Hereditary substitution immediately evaluates the redex to again obtain a canonical term. 
+
+Hereditary substitution is used in a large-step semantics for a
+$\lambda$-calculus in the function application case when
 defining the normalization function, which takes expressions to canonical terms.
 
-Thus far, the termination argument for hereditary substitution has
-primarily been studied \textit{proof-theoretically}. However, formalizations of
-the proof theoretic termination arguments within type theory have
+Termination of hereditary substitution has
+primarily been studied \textit{proof-theoretically}. 
+The techniques used in proof theoretic studies to prove totality have
 trouble scaling to systems with inductive types, such as
 G{\"o}del's System T.
 
-In this paper we present a \textit{model-theoretic}
+We present a \textit{model-theoretic}
 termination argument of hereditary substitution that scales to
-systems with inductive types. Specifically, we adapt the technique of
-Normalization by Evaluation (NbE), normally defined on expressions, to
-canonical terms. We call this technique Hereditary Substitution by
-Canonical Evaluation (SbE). Much of the existing NbE machinery can be reused, or
-only requires minor modifications. In some sense, we merely point out
-and clarify a beautiful coincidence: Canonical evaluation (evaluation
+systems with inductive types. Specifically, we adapt some of the techniques
+used in formalizing
+Normalization by Evaluation (NbE). Much of the existing NbE machinery can be reused. In some sense, we merely point out
+a beautiful coincidence: Canonical evaluation (evaluation
 from NbE, but defined on canonical terms) is a
 terminating model-theoretic definition of hereditary substitution.
-SbE of G{\"o}del's System T can be elegantly formalized within
-dependent type theory, just like NbE, and all of our results have been
+All of our results have been
 verified using Agda.
 
 \keywords{
