@@ -386,7 +386,7 @@ termination proof (which can be implicit in the semantics or given explicitly) i
 syntactic (i.e. it does not use a logical relation).
 Formalizing this approach in
 dependently typed languages has been limited to simple calculi.
-For example, Keller and Altenkirch~\cite{hsubagda} show how to formalize the
+For example, Keller and Altenkirch~\cite{keller} show how to formalize the
 semantics of the STLC in Agda using syntactic hereditary substitution.
 The termination of the hereditary substitution function is witnessed
 by lexicographic induction on terms and types, but this approach does
@@ -1359,25 +1359,95 @@ an identity semantic environment (mapping variables to themselves as
 semantic values) out of thin air using context reflection
 (\refthm{reflectc} in \refapp{reflectc}).
 
-\section{Our Contribution in Context}
-\label{sec:contribution}
+%% \section{Our Contribution in Context}
+%% \label{sec:contribution}
 
-There are many different ways to define the semantics and prove the
-termination of a total $\lambda$-calculus, so how does SbE change the
-story? First, consider the various options 
+%% Below are various
+%% properties of SbE that we believe contribute to a nice formalization
 
+%% Which options below does
+%% SbE choose, and how does SbE benefit a type theorist?
 
-\section{Related Work}
+%% \begin{itemize}
+%% \item Formal (implemented within type theory), \textit{or} informal
+%%   (on paper).
+%% \item Extrinsically typed terms (separate grammar of terms and typing
+%%   judgment), \textit{or} intrinsically typed terms.
+%% \item Extrinsic termination proof (separate semantics and termination
+%%   proof), \textit{or} intrinsic termination proof.
+%% \item Model-theoretic semantics (defined as a translation of syntax into and back
+%%   out of a model), \textit{or} proof-theoretic semantics (defined as a direct
+%%   mapping from syntax to syntax).
+%% \item Model-theoretic termination proof (implicitly via a Kripke model,
+%%   or explicitly via a logical relation or realizability predicate),
+%%   \textit{or} proof-theoretic termination proof (completely syntactic).
+%% \item Semantics primarily defined on expressions, \textit{or}
+%%   semantics primarily defined on canonical terms.
+%% \end{itemize}
+
+%% SbE as described in this paper is formal, is defined on intrinsically
+%% typed canonical terms, and has a model-theoretic semantics with an intrinsic
+%% model-theoretic termination proof. Intrinsic typing keeps the theory
+%% small because you do not need a type preservation proof. An intrinsic
+%% termination proof keeps the theory small 
+
+\section{Related Work and Applications}
 \label{sec:related}
 
-Our termination proof is a novel model-theoretic result, but it
-does not solve the proof-theoretic version of the same problem.
+\subsection{Proof-Theoretic Hereditary Substitution}
 
-\todo[inline]{formal version of Kripke model via renaming}
-\todo[inline]{Future work: state (via worlds), exceptions (via monad),
-  dependent types, continuations}
-\todo[inline]{reference morrison nbe formalization}
-\todo[inline]{reference tutorial nbe formalization (polymorphic lists, sums, and continuations)}
+Techniques similar to hereditary substitution originated in the world
+of proof theory. For example, Prawitz~\cite{prawitz} proved that
+normalization of natural deduction terminates via a lexicographic
+ordering on proposition (types) and proofs (terms).
+Joachimski et al.~\cite{permutative} showed that normalization of
+$\lambda$-calculus expressions (even for G{\"o}del's System T)
+terminates using a syntactic argument resembling hereditary
+substitution. Watkins~\cite{watkins} explicitly defined
+hereditary substitution by proving termination of a semantics for a concurrent
+logical framework.
+
+There has also been work on formalizing the syntactic termination
+argument of hereditary substitution. This is done by defining
+hereditary substitution as a total function with an implicit
+termination proof that relies on the lexicographic termination
+argument on types and terms. For example, Keller and Altenkirch~\cite{keller}
+define hereditary substitution this way within Agda for the Simply
+Typed Lambda Calculus (STLC). Similarly, Abel~\cite{abelhsub} defines
+simultaneous hereditary substitution for STLC in Agda. However,
+extending formal, syntactic, and implicit termination arguments of
+hereditary substitution to richer calculi has been more difficult. For
+example, Eades~\cite{eadesreach} discusses the difficulties with
+extending proof-theoretic hereditary substitution to richer calculi.
+In particular, the termination argument becomes troublesome in
+calculi with inductive types. Eades~\cite{eadessystemf} has overcome
+the problems for predicative System F and STLC with sum types.
+However, formal and implicit termination arguments of hereditary
+substitution for calculi with recursive sum types, such as natural
+numbers (G{\"o}del's System T) or parametric lists, remain to be discovered.
+
+\subsection{Model-Theoretic Hereditary Substitution}
+
+SbE is a model-theoretic definition of hereditary substitution. It is
+derived from NbE primary adapting evaluation from expressions to
+canonical terms. Because SbE reuses so much from NbE, it also enjoys
+many of its benefits. For example, NbE can be used to define
+normalization of STLC within type theory as a function with an
+explicit proof. Coquand~\cite{coquandnbe} first formalized NbE for
+STLC in Alf~\cite{alf}. It is also easily to formalize NbE for STLC in Agda,
+for examples see the code by Morrison~\cite{morrison} and 
+the tutorial by Ilik~\cite{ilik}.
+
+Significantly, type theoretic formalizations of NbE have been easy to
+extend more complex calculi, such as calculi with inductive types.
+Ilik~\cite{ilik} shows how to formalize NbE in Agda for a $\lambda$-calculus
+with sums, polymorphic lists, and even delimited control. 
+
+Because SbE is an adaption of NbE to canonical terms, it is easy to
+adapt formalizations of NbE for complex calculi to SbE. For example,
+our accompanying code implements SbE for a calculus with polymorphic
+lists and folds over them. It should be just as easy to adapt Ilik's NbE
+formalization of delimited control to SbE.
 
 \section{Conclusion}
 \label{sec:conclusion}
