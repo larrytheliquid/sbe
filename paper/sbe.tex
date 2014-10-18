@@ -266,18 +266,13 @@ Hereditary Substitution
 
 \begin{abstract}
 
-Hereditary substitution is a 
-substitution on canonical terms. 
+Hereditary substitution is a version of substitution that works with canonical terms. 
 Substituting into a canonical term may temporarily create a $\beta$-redex.
-Hereditary substitution immediately evaluates the redex to again obtain a canonical term. 
-
-Hereditary substitution is used in a large-step semantics for a
-$\lambda$-calculus in the function application case when
-defining the normalization function, which takes expressions to canonical terms.
-
+Hereditary substitution immediately evaluates the redex to once again
+obtain a canonical term.
 Termination of hereditary substitution has
-primarily been studied \textit{proof-theoretically}. 
-The techniques used in proof theoretic studies to prove totality have
+primarily been studied \textit{proof-theoretically}. However,
+formal proof-theoretic termination arguments of hereditary substitution have
 trouble scaling to systems with inductive types, such as
 G{\"o}del's System T.
 
