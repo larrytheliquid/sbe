@@ -1366,39 +1366,7 @@ an identity semantic environment (mapping variables to themselves as
 semantic values) out of thin air using context reflection
 (\refthm{reflectc} in \refapp{reflectc}).
 
-%% \section{Our Contribution in Context}
-%% \label{sec:contribution}
-
-%% Below are various
-%% properties of SbE that we believe contribute to a nice formalization
-
-%% Which options below does
-%% SbE choose, and how does SbE benefit a type theorist?
-
-%% \begin{itemize}
-%% \item Formal (implemented within type theory), \textit{or} informal
-%%   (on paper).
-%% \item Extrinsically typed terms (separate grammar of terms and typing
-%%   judgment), \textit{or} intrinsically typed terms.
-%% \item Extrinsic termination proof (separate semantics and termination
-%%   proof), \textit{or} intrinsic termination proof.
-%% \item Model-theoretic semantics (defined as a translation of syntax into and back
-%%   out of a model), \textit{or} proof-theoretic semantics (defined as a direct
-%%   mapping from syntax to syntax).
-%% \item Model-theoretic termination proof (implicitly via a Kripke model,
-%%   or explicitly via a logical relation or realizability predicate),
-%%   \textit{or} proof-theoretic termination proof (completely syntactic).
-%% \item Semantics primarily defined on expressions, \textit{or}
-%%   semantics primarily defined on canonical terms.
-%% \end{itemize}
-
-%% SbE as described in this paper is formal, is defined on intrinsically
-%% typed canonical terms, and has a model-theoretic semantics with an intrinsic
-%% model-theoretic termination proof. Intrinsic typing keeps the theory
-%% small because you do not need a type preservation proof. An intrinsic
-%% termination proof keeps the theory small 
-
-\section{Related Work}
+\section{Related \& Future Work}
 \label{sec:related}
 
 \subsection{Proof-Theoretic Hereditary Substitution}
@@ -1406,10 +1374,11 @@ semantic values) out of thin air using context reflection
 Techniques similar to hereditary substitution originated in the world
 of proof theory. For example, Prawitz~\cite{prawitz} proved that
 normalization of natural deduction terminates via a lexicographic
-ordering on proposition (types) and proofs (terms).
+ordering on proposition (types) and proofs (terms). This syntactic
+proof is similar to a definition of hereditary substitution.
 Joachimski et al.~\cite{permutative} showed that normalization of
-$\lambda$-calculus expressions (even for G{\"o}del's System T)
-terminates using a syntactic argument resembling hereditary
+various expression-based $\lambda$-calculi (even G{\"o}del's System T)
+terminates using a syntactic argument also resembling hereditary
 substitution. Watkins~\cite{watkins} explicitly defined
 hereditary substitution by proving termination of a semantics for a concurrent
 logical framework.
@@ -1455,6 +1424,45 @@ adapt formalizations of NbE for complex calculi to SbE. For example,
 our accompanying code implements SbE for a calculus with polymorphic
 lists and folds over them. It should be just as easy to adapt Ilik's NbE
 formalization of delimited control to SbE.
+
+\subsection{Correctness}
+
+Because NbE allows you to write normalization as a function within
+type theory, you may be content with this normalization
+function acting as both the specification and the implementation of
+the semantics for your calculus. Otherwise, you may wish to prove that
+normalization is both sound and complete with respect to a
+relationally specified equivalence relation on expressions.
+
+Similarly, you may accept normalization defined in terms of SbE
+($\nbs$ in \refapp{nbs}) as the specification and implementation of a semantics
+of expressions. If you do not accept this, then you may wish to prove
+the following correctness theorem.
+
+$$
+\nbs~e_1 \equiv \nbs~e_2 ~\leftrightarrow~ e_1 \approx_\beta e_2
+$$
+
+The theorem requires normalization by hereditary substitution (\nbs)
+to be sound (the ``if'' direction) and complete
+(the ``only if'' direction) with respect to a relational specified
+$\beta$-equivalence relation. Note that because we are using De Bruijn
+variables, the left-hand side only requires strict equality between
+the values produced from normalizing the input expressions. 
+
+We have not yet proven the theorem above for SbE, but because so much
+of SbE is derived from NbE, we also expect proving this theorem to
+borrow proof machinery from the NbE world. We expect the completeness
+direction to be proven using a logical relation, similar to the proof
+that Abel~\cite{abelhabil} gives for NbE completeness.
+We expect the soundness direction of SbE to be provable directly, like
+the soundness direction of NbE also mentioned by Abel~\cite{abelhabil}.
+We expect the soundness proof to require several
+``commutation lemmas'', as described by Keller and
+Altenkirch~\cite{keller} for proof-theoretic hereditary substitution. 
+The commutation lemmas ensure that
+hereditary substitution into values commutes with ordinary substitution
+into expressions.
 
 \section{Conclusion}
 \label{sec:conclusion}
